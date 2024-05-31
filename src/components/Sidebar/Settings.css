@@ -1,0 +1,7 @@
+.mini-table{
+    max-width: 400px;
+    background-color: rgb(231, 238, 231);
+    height: auto;
+    border-radius: 10px;
+    box-shadow: rgba(186, 186, 202, 0.25) 0px 30px 60px -12px, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px;
+}
