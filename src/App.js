@@ -10,6 +10,7 @@ import Settings from "./components/Sidebar/Settings";
 import CourseSettings from "./components/Sidebar/CourseSettings";
 
 import CourseAllotment from "./components/Sidebar/CourseAllotment";
+import ProtectedRoute from "./protectedRouting/ProtectedRoute";
 
 function App() {
   return (
@@ -17,12 +18,54 @@ function App() {
       {/* <SideBar> */}
       <Routes>
         <Route path="/" element={<Login />}></Route>
-        <Route path="/dashboard" element={<Profile />}></Route>
-        <Route path="/erf" element={<UserRegistration />}></Route>
-        <Route path="/add-user" element={<AddUser />}></Route>
-        <Route path="/admin-settings" element={<Settings />}></Route>
-        <Route path="/course-settings" element={<CourseSettings />}></Route>
-        <Route path="/course-allotment" element={<CourseAllotment />}></Route>
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        ></Route>
+        <Route
+          path="/erf"
+          element={
+            <ProtectedRoute>
+              <UserRegistration />
+            </ProtectedRoute>
+          }
+        ></Route>
+        <Route
+          path="/add-user"
+          element={
+            <ProtectedRoute>
+              <AddUser />
+            </ProtectedRoute>
+          }
+        ></Route>
+        <Route
+          path="/admin-settings"
+          element={
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          }
+        ></Route>
+        <Route
+          path="/course-settings"
+          element={
+            <ProtectedRoute>
+              <CourseSettings />
+            </ProtectedRoute>
+          }
+        ></Route>
+        <Route
+          path="/course-allotment"
+          element={
+            <ProtectedRoute>
+              <CourseAllotment />
+            </ProtectedRoute>
+          }
+        ></Route>
       </Routes>
       {/* </SideBar> */}
     </Router>

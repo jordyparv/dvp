@@ -1,6 +1,7 @@
 {
   "name": "react-side-bar",
   "version": "0.1.0",
+  "proxy": "http://172.17.18.255:8080",
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^5.3.7",

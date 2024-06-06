@@ -40,6 +40,8 @@ const CourseSettings = () => {
   const [selectedSemesterName, setSelectedSemesterName] = useState("");
   const [semesterOption, setSemesterOption] = useState("");
 
+
+
   const Swal = require("sweetalert2");
 
   const sessionRequest = async () => {
@@ -159,15 +161,25 @@ const CourseSettings = () => {
     }
   };
 
-  const getSemester = async () => {
+  const getSemester = async (progLevelId) => {
     try {
       const getSemesterData = await axios.get(
-        "http://172.17.18.255:8080/dvp_app/semesters/"
+        `/dvp_app/semester/search?prog_level_ids=${progLevelId}`
+      );
+      // setSemesterData(getSemesterData);
+      setSemesterOption(getSemesterData?.data);
+      console.log(getSemesterData, "SEMSETER DATA");
+    } catch (error) {console.log(error, "Semester")}
+  };
+  const getSemesterTable = async () => {
+    try {
+      const getSemesterData = await axios.get(
+        `/dvp_app/semesters/`
       );
       setSemesterData(getSemesterData);
-      setSemesterOption(getSemesterData?.data);
-      console.log(getSemesterData, "SEMSETER DT");
-    } catch (error) {}
+      // setSemesterOption(getSemesterData?.data);
+      console.log(getSemesterData, "SEMSETER DATA");
+    } catch (error) {console.log(error, "Semester")}
   };
 
   const programRequest = async () => {
@@ -264,6 +276,8 @@ const CourseSettings = () => {
   };
   //   get role
 
+  
+
   const monthOptionsStart = [
     { value: "01", label: "January 01" },
 
@@ -332,10 +346,17 @@ const CourseSettings = () => {
   useEffect(() => {
     getSessionData();
     getProgramLevel();
-    getSemester();
+    getSemesterTable();
     getProgram();
     getSubjects();
   }, []);
+
+
+  useEffect(() => {
+    if (selectedProgramLevel) {
+      getSemester(selectedProgramLevel);
+    }
+  }, [selectedProgramLevel]);
 
   // delete session
 
@@ -430,11 +451,11 @@ const CourseSettings = () => {
         await axios(config);
         Swal.fire({
           icon: "success",
-          title: `Employee Type ${emp.semester_id} deleted successfully`,
+          title: `Semester ${emp.semester_name} deleted successfully`,
           showConfirmButton: false,
           timer: 3000,
         });
-        getSemester(); // Refresh the role data after deleting a role
+        getSemesterTable(); // Refresh the role data after deleting a role
       } catch (error) {
         Swal.fire({
           icon: "error",
@@ -496,13 +517,13 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.18.255:8080/dvp_app/subjects/${emp.subject_id}`,
+          url: `/dvp_app/subjects/${emp.subject_id}`,
         };
 
         await axios(config);
         Swal.fire({
           icon: "success",
-          title: `Employee Type ${emp.subject_id} deleted successfully`,
+          title: `Subject  ${emp.subject_id} deleted successfully`,
           showConfirmButton: false,
           timer: 3000,
         });
@@ -1243,12 +1264,12 @@ const CourseSettings = () => {
                             class="btn btn-primary"
                             type="submit"
                           >
-                            Add Program
+                            Add Subject
                           </button>
                         </div>
                       </form>
                       <hr />
-                      <strong>View Programs</strong>
+                      <strong>View Subjects</strong>
                       <table className="table">
                         <thead>
                           <tr>

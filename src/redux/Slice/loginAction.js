@@ -27,7 +27,6 @@ export const loginUser = (email, password, navigate) => async (dispatch) => {
         JSON.stringify(LoginRequest?.data)
       );
       sessionStorage.setItem("loginMessage", `${LoginRequest?.data?.message}`)
-
       dispatch(loginSuccess(LoginRequest?.data));
       navigate("/dashboard");
     } else {
@@ -35,7 +34,7 @@ export const loginUser = (email, password, navigate) => async (dispatch) => {
       dispatch(loginFailed(LoginRequest?.data));
     }
   } catch (error) {
-    message.warning(error?.response?.data?.message);
+    message.warning(error?.response?.data?.message ? error.response?.data?.message :error?.message)
     console.log(error);
   }
 };
