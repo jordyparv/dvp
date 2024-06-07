@@ -345,6 +345,264 @@ const Settings = () => {
     }
   };
 
+  const handleEditDepartment = async (de) => {
+    const { value: formValues } = await Swal.fire({
+      title: "Edit Department",
+      html: `
+        <input id="swal-input1" class="swal2-input" placeholder="Role Name" value="${
+          de.dept_name
+        }">
+        <select id="swal-input2" class="swal2-input">
+          <option value="active" ${
+            de.dept_status === "active" ? "selected" : ""
+          }>Active</option>
+          <option value="inactive" ${
+            de.dept_status === "inactive" ? "selected" : ""
+          }>Inactive</option>
+        </select>
+      `,
+      focusConfirm: false,
+      preConfirm: () => {
+        return {
+          dept_name: document.getElementById("swal-input1").value,
+          dept_status: document.getElementById("swal-input2").value,
+        };
+      },
+    });
+
+    if (formValues) {
+      try {
+        const config = {
+          method: "PUT",
+          url: `http://172.17.18.255:8080/dvp_app/departments/${de.dept_id}/`,
+          data: formValues,
+        };
+
+        const response = await axios(config);
+        Swal.fire({
+          icon: "success",
+          title: `Department ${response?.data?.dept_name} updated successfully`,
+          showConfirmButton: false,
+          timer: 3000,
+        });
+        getDepart(); // Refresh the role data after editing a role
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error?.response?.data?.message[0] || "An error occurred",
+        });
+        console.error(error);
+      }
+    }
+  };
+
+  const handleEditTitle = async (ti) => {
+    const { value: formValues } = await Swal.fire({
+      title: "Edit Title",
+      html: `
+        <input id="swal-input1" class="swal2-input" placeholder="Role Name" value="${
+          ti.title_name
+        }">
+        <select id="swal-input2" class="swal2-input">
+          <option value="active" ${
+            ti.title_status === "active" ? "selected" : ""
+          }>Active</option>
+          <option value="inactive" ${
+            ti.title_status === "inactive" ? "selected" : ""
+          }>Inactive</option>
+        </select>
+      `,
+      focusConfirm: false,
+      preConfirm: () => {
+        return {
+          title_name: document.getElementById("swal-input1").value,
+          title_status: document.getElementById("swal-input2").value,
+        };
+      },
+    });
+
+    if (formValues) {
+      try {
+        const config = {
+          method: "PUT",
+          url: `http://172.17.18.255:8080/dvp_app/title/${ti.title_id}/`,
+          data: formValues,
+        };
+
+        const response = await axios(config);
+        Swal.fire({
+          icon: "success",
+          title: `Title ${response?.data?.title_name} updated successfully`,
+          showConfirmButton: false,
+          timer: 3000,
+        });
+        getTitle(); // Refresh the role data after editing a role
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error?.response?.data?.message[0] || "An error occurred",
+        });
+        console.error(error);
+      }
+    }
+  };
+  const handleEditDesig = async (ti) => {
+    const { value: formValues } = await Swal.fire({
+      title: "Edit Designation",
+      html: `
+        <input id="swal-input1" class="swal2-input" placeholder="Role Name" value="${
+          ti.desig_name
+        }">
+        <select id="swal-input2" class="swal2-input">
+          <option value="active" ${
+            ti.desig_status === "active" ? "selected" : ""
+          }>Active</option>
+          <option value="inactive" ${
+            ti.desig_status === "inactive" ? "selected" : ""
+          }>Inactive</option>
+        </select>
+      `,
+      focusConfirm: false,
+      preConfirm: () => {
+        return {
+          desig_name: document.getElementById("swal-input1").value,
+          desig_status: document.getElementById("swal-input2").value,
+        };
+      },
+    });
+
+    if (formValues) {
+      try {
+        const config = {
+          method: "PUT",
+          url: `http://172.17.18.255:8080/dvp_app/designation/${ti.desig_id}/`,
+          data: formValues,
+        };
+
+        const response = await axios(config);
+        Swal.fire({
+          icon: "success",
+          title: `Designation ${response?.data?.desig_name} updated successfully`,
+          showConfirmButton: false,
+          timer: 3000,
+        });
+        getDesig(); // Refresh the role data after editing a role
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error?.response?.data?.message[0] || "An error occurred",
+        });
+        console.error(error);
+      }
+    }
+  };
+
+  const handleEditEmp = async (ti) => {
+    const { value: formValues } = await Swal.fire({
+      title: "Edit Employee",
+      html: `
+        <input id="swal-input1" class="swal2-input" placeholder="Role Name" value="${
+          ti.emp_type_name
+        }">
+        <select id="swal-input2" class="swal2-input">
+          <option value="active" ${
+            ti.emp_type_status === "active" ? "selected" : ""
+          }>Active</option>
+          <option value="inactive" ${
+            ti.emp_type_status === "inactive" ? "selected" : ""
+          }>Inactive</option>
+        </select>
+      `,
+      focusConfirm: false,
+      preConfirm: () => {
+        return {
+          emp_type_name: document.getElementById("swal-input1").value,
+          emp_type_status: document.getElementById("swal-input2").value,
+        };
+      },
+    });
+
+    if (formValues) {
+      try {
+        const config = {
+          method: "PUT",
+          url: `http://172.17.18.255:8080/dvp_app/employee_type/${ti.emp_type_id}/`,
+          data: formValues,
+        };
+
+        const response = await axios(config);
+        Swal.fire({
+          icon: "success",
+          title: `Employee ${response?.data?.emp_type_name} updated successfully`,
+          showConfirmButton: false,
+          timer: 3000,
+        });
+        getEmpType(); // Refresh the role data after editing a role
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error?.response?.data?.message[0] || "An error occurred",
+        });
+        console.error(error);
+      }
+    }
+  };
+  const handleEditGender = async (ti) => {
+    const { value: formValues } = await Swal.fire({
+      title: "Edit Gender",
+      html: `
+        <input id="swal-input1" class="swal2-input" placeholder="Role Name" value="${
+          ti.gender_name
+        }">
+        <select id="swal-input2" class="swal2-input">
+          <option value="active" ${
+            ti.gender_status === "active" ? "selected" : ""
+          }>Active</option>
+          <option value="inactive" ${
+            ti.gender_status === "inactive" ? "selected" : ""
+          }>Inactive</option>
+        </select>
+      `,
+      focusConfirm: false,
+      preConfirm: () => {
+        return {
+          gender_name: document.getElementById("swal-input1").value,
+          gender_status: document.getElementById("swal-input2").value,
+        };
+      },
+    });
+
+    if (formValues) {
+      try {
+        const config = {
+          method: "PUT",
+          url: `http://172.17.18.255:8080/dvp_app/genders/${ti.gender_id}/`,
+          data: formValues,
+        };
+
+        const response = await axios(config);
+        Swal.fire({
+          icon: "success",
+          title: `Gender ${response?.data?.gender_name} updated successfully`,
+          showConfirmButton: false,
+          timer: 3000,
+        });
+        getGender(); // Refresh the role data after editing a role
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error?.response?.data?.message[0] || "An error occurred",
+        });
+        console.error(error);
+      }
+    }
+  };
+
   const handleDeleteRole = async (role) => {
     const result = await Swal.fire({
       title: "Are you sure?",
@@ -799,7 +1057,7 @@ const Settings = () => {
 
                                   <td>{item?.dept_status}</td>
                                   <td>
-                                    <Button>Edit</Button>{" "}
+                                    <Button onClick={() => handleEditDepartment(item)}>Edit</Button>{" "}
                                     <Button
                                       onClick={() =>
                                         handleDeleteDepartment(item)
@@ -922,7 +1180,7 @@ const Settings = () => {
 
                                   <td>{item?.title_status}</td>
                                   <td>
-                                    <Button>Edit</Button>{" "}
+                                    <Button onClick={() => handleEditTitle(item)}>Edit</Button>{" "}
                                     <Button
                                       onClick={() => handleDeleteTitle(item)}
                                       danger
@@ -1043,7 +1301,7 @@ const Settings = () => {
 
                                   <td>{item?.desig_status}</td>
                                   <td>
-                                    <Button>Edit</Button>{" "}
+                                    <Button onClick={() => handleEditDesig(item)}>Edit</Button>{" "}
                                     <Button
                                       onClick={() =>
                                         handleDeleteDesignation(item)
@@ -1166,7 +1424,7 @@ const Settings = () => {
 
                                   <td>{item?.emp_type_status}</td>
                                   <td>
-                                    <Button>Edit</Button>{" "}
+                                    <Button onClick={() => handleEditEmp(item)}>Edit</Button>{" "}
                                     <Button
                                       onClick={() => handleDeleteEmpType(item)}
                                       danger
@@ -1288,7 +1546,7 @@ const Settings = () => {
 
                                   <td>{item?.gender_status}</td>
                                   <td>
-                                    <Button>Edit</Button>{" "}
+                                    <Button onClick={() => handleEditGender(item)}>Edit</Button>{" "}
                                     <Button
                                       onClick={() => handleDeleteGender(item)}
                                       danger

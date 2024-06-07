@@ -40,8 +40,6 @@ const CourseSettings = () => {
   const [selectedSemesterName, setSelectedSemesterName] = useState("");
   const [semesterOption, setSemesterOption] = useState("");
 
-
-
   const Swal = require("sweetalert2");
 
   const sessionRequest = async () => {
@@ -149,7 +147,8 @@ const CourseSettings = () => {
         showConfirmButton: false,
         timer: 3000,
       });
-      getProgramLevel();
+
+      getSemesterTable();
       getSemester();
     } catch (error) {
       Swal.fire({
@@ -169,17 +168,21 @@ const CourseSettings = () => {
       // setSemesterData(getSemesterData);
       setSemesterOption(getSemesterData?.data);
       console.log(getSemesterData, "SEMSETER DATA");
-    } catch (error) {console.log(error, "Semester")}
+    } catch (error) {
+      console.log(error, "Semester");
+    }
   };
+
   const getSemesterTable = async () => {
     try {
-      const getSemesterData = await axios.get(
-        `/dvp_app/semesters/`
-      );
+      const getSemesterData = await axios.get(`/dvp_app/semesters/`);
       setSemesterData(getSemesterData);
+
       // setSemesterOption(getSemesterData?.data);
       console.log(getSemesterData, "SEMSETER DATA");
-    } catch (error) {console.log(error, "Semester")}
+    } catch (error) {
+      console.log(error, "Semester");
+    }
   };
 
   const programRequest = async () => {
@@ -276,8 +279,6 @@ const CourseSettings = () => {
   };
   //   get role
 
-  
-
   const monthOptionsStart = [
     { value: "01", label: "January 01" },
 
@@ -351,13 +352,401 @@ const CourseSettings = () => {
     getSubjects();
   }, []);
 
-
   useEffect(() => {
     if (selectedProgramLevel) {
       getSemester(selectedProgramLevel);
     }
   }, [selectedProgramLevel]);
 
+
+  const handleEditSession = async (ti) => {
+    const { value: formValues } = await Swal.fire({
+      title: "Edit Session",
+      html: `
+      <input id="swal-input1" class="swal2-input" placeholder="Start Year" value="${
+        ti.start_year
+      }">
+      <input id="swal-input2" class="swal2-input" placeholder="End Year" value="${
+        ti.end_year
+      }">
+      
+      <select id="swal-input3" class="swal2-input">
+        <option value="1" ${
+          ti.start_month === "1" ? "selected" : ""
+        }>January</option>
+        <option value="2" ${
+          ti.start_month === "2" ? "selected" : ""
+        }>February</option>
+        <option value="3" ${
+          ti.start_month === "3" ? "selected" : ""
+        }>March</option>
+        <option value="4" ${
+          ti.start_month === "4" ? "selected" : ""
+        }>April</option>
+        <option value="5" ${
+          ti.start_month === "5" ? "selected" : ""
+        }>May</option>
+        <option value="6" ${
+          ti.start_month === "6" ? "selected" : ""
+        }>June</option>
+        <option value="7" ${
+          ti.start_month === "7" ? "selected" : ""
+        }>July</option>
+        <option value="8" ${
+          ti.start_month === "8" ? "selected" : ""
+        }>August</option>
+        <option value="9" ${
+          ti.start_month === "9" ? "selected" : ""
+        }>September</option>
+        <option value="10" ${
+          ti.start_month === "10" ? "selected" : ""
+        }>October</option>
+        <option value="11" ${
+          ti.start_month === "11" ? "selected" : ""
+        }>November</option>
+        <option value="12" ${
+          ti.start_month === "12" ? "selected" : ""
+        }>December</option>
+      </select>
+      
+      <select id="swal-input4" class="swal2-input">
+        <option value="1" ${
+          ti.end_month === "1" ? "selected" : ""
+        }>January</option>
+        <option value="2" ${
+          ti.end_month === "2" ? "selected" : ""
+        }>February</option>
+        <option value="3" ${
+          ti.end_month === "3" ? "selected" : ""
+        }>March</option>
+        <option value="4" ${
+          ti.end_month === "4" ? "selected" : ""
+        }>April</option>
+        <option value="5" ${ti.end_month === "5" ? "selected" : ""}>May</option>
+        <option value="6" ${
+          ti.end_month === "6" ? "selected" : ""
+        }>June</option>
+        <option value="7" ${
+          ti.end_month === "7" ? "selected" : ""
+        }>July</option>
+        <option value="8" ${
+          ti.end_month === "8" ? "selected" : ""
+        }>August</option>
+        <option value="9" ${
+          ti.end_month === "9" ? "selected" : ""
+        }>September</option>
+        <option value="10" ${
+          ti.end_month === "10" ? "selected" : ""
+        }>October</option>
+        <option value="11" ${
+          ti.end_month === "11" ? "selected" : ""
+        }>November</option>
+        <option value="12" ${
+          ti.end_month === "12" ? "selected" : ""
+        }>December</option>
+      </select>
+    `,
+      focusConfirm: false,
+      preConfirm: () => {
+        return {
+          start_year: document.getElementById("swal-input1").value,
+          end_year: document.getElementById("swal-input2").value,
+          start_month: document.getElementById("swal-input3").value,
+          end_month: document.getElementById("swal-input4").value,
+        };
+      },
+    });
+
+    if (formValues) {
+      try {
+        const config = {
+          method: "PUT",
+          url: `http://172.17.18.255:8080/dvp_app/sessions/${ti.session_code}/`,
+          data: formValues,
+        };
+
+        const response = await axios(config);
+        Swal.fire({
+          icon: "success",
+          title: `Session ${response?.data?.session_code} updated successfully`,
+          showConfirmButton: false,
+          timer: 3000,
+        });
+        getSessionData(); // Refresh the role data after editing a role
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error?.response?.data?.message[0] || "An error occurred",
+        });
+        console.error(error);
+      }
+    }
+  };
+
+  const handleEditPL = async (ti) => {
+    const { value: formValues } = await Swal.fire({
+      title: "Edit Program Level",
+      html: `
+      <input id="swal-input1" class="swal2-input" placeholder="Program Level Name" value="${
+        ti.prog_level_name
+      }">
+      <select id="swal-input2" class="swal2-input">
+        <option value="active" ${
+          ti.prog_status === "active" ? "selected" : ""
+        }>Active</option>
+        <option value="inactive" ${
+          ti.prog_status === "inactive" ? "selected" : ""
+        }>Inactive</option>
+      </select>
+    `,
+      focusConfirm: false,
+      preConfirm: () => {
+        return {
+          prog_level_name: document.getElementById("swal-input1").value,
+          prog_status: document.getElementById("swal-input2").value,
+        };
+      },
+    });
+
+    if (formValues) {
+      try {
+        const config = {
+          method: "PUT",
+          url: `http://172.17.18.255:8080/dvp_app/program_levels/${ti.prog_level_id}/`,
+          data: formValues,
+        };
+
+        const response = await axios(config);
+        Swal.fire({
+          icon: "success",
+          title: `Program Level ${response?.data?.prog_level_name} updated successfully`,
+          showConfirmButton: false,
+          timer: 3000,
+        });
+        getProgramLevel(); // Refresh the role data after editing a role
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error?.response?.data?.message[0] || "An error occurred",
+        });
+        console.error(error);
+      }
+    }
+  };
+
+  const handleEditSemester = async (ti) => {
+    const { value: formValues } = await Swal.fire({
+      title: "Edit Semester",
+      html: `
+      <input id="swal-input1" class="swal2-input" placeholder="Semester Name" value="${
+        ti.semester_name
+      }">
+      <select id="swal-input2" class="swal2-input">
+        <option value="1" ${
+          ti.prog_level_id === "UG" ? "selected" : ""
+        }>UG</option>
+        <option value="2" ${
+          ti.prog_level_id === "PG" ? "selected" : ""
+        }>PG</option>
+      </select>
+    `,
+      focusConfirm: false,
+      preConfirm: () => {
+        return {
+          semester_name: document.getElementById("swal-input1").value,
+          prog_level_id: document.getElementById("swal-input2").value,
+        };
+      },
+    });
+
+    if (formValues) {
+      try {
+        const config = {
+          method: "PUT",
+          url: `http://172.17.18.255:8080/dvp_app/semesters/${ti.semester_id}/`,
+          data: formValues,
+        };
+
+        const response = await axios(config);
+        Swal.fire({
+          icon: "success",
+          title: `Semester ${response?.data?.semester_name} updated successfully`,
+          showConfirmButton: false,
+          timer: 3000,
+        });
+        getSemesterTable(); // Refresh the role data after editing a role
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error?.response?.data?.message[0] || "An error occurred",
+        });
+        console.log(error);
+      }
+    }
+  };
+
+  const handleEditProgram = async (ti) => {
+    const { value: formValues } = await Swal.fire({
+      title: "Edit Program",
+      html: `
+      <input id="swal-input1" class="swal2-input" placeholder="Program Name" value="${
+        ti.program_name
+      }">
+      <input id="swal-input2" class="swal2-input" placeholder="Program Code" value="${
+        ti.program_code
+      }">
+       <select id="swal-input3" class="swal2-input">
+        <option value="1" ${
+          ti.program_level_name === "UG" ? "selected" : ""
+        }>UG</option>
+        <option value="2" ${
+          ti.program_level_name === "PG" ? "selected" : ""
+        }>PG</option>
+      </select>
+      
+    `,
+      focusConfirm: false,
+      preConfirm: () => {
+        return {
+          program_name: document.getElementById("swal-input1").value,
+          program_code: document.getElementById("swal-input2").value,
+          program_level_name: document.getElementById("swal-input3").value,
+        };
+      },
+    });
+
+    if (formValues) {
+      try {
+        const config = {
+          method: "PUT",
+          url: `http://172.17.18.255:8080/dvp_app/programs/${ti.program_id}/`,
+          data: formValues,
+        };
+
+        const response = await axios(config);
+        Swal.fire({
+          icon: "success",
+          title: `Program ${response?.data?.program_name} updated successfully`,
+          showConfirmButton: false,
+          timer: 3000,
+        });
+        getProgram(); // Refresh the role data after editing a role
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error?.response?.data?.message[0] || "An error occurred",
+        });
+        console.error(error);
+      }
+    }
+  };
+
+
+
+  const handleEditSubject = async (ti) => {
+    let programs = [];
+    let semesters = [];
+    let progIds = [];
+  
+    try {
+      // Fetch the program data from the API
+      const programResponse = await axios.get('http://172.17.18.255:8080/dvp_app/programs/');
+      programs = programResponse.data;
+  
+      // Fetch the semester data from the API
+      const semesterResponse = await axios.get('http://172.17.18.255:8080/dvp_app/semesters/');
+      semesters = semesterResponse.data;
+  
+      // Fetch the prog_id data from the API
+      const progIdResponse = await axios.get('http://172.17.18.255:8080/dvp_app/program_levels/');
+      progIds = progIdResponse.data;
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Failed to fetch data",
+      });
+      console.error("Error fetching data:", error);
+      return;
+    }
+  
+    // Create options for the program_name dropdown
+    const programOptions = programs.map(program => 
+      `<option value="${program.program_code}" ${ti.program_name === program.program_name ? "selected" : ""}>${program.program_name}</option>`
+    ).join("");
+  
+    // Create options for the semester_id dropdown
+    const semesterOptions = semesters.map(semester => 
+      `<option value="${semester.semester_id}" ${ti.semester_id === semester.semester_id ? "selected" : ""}>${semester.semester_name}</option>`
+    ).join("");
+  
+    // Create options for the prog_id dropdown
+    const progIdOptions = progIds.map(progId => 
+      `<option value="${progId.prog_id}" ${ti.prog_id === progId.prog_id ? "selected" : ""}>${progId.prog_name}</option>`
+    ).join("");
+  
+    const { value: formValues } = await Swal.fire({
+      title: "Edit Subject",
+      html: `
+        <input id="swal-input1" class="swal2-input" placeholder="Course Code" value="${ti.subject_code}">
+        <input id="swal-input2" class="swal2-input" placeholder="Course Name" value="${ti.subject_name}">
+        <select id="swal-input3" class="swal2-input">
+          <option value="UG" ${ti.prog_level_name === "UG" ? "selected" : ""}>UG</option>
+          <option value="PG" ${ti.prog_level_name === "PG" ? "selected" : ""}>PG</option>
+        </select>
+        <select id="swal-input4" class="swal2-input">
+          ${programOptions}
+        </select>
+        <select id="swal-input5" class="swal2-input">
+          ${semesterOptions}
+        </select>
+        <select id="swal-input6" class="swal2-input">
+          ${progIdOptions}
+        </select>
+      `,
+      focusConfirm: false,
+      preConfirm: () => {
+        return {
+          subject_code: document.getElementById("swal-input1").value,
+          subject_name: document.getElementById("swal-input2").value,
+          prog_level_name: document.getElementById("swal-input3").value,
+          program_name: document.getElementById("swal-input4").value,
+          semester_id: document.getElementById("swal-input5").value,
+          prog_id: parseInt(document.getElementById("swal-input6").value), // Ensure prog_id is an integer
+        };
+      },
+    });
+  
+    if (formValues) {
+      try {
+        const config = {
+          method: "PUT",
+          url: `http://172.17.18.255:8080/dvp_app/subjects/${ti.subject_id}/`,
+          data: formValues,
+        };
+  
+        const response = await axios(config);
+        Swal.fire({
+          icon: "success",
+          title: `Subject ${response?.data?.subject_name} updated successfully`,
+          showConfirmButton: false,
+          timer: 3000,
+        });
+        getSubjects(); // Refresh the subject data after editing
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error?.response?.data?.message[0] || "An error occurred",
+        });
+        console.error(error);
+      }
+    }
+  };
   // delete session
 
   const handleDeleteSession = async (emp) => {
@@ -689,7 +1078,11 @@ const CourseSettings = () => {
                                   </td>
                                   <td>{item?.end_year}</td>
                                   <td>
-                                    <Button>Edit</Button>
+                                    <Button
+                                      onClick={() => handleEditSession(item)}
+                                    >
+                                      Edit
+                                    </Button>
                                     <Button
                                       onClick={() => handleDeleteSession(item)}
                                       danger
@@ -813,7 +1206,9 @@ const CourseSettings = () => {
 
                                   <td>{item?.prog_status}</td>
                                   <td>
-                                    <Button>Edit</Button>{" "}
+                                    <Button onClick={() => handleEditPL(item)}>
+                                      Edit
+                                    </Button>{" "}
                                     <Button
                                       onClick={() => handleDeletePL(item)}
                                       danger
@@ -941,7 +1336,11 @@ const CourseSettings = () => {
 
                                   <td>{item?.prog_level_name}</td>
                                   <td>
-                                    <Button>Edit</Button>{" "}
+                                    <Button
+                                      onClick={() => handleEditSemester(item)}
+                                    >
+                                      Edit
+                                    </Button>{" "}
                                     <Button
                                       onClick={() => handleDeleteSemester(item)}
                                       danger
@@ -1104,7 +1503,11 @@ const CourseSettings = () => {
                                   <td>{item?.program_level_name}</td>
                                   <td>{item?.program_code}</td>
                                   <td>
-                                    <Button>Edit</Button>{" "}
+                                    <Button
+                                      onClick={() => handleEditProgram(item)}
+                                    >
+                                      Edit
+                                    </Button>{" "}
                                     <Button
                                       onClick={() =>
                                         handleDeleteProgramName(item)
@@ -1299,7 +1702,11 @@ const CourseSettings = () => {
                                   <td>{item?.subject_name}</td>
                                   <td>{item?.subject_code}</td>
                                   <td>
-                                    <Button>Edit</Button>{" "}
+                                    <Button
+                                      onClick={() => handleEditSubject(item)}
+                                    >
+                                      Edit
+                                    </Button>{" "}
                                     <Button
                                       onClick={() => handleDeleteSubjects(item)}
                                       danger
