@@ -4,10 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../redux/Slice/loginAction";
 import { useNavigate } from "react-router-dom";
 import { message } from "antd";
+import { getVideos } from "../api/pixelsAuth";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const [videoUrl, setVideoUrl] = useState('');
 
   const navigate = useNavigate();
 
@@ -33,9 +36,27 @@ const Login = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchVideo = async () => {
+      try {
+        const data = await getVideos('nature'); // You can change the query as needed
+        if (data.videos && data.videos.length > 0) {
+          // Select the best quality video link
+          const videoFile = data.videos[0].video_files.find(file => file.quality === 'hd' || file.quality === 'uhd') || data.videos[0].video_files[0];
+          setVideoUrl(videoFile.link);
+        }
+      } catch (error) {
+        console.error('Error fetching video:', error);
+      }
+    };
+
+    fetchVideo();
+  }, []);
+
   return (
     <>
-      <header className="showcase">
+    {/* style={{ backgroundImage: `url(${videoUrl})` }} */}
+      <header className="showcase" >
         <div className="showcase-content">
           <div className="showcase-top">
             <h1 style={{ color: "white" }}>LOGIN</h1>

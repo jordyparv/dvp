@@ -280,15 +280,33 @@ const CourseSettings = () => {
   //   get role
 
   const monthOptionsStart = [
-    { value: "01", label: "January 01" },
-
-    { value: "07", label: "July 07" },
+    { value: "Jan", label: "Jan" },
+    { value: "Feb", label: "Feb" },
+    { value: "Mar", label: "Mar" },
+    { value: "Apr", label: "Apr" },
+    { value: "May", label: "May" },
+    { value: "Jun", label: "Jun" },
+    { value: "Jul", label: "Jul" },
+    { value: "Aug", label: "Aug" },
+    { value: "Sep", label: "Sep" },
+    { value: "Oct", label: "Oct" },
+    { value: "Nov", label: "Nov" },
+    { value: "Dec", label: "Dec" },
   ];
 
   const monthOptionsEnd = [
-    { value: "05", label: "May 05" },
-
-    { value: "12", label: "December 12" },
+    { value: "Jan", label: "Jan" },
+    { value: "Feb", label: "Feb" },
+    { value: "Mar", label: "Mar" },
+    { value: "Apr", label: "Apr" },
+    { value: "May", label: "May" },
+    { value: "Jun", label: "Jun" },
+    { value: "Jul", label: "Jul" },
+    { value: "Aug", label: "Aug" },
+    { value: "Sep", label: "Sep" },
+    { value: "Oct", label: "Oct" },
+    { value: "Nov", label: "Nov" },
+    { value: "Dec", label: "Dec" },
   ];
 
   const handleSession = async (e) => {
@@ -335,16 +353,6 @@ const CourseSettings = () => {
   };
 
   useEffect(() => {
-    if (startMonth == "01") {
-      setEndMonth("05");
-    } else if (startMonth == "07") {
-      setEndMonth("12");
-    } else {
-      return;
-    }
-  });
-
-  useEffect(() => {
     getSessionData();
     getProgramLevel();
     getSemesterTable();
@@ -358,7 +366,6 @@ const CourseSettings = () => {
     }
   }, [selectedProgramLevel]);
 
-
   const handleEditSession = async (ti) => {
     const { value: formValues } = await Swal.fire({
       title: "Edit Session",
@@ -371,78 +378,80 @@ const CourseSettings = () => {
       }">
       
       <select id="swal-input3" class="swal2-input">
-        <option value="1" ${
-          ti.start_month === "1" ? "selected" : ""
-        }>January</option>
-        <option value="2" ${
-          ti.start_month === "2" ? "selected" : ""
+        <option value="Jan" ${
+          ti.start_month === "Jan" ? "selected" : ""
+        }>Jan</option>
+        <option value="Feb" ${
+          ti.start_month === "Feb" ? "selected" : ""
         }>February</option>
-        <option value="3" ${
-          ti.start_month === "3" ? "selected" : ""
+        <option value="Mar" ${
+          ti.start_month === "Mar" ? "selected" : ""
         }>March</option>
-        <option value="4" ${
-          ti.start_month === "4" ? "selected" : ""
+        <option value="Apr" ${
+          ti.start_month === "Apr" ? "selected" : ""
         }>April</option>
-        <option value="5" ${
-          ti.start_month === "5" ? "selected" : ""
+        <option value="May" ${
+          ti.start_month === "May" ? "selected" : ""
         }>May</option>
-        <option value="6" ${
-          ti.start_month === "6" ? "selected" : ""
+        <option value="Jun" ${
+          ti.start_month === "Jun" ? "selected" : ""
         }>June</option>
-        <option value="7" ${
-          ti.start_month === "7" ? "selected" : ""
+        <option value="Jul" ${
+          ti.start_month === "Jul" ? "selected" : ""
         }>July</option>
-        <option value="8" ${
-          ti.start_month === "8" ? "selected" : ""
+        <option value="Aug" ${
+          ti.start_month === "Aug" ? "selected" : ""
         }>August</option>
-        <option value="9" ${
-          ti.start_month === "9" ? "selected" : ""
+        <option value="Sep" ${
+          ti.start_month === "Sep" ? "selected" : ""
         }>September</option>
-        <option value="10" ${
-          ti.start_month === "10" ? "selected" : ""
+        <option value="Oct" ${
+          ti.start_month === "Oct" ? "selected" : ""
         }>October</option>
-        <option value="11" ${
-          ti.start_month === "11" ? "selected" : ""
+        <option value="Nov" ${
+          ti.start_month === "Nov" ? "selected" : ""
         }>November</option>
-        <option value="12" ${
-          ti.start_month === "12" ? "selected" : ""
+        <option value="Dec" ${
+          ti.start_month === "Dec" ? "selected" : ""
         }>December</option>
       </select>
       
       <select id="swal-input4" class="swal2-input">
-        <option value="1" ${
-          ti.end_month === "1" ? "selected" : ""
-        }>January</option>
-        <option value="2" ${
-          ti.end_month === "2" ? "selected" : ""
+        <option value="Jan" ${
+          ti.end_month === "Jan" ? "selected" : ""
+        }>Jan</option>
+        <option value="Feb" ${
+          ti.end_month === "Feb" ? "selected" : ""
         }>February</option>
-        <option value="3" ${
-          ti.end_month === "3" ? "selected" : ""
+        <option value="Mar" ${
+          ti.end_month === "Mar" ? "selected" : ""
         }>March</option>
-        <option value="4" ${
-          ti.end_month === "4" ? "selected" : ""
+        <option value="Apr" ${
+          ti.end_month === "Apr" ? "selected" : ""
         }>April</option>
-        <option value="5" ${ti.end_month === "5" ? "selected" : ""}>May</option>
-        <option value="6" ${
-          ti.end_month === "6" ? "selected" : ""
+        <option value="May" ${
+          ti.end_month === "May" ? "selected" : ""
+        }>May</option>
+        <option value="Jun" ${
+          ti.end_month === "Jun" ? "selected" : ""
         }>June</option>
-        <option value="7" ${
-          ti.end_month === "7" ? "selected" : ""
+        <option value="Jul" ${
+          ti.end_month === "Jul" ? "selected" : ""
         }>July</option>
-        <option value="8" ${
-          ti.end_month === "8" ? "selected" : ""
+        <option value="Aug" ${
+          ti.end_month === "Aug" ? "selected" : ""
         }>August</option>
-        <option value="9" ${
-          ti.end_month === "9" ? "selected" : ""
+        <option value="Sep" ${
+          ti.end_month === "Sep" ? "selected" : ""
         }>September</option>
-        <option value="10" ${
-          ti.end_month === "10" ? "selected" : ""
+        <option value="Oct" ${
+          ti.end_month === "Oct" ? "selected" : ""
         }>October</option>
-        <option value="11" ${
-          ti.end_month === "11" ? "selected" : ""
+        <option value="Nov" ${
+          ti.end_month === "Nov" ? "selected" : ""
         }>November</option>
-        <option value="12" ${
-          ti.end_month === "12" ? "selected" : ""
+        <option value="Dec" ${
+          ti.end_month === "Dec" ? "selected" : ""
         }>December</option>
       </select>
     `,
@@ -645,24 +654,28 @@ const CourseSettings = () => {
     }
   };
 
-
-
   const handleEditSubject = async (ti) => {
     let programs = [];
     let semesters = [];
     let progIds = [];
-  
+
     try {
       // Fetch the program data from the API
-      const programResponse = await axios.get('http://172.17.18.255:8080/dvp_app/programs/');
+      const programResponse = await axios.get(
+        "http://172.17.18.255:8080/dvp_app/programs/"
+      );
       programs = programResponse.data;
-  
+
       // Fetch the semester data from the API
-      const semesterResponse = await axios.get('http://172.17.18.255:8080/dvp_app/semesters/');
+      const semesterResponse = await axios.get(
+        "http://172.17.18.255:8080/dvp_app/semesters/"
+      );
       semesters = semesterResponse.data;
-  
+
       // Fetch the prog_id data from the API
-      const progIdResponse = await axios.get('http://172.17.18.255:8080/dvp_app/program_levels/');
+      const progIdResponse = await axios.get(
+        "http://172.17.18.255:8080/dvp_app/program_levels/"
+      );
       progIds = progIdResponse.data;
     } catch (error) {
       Swal.fire({
@@ -673,30 +686,63 @@ const CourseSettings = () => {
       console.error("Error fetching data:", error);
       return;
     }
-  
+
     // Create options for the program_name dropdown
-    const programOptions = programs.map(program => 
-      `<option value="${program.program_code}" ${ti.program_name === program.program_name ? "selected" : ""}>${program.program_name}</option>`
-    ).join("");
-  
+    const programOptions = programs
+      .map(
+        (program) =>
+          `<option value="${program.program_code}" ${
+            ti.program_name === program.program_name ? "selected" : ""
+          }>${program.program_name}</option>`
+      )
+      .join("");
+
     // Create options for the semester_id dropdown
-    const semesterOptions = semesters.map(semester => 
-      `<option value="${semester.semester_id}" ${ti.semester_id === semester.semester_id ? "selected" : ""}>${semester.semester_name}</option>`
-    ).join("");
-  
+    const semesterOptions = semesters
+      .map(
+        (semester) =>
+          `<option value="${semester.semester_id}" ${
+            ti.semester_id === semester.semester_id ? "selected" : ""
+          }>${semester.semester_name}</option>`
+      )
+      .join("");
+
     // Create options for the prog_id dropdown
-    const progIdOptions = progIds.map(progId => 
-      `<option value="${progId.prog_id}" ${ti.prog_id === progId.prog_id ? "selected" : ""}>${progId.prog_name}</option>`
-    ).join("");
-  
+    // const progIdOptions = progIds
+    //   .map(
+    //     (progId) =>
+    //       `<option value="${progId.prog_id}" ${
+    //         ti.prog_id === progId.prog_id ? "selected" : ""
+    //       }>${progId.prog_name}</option>`
+    //   )
+    //   .join("");
+
+    // Create options for the prog_id dropdown
+    const progIdOptions = progIds
+      .map(
+        (progId) =>
+          `<option value="${progId.prog_id}" ${
+            ti.prog_id === progId.prog_id ? "selected" : ""
+          }>${progId.prog_name}</option>`
+      )
+      .join("");
+
     const { value: formValues } = await Swal.fire({
       title: "Edit Subject",
       html: `
-        <input id="swal-input1" class="swal2-input" placeholder="Course Code" value="${ti.subject_code}">
-        <input id="swal-input2" class="swal2-input" placeholder="Course Name" value="${ti.subject_name}">
+        <input id="swal-input1" class="swal2-input" placeholder="Course Code" value="${
+          ti.subject_code
+        }">
+        <input id="swal-input2" class="swal2-input" placeholder="Course Name" value="${
+          ti.subject_name
+        }">
         <select id="swal-input3" class="swal2-input">
-          <option value="UG" ${ti.prog_level_name === "UG" ? "selected" : ""}>UG</option>
-          <option value="PG" ${ti.prog_level_name === "PG" ? "selected" : ""}>PG</option>
+          <option value="UG" ${
+            ti.prog_level_name === "UG" ? "selected" : ""
+          }>UG</option>
+          <option value="PG" ${
+            ti.prog_level_name === "PG" ? "selected" : ""
+          }>PG</option>
         </select>
         <select id="swal-input4" class="swal2-input">
           ${programOptions}
@@ -720,7 +766,7 @@ const CourseSettings = () => {
         };
       },
     });
-  
+
     if (formValues) {
       try {
         const config = {
@@ -728,7 +774,7 @@ const CourseSettings = () => {
           url: `http://172.17.18.255:8080/dvp_app/subjects/${ti.subject_id}/`,
           data: formValues,
         };
-  
+
         const response = await axios(config);
         Swal.fire({
           icon: "success",
@@ -1012,7 +1058,6 @@ const CourseSettings = () => {
                             </Form.Item>
                             <Form.Item label="End Month">
                               <Select
-                                disabled
                                 value={endMonth}
                                 onChange={handleSelectEndMonth}
                                 placeholder="End Month"

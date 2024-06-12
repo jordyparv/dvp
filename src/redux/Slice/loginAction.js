@@ -27,8 +27,14 @@ export const loginUser = (email, password, navigate) => async (dispatch) => {
         JSON.stringify(LoginRequest?.data)
       );
       sessionStorage.setItem("loginMessage", `${LoginRequest?.data?.message}`)
+      const permissions = LoginRequest?.data?.permission || [];
+      localStorage.setItem("permissions", JSON.stringify(permissions));
       dispatch(loginSuccess(LoginRequest?.data));
-      navigate("/dashboard");
+      if(permissions?.includes("Lesson Plan")) {
+        navigate("/lesson-plan")
+      }else{
+        navigate("/dashboard");
+      }
     } else {
       message.warning(LoginRequest?.response?.data?.message);
       dispatch(loginFailed(LoginRequest?.data));

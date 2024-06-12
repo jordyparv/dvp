@@ -23,6 +23,10 @@ const CourseAllotment = () => {
   const [semesters, setSemesters] = useState({});
   const [subjects, setSubjects] = useState({});
 
+  const [selectedSessionForEmployee, setSelectedSessionForEmployee] =
+    useState(""); // New state for session to display employees
+  const [selectedSession, setSelectedSession] = useState(""); // Existing state for
+
   const [subjectsData, setSubjectData] = useState([]);
 
   const [formDetails, setFormDetails] = useState({
@@ -51,26 +55,49 @@ const CourseAllotment = () => {
     }
   };
 
-  const getFacultyRequest = async () => {
-    const response = await axios.get(
-      "http://172.17.18.255:8080/dvp_app/select_faculty/"
-    );
-    setFacultyOption(response?.data);
-    setFormDetails((prev) => ({
-      ...prev,
-      employees: response?.data,
-    }));
+  const getFacultyRequest = async (session) => {
+    try {
+      const response = await axios.get(
+        `http://172.17.18.255:8080/dvp_app/select_faculty/?session_code=${session}`
+      );
+
+      setFacultyOption(response?.data);
+      setFormDetails((prev) => ({
+        ...prev,
+        employees: response?.data,
+      }));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
+  useEffect(() => {
+    if (selectedSessionForEmployee) {
+      getFacultyRequest(selectedSessionForEmployee);
+    }
+  }, [selectedSessionForEmployee]);
+  
+
   const getSessionCodeRequest = async () => {
-    const response = await axios.get(
-      "http://172.17.18.255:8080/dvp_app/sessions/"
-    );
-    setSessionCodeOption(response?.data);
-    setFormDetails((prev) => ({
-      ...prev,
-      sessions: response?.data,
-    }));
+    try {
+      const response = await axios.get(
+        "http://172.17.18.255:8080/dvp_app/sessions/"
+      );
+      console.log("Fetched sessions:", response.data); // Debugging log
+
+      // Filter out null values and ensure unique keys
+      const validSessions = response.data.filter(
+        (session) => session.id !== null
+      );
+
+      setSessionCodeOption(validSessions);
+      setFormDetails((prev) => ({
+        ...prev,
+        sessions: validSessions,
+      }));
+    } catch (error) {
+      console.log("Error fetching sessions:", error.message);
+    }
   };
 
   const getPLRequest = async () => {
@@ -183,7 +210,7 @@ const CourseAllotment = () => {
 
       let data = {
         employee_id: parseInt(employeeId),
-        session_code: parseInt(userSelectedData?.session_code),
+        session_code: userSelectedData?.session_code,
         prog_id: userSelectedData?.programs,
         subject_id: aggregatedSubjects, // Combine all selected subject_ids into one array
       };
@@ -209,7 +236,6 @@ const CourseAllotment = () => {
       });
       setLoading(false);
       setEmployeeId("");
-     
     } catch (error) {
       setLoading(false);
       console.log(error);
@@ -229,7 +255,6 @@ const CourseAllotment = () => {
   console.log({ formDetails });
 
   const columns = [
-   
     { title: "Session Code", dataIndex: "session_code", key: "session_code" },
     { title: "Subject Name", dataIndex: "subjects", key: "subjects" },
     {
@@ -237,7 +262,7 @@ const CourseAllotment = () => {
       dataIndex: "employee_name",
       key: "employee_name",
     },
-   
+
     { title: "Program Name", dataIndex: "programs", key: "programs" },
     { title: "Created At", dataIndex: "created_at", key: "created_at" },
     { title: "Status", dataIndex: "status", key: "status" },
@@ -271,6 +296,31 @@ const CourseAllotment = () => {
                 </>
               ) : (
                 <form className="register-form">
+                  <div className="form-row">
+                    <label>
+                      <p>
+                        <span>Select Session (for Employee)</span>
+                      </p>
+                      <Select
+                        defaultValue="Select Session"
+                        style={{ width: 220 }}
+                        onChange={(e) => {
+                          console.log("Selected session for employee:", e);
+                          setSelectedSessionForEmployee(e);
+                        }}
+                      >
+                        {sessionCodeOption?.map((session) => (
+                          <Option
+                            key={session.session_code}
+                            value={session.session_code}
+                          >
+                            {session.session_code}
+                          </Option>
+                        ))}
+                      </Select>
+                    </label>
+                  </div>
+
                   <div className="form-row">
                     <label>
                       <p>
@@ -519,7 +569,7 @@ const CourseAllotment = () => {
 
             <Drawer
               width={900}
-              title="Subjects Table"
+              title="Course Allotment Table"
               onClose={onClose}
               open={open}
             >

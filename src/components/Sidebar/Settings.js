@@ -4,9 +4,16 @@ import "./Settings.css";
 import { Button, Input, Select, message } from "antd";
 import axios from "axios";
 import { BsArrowRight } from "react-icons/bs";
+import { Option } from "antd/es/mentions";
 
 const Settings = () => {
   const [roleData, setRoleData] = useState("");
+  const [permissionsOption, setPermissionsOption] = useState([]);
+  const [permissionsSelect, setPermissionsSelect] = useState([]);
+
+  const [permission, setPermission] = useState([]);
+  const [permissionStatus, setPermissionStatus] = useState("");
+
   const [departData, setDepartData] = useState("");
   const [titleData, setTitleData] = useState("");
   const [desigData, setDesigData] = useState("");
@@ -38,6 +45,7 @@ const Settings = () => {
       const data = {
         role_name: roleName,
         status: roleStatus,
+        permission_id: permissionsSelect
       };
       const config = {
         method: "POST",
@@ -61,6 +69,40 @@ const Settings = () => {
         text: `${error?.response?.data?.message[0]}`,
       });
       console.error(error);
+    }
+  };
+  const permissionRequest = async () => {
+    try {
+      let permissionData = {
+        permission_name: permissionsSelect,
+        status: permissionStatus,
+      };
+      let config = {
+        url: `http://172.17.18.255:8080/dvp_app/roles_permissions/`,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json, text/plain, */*",
+        },
+        data: permissionData,
+      };
+      const response = await axios(config);
+      console.log(response, "responsePermission");
+      message.success("Permission Added");
+      Swal.fire({
+        icon: "success",
+        title: `Permission ${response?.data?.permission_names} added successfully`,
+        showConfirmButton: false,
+        timer: 3000,
+      });
+      getPermissions();
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: `${error?.response?.data?.permission_names[0]}`,
+      });
+      console.log(error);
     }
   };
   const departmentRequest = async () => {
@@ -221,42 +263,46 @@ const Settings = () => {
       `http://172.17.18.255:8080/dvp_app/roles/`
     );
     setRoleData(getRoleTable);
+    console.log(getRoleTable, "_____ROLE______");
+  };
 
+  const getPermissions = async () => {
+    const getPermissionTable = await axios(
+      `http://172.17.18.255:8080/dvp_app/roles_permissions/`
+    );
+    setPermissionsOption(getPermissionTable?.data);
+    setPermission(getPermissionTable);
+    console.log(getPermissionTable, "PER TABLE")
   };
   const getDepart = async () => {
     const getDepartTable = await axios(
       `http://172.17.18.255:8080/dvp_app/departments/`
     );
     setDepartData(getDepartTable);
-
   };
   const getTitle = async () => {
     const getTitleTable = await axios(
       `http://172.17.18.255:8080/dvp_app/title/`
     );
     setTitleData(getTitleTable);
-
   };
   const getDesig = async () => {
     const getDesigTable = await axios(
       `http://172.17.18.255:8080/dvp_app/designation/`
     );
     setDesigData(getDesigTable);
-
   };
   const getEmpType = async () => {
     const getEmpTable = await axios(
       `http://172.17.18.255:8080/dvp_app/employee_type/`
     );
     setEmpData(getEmpTable);
-
   };
   const getGender = async () => {
     const getGenderTable = await axios(
       `http://172.17.18.255:8080/dvp_app/genders/`
     );
     setGenData(getGenderTable);
-
   };
 
   useEffect(() => {
@@ -266,7 +312,13 @@ const Settings = () => {
     getDesig();
     getEmpType();
     getGender();
+    getPermissions();
   }, []);
+
+  const handlePermission = async (e) => {
+    e.preventDefault();
+    await permissionRequest();
+  };
 
   const handleRole = async (e) => {
     e.preventDefault();
@@ -292,6 +344,11 @@ const Settings = () => {
     e.preventDefault();
     await genderRequest();
   };
+
+  const handlePermissionSelect = (value) => {
+    setPermissionsSelect(value)
+
+  }
 
   const handleEditRole = async (ro) => {
     const { value: formValues } = await Swal.fire({
@@ -827,6 +884,143 @@ const Settings = () => {
                 id="accordionExample"
               >
                 <div className="accordion-item">
+                  <h2 className="accordion-header" id="headingPer">
+                    <button
+                      style={{ background: "#001529" }}
+                      className="accordion-button"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#collapsePer"
+                      aria-expanded="true"
+                      aria-controls="collapsePer"
+                    >
+                      <div
+                        style={{
+                          width: "70vw",
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <div style={{ color: "white" }}>
+                          {" "}
+                          Permission <BsArrowRight />
+                        </div>
+
+                        <div style={{ color: "white" }}>
+                          Total Permissions {permission?.data?.length}
+                        </div>
+                      </div>
+                    </button>
+                  </h2>
+                  <div
+                    id="collapsePer"
+                    className="accordion-collapse collapse show"
+                    aria-labelledby="headingPer"
+                    data-bs-parent="#accordionExample"
+                  >
+                    <div className="accordion-body">
+                      <form className="row g-3 needs-validation">
+                        <div className="col-md-4">
+                          <label
+                            htmlFor="validationCustom01"
+                            className="form-label"
+                          >
+                            Permission Name
+                          </label>
+                          <input
+                            value={permissionsSelect}
+                            onChange={(e) =>
+                              setPermissionsSelect(e.target.value)
+                            }
+                            type="text"
+                            className="form-control"
+                            id="validationCustom01"
+                            required
+                            placeholder="Permission Name"
+                          />
+                          <div className="valid-feedback">Looks good!</div>
+                        </div>
+
+                        <div className="col-md-3">
+                          <label
+                            htmlFor="validationCustom04"
+                            className="form-label"
+                          >
+                            Status
+                          </label>
+                          <select
+                            value={permissionStatus}
+                            onChange={(e) =>
+                              setPermissionStatus(e.target.value)
+                            }
+                            className="form-select"
+                            id="validationCustom04"
+                            required
+                            placeholder="Select Status"
+                          >
+                            <option value="">Select Status</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                          </select>
+                        </div>
+
+                        <div className="col-10">
+                          <button
+                            style={{ background: "#18123b" }}
+                            onClick={handlePermission}
+                            className="btn btn-primary"
+                            type="submit"
+                          >
+                            Add Permission
+                          </button>
+                        </div>
+                      </form>
+                      <hr />
+                      <strong>View Permission</strong>
+                      <table className="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">S.No.</th>
+                            <th scope="col">Permission Name</th>
+                      
+                            <th scope="col">Status</th>
+                            <th scope="col">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody
+                          style={{ height: "300px", overflow: "auto" }}
+                          className="table-group-divider"
+                        >
+                          {permission &&
+                            permission?.data?.map((item, index) => (
+                              <>
+                                <tr key={item?.role_id}>
+                                  <td>{index + 1}</td>
+                                  <td>{item?.permission_name}</td>
+                                 
+                                  <td>{item?.status}</td>
+                                  <td>
+                                    <Button
+                                      // onClick={() => handleEditRole(item)}
+                                    >
+                                      Edit
+                                    </Button>
+                                    <Button
+                                      danger
+                                      // onClick={() => handleDeleteRole(item)}
+                                    >
+                                      Delete
+                                    </Button>
+                                  </td>
+                                </tr>
+                              </>
+                            ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div className="accordion-item">
                   <h2 className="accordion-header" id="headingOne">
                     <button
                       style={{ background: "#001529" }}
@@ -844,7 +1038,10 @@ const Settings = () => {
                           justifyContent: "space-between",
                         }}
                       >
-                        <div style={{ color: "white" }}> Role <BsArrowRight  /></div>
+                        <div style={{ color: "white" }}>
+                          {" "}
+                          Role <BsArrowRight />
+                        </div>
 
                         <div style={{ color: "white" }}>
                           Total Role {roleData?.data?.length}
@@ -859,31 +1056,66 @@ const Settings = () => {
                     data-bs-parent="#accordionExample"
                   >
                     <div className="accordion-body">
-                      <form class="row g-3 needs-validation">
-                        <div class="col-md-4">
-                          <label for="validationCustom01" class="form-label">
+             
+                      <form className="row g-3 needs-validation">
+                        <div className="col-md-4">
+                          <label
+                            htmlFor="validationCustom01"
+                            className="form-label"
+                          >
                             Role Name
                           </label>
                           <input
                             value={roleName}
                             onChange={(e) => setRoleName(e.target.value)}
                             type="text"
-                            class="form-control"
+                            className="form-control"
                             id="validationCustom01"
                             required
                             placeholder="Role Name"
                           />
-                          <div class="valid-feedback">Looks good!</div>
+                          <div className="valid-feedback">Looks good!</div>
                         </div>
 
-                        <div class="col-md-3">
-                          <label for="validationCustom04" class="form-label">
+                        <div className="col-md-4">
+                          <label
+                            htmlFor="validationCustom02"
+                            className="form-label"
+                          >
+                            Permissions
+                          </label>
+                          <Select
+                            mode="multiple"
+                            style={{ width: "200px" }}
+                            value={permissionsSelect}
+                            onChange={handlePermissionSelect}
+                            name="permission"
+                            required
+                            multiple
+                          >
+                            {permissionsOption &&
+                              permissionsOption?.map((item) => (
+                                <Option
+                                  key={item?.permission_id}
+                                  value={item?.permission_id}
+                                >
+                                  {item?.permission_name}
+                                </Option>
+                              ))}
+                          </Select>
+                        </div>
+
+                        <div className="col-md-3">
+                          <label
+                            htmlFor="validationCustom04"
+                            className="form-label"
+                          >
                             State
                           </label>
                           <select
                             value={roleStatus}
                             onChange={(e) => setRoleStatus(e.target.value)}
-                            class="form-select"
+                            className="form-select"
                             id="validationCustom04"
                             required
                             placeholder="Select Status"
@@ -894,18 +1126,17 @@ const Settings = () => {
                           </select>
                         </div>
 
-                        <div class="col-10">
+                        <div className="col-10">
                           <button
                             style={{ background: "#18123b" }}
                             onClick={handleRole}
-                            class="btn btn-primary"
+                            className="btn btn-primary"
                             type="submit"
                           >
                             Add Role
                           </button>
                         </div>
                       </form>
-
                       <hr />
                       <strong>View Role</strong>
                       <table className="table">
@@ -913,7 +1144,7 @@ const Settings = () => {
                           <tr>
                             <th scope="col">S.No.</th>
                             <th scope="col">Role Name</th>
-                            <th scope="col">Priority</th>
+                            <th scope="col">Permission</th>
                             <th scope="col">Status</th>
                             <th scope="col">Action</th>
                           </tr>
@@ -928,7 +1159,7 @@ const Settings = () => {
                                 <tr key={item?.role_id}>
                                   <td>{index + 1}</td>
                                   <td>{item?.role_name}</td>
-                                  <td>{item?.priority}</td>
+                                  <td>{item?.permission_names.join(",")}</td>
                                   <td>{item?.status}</td>
                                   <td>
                                     <Button
@@ -969,7 +1200,9 @@ const Settings = () => {
                           justifyContent: "space-between",
                         }}
                       >
-                        <div style={{ color: "white" }}>Department <BsArrowRight  /></div>
+                        <div style={{ color: "white" }}>
+                          Department <BsArrowRight />
+                        </div>
                         <div style={{ color: "white" }}>
                           Total Department {departData?.data?.length}
                         </div>
@@ -1057,7 +1290,11 @@ const Settings = () => {
 
                                   <td>{item?.dept_status}</td>
                                   <td>
-                                    <Button onClick={() => handleEditDepartment(item)}>Edit</Button>{" "}
+                                    <Button
+                                      onClick={() => handleEditDepartment(item)}
+                                    >
+                                      Edit
+                                    </Button>{" "}
                                     <Button
                                       onClick={() =>
                                         handleDeleteDepartment(item)
@@ -1093,7 +1330,9 @@ const Settings = () => {
                           justifyContent: "space-between",
                         }}
                       >
-                        <div style={{ color: "white" }}>Title <BsArrowRight  /></div>
+                        <div style={{ color: "white" }}>
+                          Title <BsArrowRight />
+                        </div>
 
                         <div style={{ color: "white" }}>
                           Total Title {titleData?.data?.length}
@@ -1180,7 +1419,11 @@ const Settings = () => {
 
                                   <td>{item?.title_status}</td>
                                   <td>
-                                    <Button onClick={() => handleEditTitle(item)}>Edit</Button>{" "}
+                                    <Button
+                                      onClick={() => handleEditTitle(item)}
+                                    >
+                                      Edit
+                                    </Button>{" "}
                                     <Button
                                       onClick={() => handleDeleteTitle(item)}
                                       danger
@@ -1214,7 +1457,9 @@ const Settings = () => {
                           justifyContent: "space-between",
                         }}
                       >
-                        <div style={{ color: "white" }}>Designation <BsArrowRight  /></div>
+                        <div style={{ color: "white" }}>
+                          Designation <BsArrowRight />
+                        </div>
 
                         <div style={{ color: "white" }}>
                           Total Designation {desigData?.data?.length}
@@ -1301,7 +1546,11 @@ const Settings = () => {
 
                                   <td>{item?.desig_status}</td>
                                   <td>
-                                    <Button onClick={() => handleEditDesig(item)}>Edit</Button>{" "}
+                                    <Button
+                                      onClick={() => handleEditDesig(item)}
+                                    >
+                                      Edit
+                                    </Button>{" "}
                                     <Button
                                       onClick={() =>
                                         handleDeleteDesignation(item)
@@ -1337,7 +1586,9 @@ const Settings = () => {
                           justifyContent: "space-between",
                         }}
                       >
-                        <div style={{ color: "white" }}>Employee Type <BsArrowRight  /></div>
+                        <div style={{ color: "white" }}>
+                          Employee Type <BsArrowRight />
+                        </div>
 
                         <div style={{ color: "white" }}>
                           Total Employee Type {empData?.data?.length}
@@ -1390,7 +1641,7 @@ const Settings = () => {
 
                         <div class="col-10">
                           <button
-                          style={{ background: "#18123b" }}
+                            style={{ background: "#18123b" }}
                             onClick={handleEmpType}
                             class="btn btn-primary"
                             type="submit"
@@ -1424,7 +1675,9 @@ const Settings = () => {
 
                                   <td>{item?.emp_type_status}</td>
                                   <td>
-                                    <Button onClick={() => handleEditEmp(item)}>Edit</Button>{" "}
+                                    <Button onClick={() => handleEditEmp(item)}>
+                                      Edit
+                                    </Button>{" "}
                                     <Button
                                       onClick={() => handleDeleteEmpType(item)}
                                       danger
@@ -1459,7 +1712,9 @@ const Settings = () => {
                           justifyContent: "space-between",
                         }}
                       >
-                        <div style={{ color: "white" }}>Gender <BsArrowRight  /></div>
+                        <div style={{ color: "white" }}>
+                          Gender <BsArrowRight />
+                        </div>
 
                         <div style={{ color: "white" }}>
                           Total Gender {genData?.data?.length}
@@ -1546,7 +1801,11 @@ const Settings = () => {
 
                                   <td>{item?.gender_status}</td>
                                   <td>
-                                    <Button onClick={() => handleEditGender(item)}>Edit</Button>{" "}
+                                    <Button
+                                      onClick={() => handleEditGender(item)}
+                                    >
+                                      Edit
+                                    </Button>{" "}
                                     <Button
                                       onClick={() => handleDeleteGender(item)}
                                       danger

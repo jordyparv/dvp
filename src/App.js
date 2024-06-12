@@ -11,6 +11,7 @@ import CourseSettings from "./components/Sidebar/CourseSettings";
 
 import CourseAllotment from "./components/Sidebar/CourseAllotment";
 import ProtectedRoute from "./protectedRouting/ProtectedRoute";
+import LessonPlan from "./components/Sidebar/LessonPlan";
 
 function App() {
   return (
@@ -55,6 +56,14 @@ function App() {
           element={
             <ProtectedRoute>
               <CourseSettings />
+            </ProtectedRoute>
+          }
+        ></Route>
+         <Route
+          path="/lesson-plan"
+          element={
+            <ProtectedRoute>
+              <LessonPlan />
             </ProtectedRoute>
           }
         ></Route>

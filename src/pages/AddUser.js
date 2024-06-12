@@ -6,6 +6,8 @@ import { addUserSuccess } from "../redux/Slice/addUserSlice";
 import { useDispatch } from "react-redux";
 import { addUserAction } from "../redux/Slice/addUserAction";
 import { Button, Card, Col, Drawer, Input, Select, Table, message } from "antd";
+import { render } from "@testing-library/react";
+import Swal from "sweetalert2";
 
 const AddUser = () => {
   const [uniqueName, setUniqueName] = useState("");
@@ -39,7 +41,6 @@ const AddUser = () => {
         "http://172.17.18.255:8080/dvp_app/departments/"
       );
 
-
       //   setUserDepartment(getDepartment);
       setUserDepartmentOption(getDepartment);
     } catch (error) {
@@ -55,7 +56,6 @@ const AddUser = () => {
         "http://172.17.18.255:8080/dvp_app/roles/"
       );
 
-
       setUserRoleOption(getUserRole);
     } catch (error) {
       console.log(error, "Role ERRO");
@@ -70,7 +70,6 @@ const AddUser = () => {
         "http://172.17.18.255:8080/dvp_app/genders/"
       );
 
-
       setUserGenderOption(getUserGender);
     } catch (error) {
       console.log(error, "Gender ERRO");
@@ -84,9 +83,8 @@ const AddUser = () => {
         "http://172.17.18.255:8080/dvp_app/user_create/"
       );
 
-
       setUserData(getUserData);
-      console.log(getUserData, "USER DATA")
+      console.log(getUserData, "USER DATA");
     } catch (error) {
       console.log(error, "USER");
     }
@@ -163,8 +161,6 @@ const AddUser = () => {
     // setUserMob("");
     // setUserCountry("");
     // setUserStatus("");
-
-
   };
 
   const showDrawer = () => {
@@ -175,9 +171,10 @@ const AddUser = () => {
   };
   const columns = [
     {
-      title: "Unique Name",
-      dataIndex: "username",
-      key: "username",
+      title: "Serial Number",
+      dataIndex: "serialNumber",
+      key: "serialNumber",
+      render: (_, record, index) => index + 1, // Render serial number as index + 1
     },
     {
       title: "Name",
@@ -201,23 +198,55 @@ const AddUser = () => {
     },
     {
       title: "User Role",
-      dataIndex: "user_role",
-      key: "user_role",
-      
+      dataIndex: "user_roles",
+      key: "user_roles",
+      render: (userRoles) => userRoles.join(', '),
     },
     {
       title: "Action",
       key: "action",
       render: (_, record) => (
-        <Button danger onClick={() => handleDelete(record.id)}>
+        <Button danger onClick={() => handleDelete(record)}>
           Delete
         </Button>
       ),
     },
   ];
 
-  const handleDelete = (id) => {
+  const handleDelete = async(user) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: `Do you really want to delete?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+    });
 
+    if (result.isConfirmed) {
+      try {
+        const config = {
+          method: "DELETE",
+          url: `/dvp_app/user_table/${user.id}`,
+        };
+
+        await axios(config);
+        Swal.fire({
+          icon: "success",
+          title: `User  ${user.id} deleted successfully`,
+          showConfirmButton: false,
+          timer: 3000,
+        });
+        // Refresh the role data after deleting a role
+        userTable()
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: `${error?.response?.data?.message[0]}`,
+        });
+        console.error(error);
+      }
+    }
   };
 
   return (
@@ -232,8 +261,9 @@ const AddUser = () => {
                   <div>
                     <p className="title-heading">Add User</p>
                   </div>
-                  <div style={{padding:"10px"}}>
-                    <Button primary
+                  <div style={{ padding: "10px" }}>
+                    <Button
+                      primary
                       onClick={showDrawer}
                       style={{ fontSize: "15px", cursor: "pointer" }}
                       className="title-heading"

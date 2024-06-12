@@ -329,11 +329,7 @@ const Profile = () => {
                   </div>
                 </div>
               </div>
-              <div className="projcard-tagbox">
-                <button style={{ cursor: "pointer" }} onClick={userLogout}>
-                  <p>Log Out</p>
-                </button>
-              </div>
+             
             </div>
           </div>
         </div>
