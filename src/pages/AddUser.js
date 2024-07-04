@@ -38,7 +38,7 @@ const AddUser = () => {
   const departmentRequest = async () => {
     try {
       const getDepartment = await axios(
-        "http://172.17.18.255:8080/dvp_app/departments/"
+        "http://172.17.19.22:8080/dvp_app/departments/"
       );
 
       //   setUserDepartment(getDepartment);
@@ -53,7 +53,7 @@ const AddUser = () => {
   const userRoleRequest = async () => {
     try {
       const getUserRole = await axios(
-        "http://172.17.18.255:8080/dvp_app/roles/"
+        "http://172.17.19.22:8080/dvp_app/roles/"
       );
 
       setUserRoleOption(getUserRole);
@@ -67,7 +67,7 @@ const AddUser = () => {
   const userGenderReq = async () => {
     try {
       const getUserGender = await axios(
-        "http://172.17.18.255:8080/dvp_app/genders/"
+        "http://172.17.19.22:8080/dvp_app/genders/"
       );
 
       setUserGenderOption(getUserGender);
@@ -80,7 +80,7 @@ const AddUser = () => {
   const userTable = async () => {
     try {
       const getUserData = await axios(
-        "http://172.17.18.255:8080/dvp_app/user_create/"
+        "http://172.17.19.22:8080/dvp_app/user_create/"
       );
 
       setUserData(getUserData);
@@ -142,7 +142,7 @@ const AddUser = () => {
       username: uniqueName,
       user_name: userName,
       user_email: userEmail,
-      user_role: roleSelected,
+      user_role: [roleSelected],
       gender: parseInt(userGenderSelected),
       user_mobile: `${userCountry}${userMob}`,
       department: userDepartmentSelected,
@@ -282,11 +282,11 @@ const AddUser = () => {
                       </p>
 
                       <Select
-                        mode="multiple"
+                       
                         value={roleSelected}
                         onChange={handleRole}
                         name="userType"
-                        multiple
+                      
                       >
                         {userRoleOption &&
                           userRoleOption?.data?.map((item) => (

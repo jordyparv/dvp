@@ -1,49 +1,82 @@
+.module-section,
+.topic-section,
+.subtopic-section {
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  /* border-radius: 5px; */
+  margin-top: 10px;
+  font-family: sans-serif;
+}
 
+.module-section {
+  background-color: #939393;
+}
 
-  .module-section, .topic-section, .subtopic-section {
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-family: sans-serif;
-  }
-  
-  .module-section {
-    background-color: #001529;
-  }
-  
-  .topic-section {
-    background-color: #e3f3f0;
-  }
-  
-  .subtopic-section {
-    background-color: #9fa9b9;
-  }
-  
-  input {
-    margin-right: 10px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: calc(100% - 100px);
-  }
-  
-  button {
-    padding: 8px 12px;
-    margin: 5px;
-    border: none;
-    background-color: #0c1c2e;
-    color: white;
-    border-radius: 4px;
-    cursor: pointer;
-   
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
+.topic-section {
+  background-color: #e3f3f0;
+}
 
-  .dynamic-form{
-    width: 100vw;
-    padding: 40px;
+.subtopic-section {
+  background-color: #9fa9b9;
+}
+
+input {
+  margin-right: 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  /* width: calc(100% - 100px); */
+}
+
+button {
+  padding: 8px 12px;
+  margin: 5px;
+  border: none;
+  background-color: #0c1c2e;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.dynamic-form {
+  width: 100vw;
+  padding: 40px;
+}
+.orange-line {
+  width: 400px;
+  height: 4px;
+  background-color: #000000;
+  margin-top: 10px;
+  /* margin-left: 50px; */
+  position: relative;
+  /* z-index: 9999; */
+}
+.viewlesson {
+}
+.iconsaction:hover {
+  cursor: pointer;
+  -webkit-animation: spin 1s linear ;
+  -moz-animation: spin 1s linear ;
+  animation: spin 1s linear ;
+}
+@-moz-keyframes spin {
+  100% {
+    -moz-transform: rotate(180deg);
   }
+}
+@-webkit-keyframes spin {
+  100% {
+    -webkit-transform: rotate(180deg);
+  }
+}
+@keyframes spin {
+  100% {
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
+  }
+}

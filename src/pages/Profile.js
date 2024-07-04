@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Profile.css";
+import { Avatar, Calendar, Empty, List } from "antd";
 
 import {
   Button,
@@ -21,12 +22,30 @@ import {
   fetchRoleApi,
   fetchUserApi,
 } from "../redux/Slice/settingApiActions";
+import Calender from "./Calender";
+import {
+  getApprovalStatus,
+  getLesson,
+} from "../protectedRouting/Utils/apiUtils";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import { EyeOutlined } from "@ant-design/icons";
+import pending from "../assets/images/pending.gif";
 const { Option } = Select;
 
 const Profile = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const [userProfile, setUserProfile] = useState([]);
+
+  const [empIds, setEmpIds] = useState(null);
+  const [employee_ids, setEmployee_ids] = useState(null);
+  const [lessonPlanName, setLessonPlanName] = useState([]);
+  const [lessonPlans, setLessonPlans] = useState(null);
+
+  const [lessonStatus, setLessonStatus] = useState([]);
+
+  const [currentSession, setCurrentSession] = useState(null);
 
   const apiRoleDataRead = useSelector(
     (state) => state?.apiSettings?.roleApi?.data
@@ -47,6 +66,7 @@ const Profile = () => {
 
   const getProfile = localStorage.getItem("prod_cred");
   const profile = JSON.parse(getProfile);
+  console.log(profile, "PPEPEPPE");
 
   useEffect(() => {
     const loginMessage = sessionStorage.getItem("loginMessage");
@@ -56,17 +76,72 @@ const Profile = () => {
     }
   }, []);
 
-  const userLogout = () => {
-    dispatch(logoutUser());
-    localStorage.removeItem("prod_cred");
-    window.location.href = "/";
-  };
-
   useEffect(() => {
     dispatch(fetchUserApi());
     dispatch(fetchRoleApi());
     dispatch(fetchEmployeeApi());
   }, dispatch);
+
+  const getuserId = JSON.parse(localStorage.getItem("prod_cred"));
+  const userId = getuserId?.user_id;
+  console.log(userId, "USER ID");
+
+  const getLesson = async (employeeId) => {
+    try {
+      const response = await axios(
+        `http://172.17.19.22:8080/dvp_app/lesson-plans/search/?employee_id=${employeeId}`
+      );
+      console.log(response?.data, "Lesson");
+      return response?.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getEmpId = async () => {
+    try {
+      const response = await axios(
+        `http://172.17.19.22:8080/dvp_app/select_subject/?user_id=${userId}`
+      );
+      const employeeId = response?.data?.employee_id;
+      const employeeIds = response?.data?.employee_id;
+      setEmpIds(employeeId);
+      setEmployee_ids(employeeIds);
+
+      const lessonData = await getLesson(employeeId);
+      const lessonStatus = await getApprovalStatus(employeeId);
+      setLessonStatus(lessonStatus);
+      console.log(lessonStatus, "LESSON STATSU***************");
+      setLessonPlanName(lessonData);
+
+      setLessonPlans(lessonData);
+
+      console.log(response, "(*&^%$%^&****************");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getEmpId();
+    getSession();
+  }, []);
+
+  const getSession = async () => {
+    try {
+      const response = await axios(
+        `http://172.17.19.22:8080/dvp_app/current_session/`
+      );
+      console.log(response?.data, "Session");
+      setCurrentSession(response?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleRedirect = () => {
+    navigate("/view-lesson-plan");
+  };
 
 
 
@@ -75,56 +150,281 @@ const Profile = () => {
       <SideBar />
 
       <div class="container">
-        <section class="main">
-          <div class="main-top">
-            <h1>Dashboard</h1>
+        <section
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          class="main"
+        >
+          <h6>Current Session : {currentSession?.session_code}</h6>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            class="main-top"
+          >
+            <h4>
+              Hi {profile?.user_name} - {profile?.role_names}
+            </h4>
             <i class="fas fa-user-cog"></i>
           </div>
-          <div class="main-skills">
-            <div class="card">
-              <i class="fas fa-laptop-code"></i>
-              <h3> {apiEmployeeDataRead?.length}</h3>
-              <p> Employee </p>
-              <button>View Employees</button>
+
+          {profile?.role_names[0] === "Admin" ? (
+            <>
+              {" "}
+              <div class="main-skills">
+                <div class="card">
+                  <i class="fas fa-laptop-code"></i>
+                  <h3> {apiEmployeeDataRead?.length}</h3>
+                  <p> Employee </p>
+                  <button>View Employees</button>
+                </div>
+                <div class="card">
+                  <i class="fab fa-wordpress"></i>
+                  <h3>{apiUserDataRead?.length}</h3>
+                  <p> Users</p>
+                  <button>View Users</button>
+                </div>
+                <div class="card">
+                  <i class="fas fa-palette"></i>
+                  <h3>{apiRoleDataRead?.length}</h3>
+                  <p>View Roles.</p>
+                  <button>View Roles</button>
+                </div>
+                <div class="card">
+                  <i class="fab fa-app-store-ios"></i>
+                  <h3>Lesson </h3>
+                  <p>Pending lesson plan.</p>
+                  <button>View Pendings </button>
+                </div>
+              </div>
+            </>
+          ) : null}
+
+          {profile?.role_names[0] == "Admin" ? (
+            <>
+              {" "}
+              <div className="noti">
+                <h5>Notification</h5>
+                <div className="notification">
+                  <div> 1 Lesson plan from Antra Maddan</div>
+                  <div>
+                    {" "}
+                    <button className="approve">Approve</button>
+                    <button className="view">View</button>
+                    <button className="reject">Reject</button>
+                  </div>
+                </div>
+                <div className="notification">
+                  <div> 1 Lesson plan from Antra Maddan</div>
+                  <div>
+                    {" "}
+                    <button className="approve">Approve</button>
+                    <button className="view">View</button>
+                    <button className="reject">Reject</button>
+                  </div>
+                </div>
+                <div className="notification">
+                  <div> 1 Lesson plan from Antra Maddan</div>
+                  <div>
+                    {" "}
+                    <button className="approve">Approve</button>
+                    <button className="view">View</button>
+                    <button className="reject">Reject</button>
+                  </div>
+                </div>
+                <div className="notification">
+                  <div> 1 Lesson plan from Antra Maddan</div>
+                  <div>
+                    {" "}
+                    <button className="approve">Approve</button>
+                    <button className="view">View</button>
+                    <button className="reject">Reject</button>
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : profile?.role_names[0] === "Teacher" ? (
+            <div className="noti">
+              <h5>
+                Notification{" "}
+                {lessonPlanName?.length > 0 ? lessonPlanName?.length : null}
+              </h5>
+              <div className="notification-wrapper">
+                {lessonPlanName && lessonPlanName.length <= 0 ? (
+                  <>
+                    <Empty />
+                  </>
+                ) : (
+                  lessonPlanName &&
+                  lessonPlanName.map((item, index) => (
+                    <>
+                      <div key={item.subject_id} className="notification">
+                        <div>
+                          {index + 1} {item?.subject_name}{" "}
+                        </div>
+                        <div>
+                          <div style={{cursor:"pointer"}} onClick={handleRedirect}>
+                            <EyeOutlined />
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        style={{
+                          marginTop: "-20px",
+                          width: "55vw",
+                          background: "#2A629A",
+                          zIndex: "-99",
+                          height: "50px",
+                        }}
+                        className="notification"
+                      >
+                        <div>
+                          Sent to :{" "}
+                          {item?.pc_details?.pc_name
+                            ? item?.pc_details?.pc_name
+                            : "Not Assigned"}
+                        </div>
+
+                        <div
+                          className={
+                            item?.status === "pending"
+                              ? "pending"
+                              : item?.status === "approved"
+                              ? "approved"
+                              : "reject"
+                          }
+                        >
+                          Status :{" "}
+                          {item?.status === "pending" ? (
+                            <span>
+                              Pending{" "}
+                              <img style={{ width: "18px" }} src={pending} />
+                            </span>
+                          ) : item?.status === "approved" ? (
+                            "Approved"
+                          ) : item?.status === "rejected" ? (
+                            "Rejected"
+                          ) : (
+                            item?.status
+                          )}
+                        </div>
+                      </div>
+                    </>
+                  ))
+                )}
+              </div>
             </div>
-            <div class="card">
-              <i class="fab fa-wordpress"></i>
-              <h3>{apiUserDataRead?.length}</h3>
-              <p> Users</p>
-              <button>View Users</button>
-            </div>
-            <div class="card">
-              <i class="fas fa-palette"></i>
-              <h3>{apiRoleDataRead?.length}</h3>
-              <p>View Roles.</p>
-              <button>View Roles</button>
-            </div>
-            <div class="card">
-              <i class="fab fa-app-store-ios"></i>
-              <h3>Lesson </h3>
-              <p>Pending lesson plan.</p>
-              <button>View Pendings </button>
-            </div>
-          </div>
+          ) : profile?.role_names[0] === "Camera Person" ? (
+            <>
+              {" "}
+              <div className="noti">
+                <h4>Notification</h4>
+                <div className="notification">
+                  <div> Studio booking</div>
+                  {/* <div>Sent for approval </div> */}
+                  <div>
+                    {" "}
+                    <button className="approve">Approve</button>
+                    {/* <button className="view">Re</button> */}
+                    <button className="reject">Reject</button>
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : profile?.role_names[0] === "Program Coordinator" ? (
+            <>
+              {" "}
+              <div className="noti">
+                <h4>Notification</h4>
+                <div className="notification-wrapper">
+                  {lessonStatus && lessonStatus.length > 0 ? (
+                    lessonStatus &&
+                    lessonStatus.map((item, index) => (
+                      <>
+                        <div key={item.subject_id} className="notification">
+                          <div>
+                            {" "}
+                            {index + 1} {item?.subject_name}{" "}
+                          </div>
+                          <div>
+                            <Link to="/approval-status">
+                              <button className="view-button">View</button>
+                            </Link>
+                          </div>
+                        </div>
+                        <div
+                          style={{
+                            marginTop: "-20px",
+                            width: "55vw",
+                            background: "#2A629A",
+                            zIndex: "-99",
+                            height: "50px",
+                          }}
+                          className="notification"
+                        >
+                          <div>
+                            Received from :{" "}
+                            {item?.lesson_plans[0]?.employee_name}
+                          </div>
+
+                          <div
+                            className={
+                              item?.pc_details?.lesson_plan_status === "pending"
+                                ? "pending"
+                                : "notPending"
+                            }
+                          >
+                            Status :{" "}
+                            {item?.pc_details?.lesson_plan_status === "pending"
+                              ? "Pending"
+                              : item?.pc_details?.lesson_plan_status}
+                          </div>
+                        </div>
+                      </>
+                    ))
+                  ) : (
+                    <>
+                      <div>You don't have any lesson plan request</div>
+                    </>
+                  )}
+                </div>
+              </div>
+            </>
+          ) : null}
+          {profile?.role_names[0] !== "Admin" ? (
+            <>
+              <div className="calender">
+                {" "}
+                <Calender />
+              </div>
+            </>
+          ) : null}
+
           <section class="main-course">
-            <h1>Studio</h1>
+            <h4>Studio</h4>
             <div class="course-box">
-              
               <div class="course">
                 <div class="box">
-                  <h3>Studio 1</h3>
+                  <h5>Studio 1</h5>
                   <p>80% - progress</p>
                   <button>continue</button>
                   <i class="fab fa-html5 html"></i>
                 </div>
                 <div class="box">
-                  <h3>Studio 2</h3>
+                  <h5>Studio 2</h5>
                   <p>50% - progress</p>
                   <button>continue</button>
                   <i class="fab fa-css3-alt css"></i>
                 </div>
                 <div class="box">
-                  <h3>Studio 3</h3>
+                  <h5>Studio 3</h5>
                   <p>30% - progress</p>
                   <button>continue</button>
                   <i class="fab fa-js-square js"></i>
@@ -133,209 +433,207 @@ const Profile = () => {
             </div>
           </section>
         </section>
-           <div className="flex-container-wrapper projcard-container">
-        <div className="projcard projcard-red">
-          <div className="projcard-innerbox">
-            <img className="projcard-img" src="https://picsum.photos/200" />
-            <div className="projcard-textbox">
-              <div className="projcard-title">{profile?.user_name}</div>
+        <div className="flex-container-wrapper projcard-container">
+          <div className="projcard projcard-red">
+            <div className="projcard-innerbox">
+              <img className="projcard-img" src="https://picsum.photos/200" />
+              <div className="projcard-textbox">
+                <div className="projcard-title">{profile?.user_name}</div>
 
-              <div className="projcard-bar"></div>
-              <div className="projcard-description">
-                <div className="profile-cards">
-                  <div className="card-pro1">
-                    <div>
-                      <h3>Role</h3>
-                    </div>
-                    <div>
-                      <p>{profile?.user_role_ids[0] ? "Admin" : "User"}</p>
-                    </div>
-                  </div>
-                  <div className="card-pro1">
-                    {" "}
+                <div className="projcard-bar"></div>
+                <div className="projcard-description">
+                  <div className="profile-cards">
                     <div className="card-pro1">
                       <div>
-                        <h3>Lesson </h3>
+                        <h3>Role</h3>
                       </div>
                       <div>
-                        <p>View</p>
+                        <p>{profile?.role_names}</p>
                       </div>
                     </div>
-                  </div>
-                  <div className="card-pro1">
-                    {" "}
                     <div className="card-pro1">
-                      <div>
-                        <h3>Profile</h3>
+                      {" "}
+                      <div className="card-pro1">
+                        <div>
+                          <h3>Lesson </h3>
+                        </div>
+                        <div>
+                          <p>View</p>
+                        </div>
                       </div>
-                      <div>
-                        <p onClick={showDrawer}>Edit</p>
+                    </div>
+                    <div className="card-pro1">
+                      {" "}
+                      <div className="card-pro1">
+                        <div>
+                          <h3>Profile</h3>
+                        </div>
+                        <div>
+                          <p onClick={showDrawer}>Edit</p>
+                        </div>
+                        <Drawer
+                          title="Profile Update"
+                          width={720}
+                          onClose={onClose}
+                          open={open}
+                          styles={{
+                            body: {
+                              paddingBottom: 80,
+                            },
+                          }}
+                          extra={
+                            <Space>
+                              <Button onClick={onClose}>Cancel</Button>
+                              <Button onClick={onClose} type="primary">
+                                Submit
+                              </Button>
+                            </Space>
+                          }
+                        >
+                          <Form layout="vertical" hideRequiredMark>
+                            <Row gutter={16}>
+                              <Col span={12}>
+                                <Form.Item
+                                  name="name"
+                                  label="Name"
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: "Please enter user name",
+                                    },
+                                  ]}
+                                >
+                                  <Input placeholder="Please enter user name" />
+                                </Form.Item>
+                              </Col>
+                              <Col span={12}>
+                                <Form.Item
+                                  name="url"
+                                  label="Url"
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: "Please enter url",
+                                    },
+                                  ]}
+                                >
+                                  <Input
+                                    style={{
+                                      width: "100%",
+                                    }}
+                                    addonBefore="http://"
+                                    addonAfter=".com"
+                                    placeholder="Please enter url"
+                                  />
+                                </Form.Item>
+                              </Col>
+                            </Row>
+                            <Row gutter={16}>
+                              <Col span={12}>
+                                <Form.Item
+                                  name="owner"
+                                  label="Owner"
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: "Please select an owner",
+                                    },
+                                  ]}
+                                >
+                                  <Select placeholder="Please select an owner">
+                                    <Option value="xiao">Xiaoxiao Fu</Option>
+                                    <Option value="mao">Maomao Zhou</Option>
+                                  </Select>
+                                </Form.Item>
+                              </Col>
+                              <Col span={12}>
+                                <Form.Item
+                                  name="type"
+                                  label="Type"
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: "Please choose the type",
+                                    },
+                                  ]}
+                                >
+                                  <Select placeholder="Please choose the type">
+                                    <Option value="private">Private</Option>
+                                    <Option value="public">Public</Option>
+                                  </Select>
+                                </Form.Item>
+                              </Col>
+                            </Row>
+                            <Row gutter={16}>
+                              <Col span={12}>
+                                <Form.Item
+                                  name="approver"
+                                  label="Approver"
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: "Please choose the approver",
+                                    },
+                                  ]}
+                                >
+                                  <Select placeholder="Please choose the approver">
+                                    <Option value="jack">Jack Ma</Option>
+                                    <Option value="tom">Tom Liu</Option>
+                                  </Select>
+                                </Form.Item>
+                              </Col>
+                              <Col span={12}>
+                                <Form.Item
+                                  name="dateTime"
+                                  label="DateTime"
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: "Please choose the dateTime",
+                                    },
+                                  ]}
+                                >
+                                  <DatePicker.RangePicker
+                                    style={{
+                                      width: "100%",
+                                    }}
+                                    getPopupContainer={(trigger) =>
+                                      trigger.parentElement
+                                    }
+                                  />
+                                </Form.Item>
+                              </Col>
+                            </Row>
+                            <Row gutter={16}>
+                              <Col span={24}>
+                                <Form.Item
+                                  name="description"
+                                  label="Description"
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: "please enter url description",
+                                    },
+                                  ]}
+                                >
+                                  <Input.TextArea
+                                    rows={4}
+                                    placeholder="please enter url description"
+                                  />
+                                </Form.Item>
+                              </Col>
+                            </Row>
+                          </Form>
+                        </Drawer>
                       </div>
-                      <Drawer
-                        title="Profile Update"
-                        width={720}
-                        onClose={onClose}
-                        open={open}
-                        styles={{
-                          body: {
-                            paddingBottom: 80,
-                          },
-                        }}
-                        extra={
-                          <Space>
-                            <Button onClick={onClose}>Cancel</Button>
-                            <Button onClick={onClose} type="primary">
-                              Submit
-                            </Button>
-                          </Space>
-                        }
-                      >
-                        <Form layout="vertical" hideRequiredMark>
-                          <Row gutter={16}>
-                            <Col span={12}>
-                              <Form.Item
-                                name="name"
-                                label="Name"
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "Please enter user name",
-                                  },
-                                ]}
-                              >
-                                <Input placeholder="Please enter user name" />
-                              </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                              <Form.Item
-                                name="url"
-                                label="Url"
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "Please enter url",
-                                  },
-                                ]}
-                              >
-                                <Input
-                                  style={{
-                                    width: "100%",
-                                  }}
-                                  addonBefore="http://"
-                                  addonAfter=".com"
-                                  placeholder="Please enter url"
-                                />
-                              </Form.Item>
-                            </Col>
-                          </Row>
-                          <Row gutter={16}>
-                            <Col span={12}>
-                              <Form.Item
-                                name="owner"
-                                label="Owner"
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "Please select an owner",
-                                  },
-                                ]}
-                              >
-                                <Select placeholder="Please select an owner">
-                                  <Option value="xiao">Xiaoxiao Fu</Option>
-                                  <Option value="mao">Maomao Zhou</Option>
-                                </Select>
-                              </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                              <Form.Item
-                                name="type"
-                                label="Type"
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "Please choose the type",
-                                  },
-                                ]}
-                              >
-                                <Select placeholder="Please choose the type">
-                                  <Option value="private">Private</Option>
-                                  <Option value="public">Public</Option>
-                                </Select>
-                              </Form.Item>
-                            </Col>
-                          </Row>
-                          <Row gutter={16}>
-                            <Col span={12}>
-                              <Form.Item
-                                name="approver"
-                                label="Approver"
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "Please choose the approver",
-                                  },
-                                ]}
-                              >
-                                <Select placeholder="Please choose the approver">
-                                  <Option value="jack">Jack Ma</Option>
-                                  <Option value="tom">Tom Liu</Option>
-                                </Select>
-                              </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                              <Form.Item
-                                name="dateTime"
-                                label="DateTime"
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "Please choose the dateTime",
-                                  },
-                                ]}
-                              >
-                                <DatePicker.RangePicker
-                                  style={{
-                                    width: "100%",
-                                  }}
-                                  getPopupContainer={(trigger) =>
-                                    trigger.parentElement
-                                  }
-                                />
-                              </Form.Item>
-                            </Col>
-                          </Row>
-                          <Row gutter={16}>
-                            <Col span={24}>
-                              <Form.Item
-                                name="description"
-                                label="Description"
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "please enter url description",
-                                  },
-                                ]}
-                              >
-                                <Input.TextArea
-                                  rows={4}
-                                  placeholder="please enter url description"
-                                />
-                              </Form.Item>
-                            </Col>
-                          </Row>
-                        </Form>
-                      </Drawer>
                     </div>
                   </div>
                 </div>
               </div>
-             
             </div>
           </div>
         </div>
       </div>
-      </div>
-      
     </div>
   );
 };

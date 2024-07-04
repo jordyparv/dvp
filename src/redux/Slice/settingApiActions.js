@@ -15,7 +15,7 @@ export const fetchRoleApi = () => async (dispatch) => {
   dispatch(fetchRoleApiStart());
   try {
     const response = await axios.get(
-      `http://172.17.18.255:8080/dvp_app/roles/`
+      `http://172.17.19.22:8080/dvp_app/roles/`
     );
     dispatch(fetchRoleApiSuccess(response.data));
 
@@ -29,7 +29,7 @@ export const fetchUserApi = () => async (dispatch) => {
   dispatch(fetchUserApiStart());
   try {
     const response = await axios.get(
-      "http://172.17.18.255:8080/dvp_app/user_create/"
+      "http://172.17.19.22:8080/dvp_app/user_create/"
     );
     dispatch(fetchUserApiSuccess(response.data));
 
@@ -43,7 +43,7 @@ export const fetchEmployeeApi = () => async (dispatch) => {
   dispatch(fetchEmployeeStart());
   try {
     const response = await axios.get(
-      "http://172.17.18.255:8080/dvp_app/employee_registration/"
+      "http://172.17.19.22:8080/dvp_app/employee_registration/"
     );
     dispatch(fetchEmployeeSuccess(response.data));
     console.log(response.data, "EMPLOYEE SUCCESS");

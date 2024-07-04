@@ -12,6 +12,10 @@ import CourseSettings from "./components/Sidebar/CourseSettings";
 import CourseAllotment from "./components/Sidebar/CourseAllotment";
 import ProtectedRoute from "./protectedRouting/ProtectedRoute";
 import LessonPlan from "./components/Sidebar/LessonPlan";
+import { useEffect } from "react";
+import ProgramCoordinator from "./pages/ProgramCoordinator";
+import ViewLessonPlan from "./components/Sidebar/ViewLessonPlan";
+import ApprovalStatus from "./components/Sidebar/ApprovalStatus";
 
 function App() {
   return (
@@ -60,6 +64,14 @@ function App() {
           }
         ></Route>
          <Route
+          path="/program-coordinator"
+          element={
+            <ProtectedRoute>
+              <ProgramCoordinator />
+            </ProtectedRoute>
+          }
+        ></Route>
+        <Route
           path="/lesson-plan"
           element={
             <ProtectedRoute>
@@ -75,8 +87,23 @@ function App() {
             </ProtectedRoute>
           }
         ></Route>
+         <Route
+          path="/view-lesson-plan"
+          element={
+            <ProtectedRoute>
+              <ViewLessonPlan />
+            </ProtectedRoute>
+          }
+        ></Route>
+         <Route
+          path="/approval-status"
+          element={
+            <ProtectedRoute>
+             <ApprovalStatus />
+            </ProtectedRoute>
+          }
+        ></Route>
       </Routes>
-      {/* </SideBar> */}
     </Router>
   );
 }

@@ -1,0 +1,102 @@
+.preview-modal {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .excel-preview {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .module-section {
+    display: table-row-group;
+  }
+  
+  .module-header, .topic-header {
+    display: table-row;
+    background-color: #f0f0f0;
+    font-weight: bold;
+  }
+  
+  .module-cell, .module-learning-objective-cell, .topic-cell, .subtopic-cell, .subtopic-learning-objective-cell {
+    display: table-cell;
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  .module-cell {
+    width: 20%;
+    background-color: #f0f0f0;
+  }
+  
+  .module-learning-objective-cell {
+    width: 30%;
+    background-color: #f0f0f0;
+  }
+  
+  .topic-cell {
+    width: 25%;
+    padding-left: 16px;
+  }
+  
+  .subtopic-cell {
+    width: 35%;
+    padding-left: 32px;
+  }
+  
+  .subtopic-learning-objective-cell {
+    width: 40%;
+  }
+  
+
+  .excel-table .ant-table-thead > tr > th {
+    background-color: #f0f0f0;
+    border: 1px solid #d9d9d9;
+  }
+  
+  .excel-table .ant-table-tbody > tr > td {
+    border: 1px solid #d9d9d9;
+  }
+  
+  .table-ul, .table-sub-ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .table-li, .table-sub-li {
+    padding: 5px;
+    border-bottom: 1px solid #d9d9d9;
+  }
+  
+  .table-li:last-child, .table-sub-li:last-child {
+    border-bottom: none;
+  }
+  .excel-table .ant-table-thead > tr > th {
+    background-color: #f0f0f0;
+    border: 1px solid #d9d9d9;
+  }
+  
+  .excel-table .ant-table-tbody > tr > td {
+    border: 1px solid #d9d9d9;
+  }
+  
+  .nested-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .nested-table-row {
+    border-bottom: 1px solid #d9d9d9;
+  }
+  
+  .nested-table-cell {
+    padding: 5px;
+    border-bottom: 1px solid #d9d9d9;
+  }
+  
+  .nested-table-cell:first-child {
+    border-right: 1px solid #d9d9d9;
+  }
+  

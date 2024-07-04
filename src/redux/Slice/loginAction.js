@@ -9,7 +9,7 @@ export const loginUser = (email, password, navigate) => async (dispatch) => {
       password: password,
     };
     const config = {
-      url: `http://172.17.18.255:8080/dvp_app/login/`,
+      url: `http://172.17.19.22:8080/dvp_app/login/`,
 
       method: "POST",
       headers: {
@@ -27,14 +27,18 @@ export const loginUser = (email, password, navigate) => async (dispatch) => {
         JSON.stringify(LoginRequest?.data)
       );
       sessionStorage.setItem("loginMessage", `${LoginRequest?.data?.message}`)
-      const permissions = LoginRequest?.data?.permission || [];
+
+      const permissions = LoginRequest?.data?.permission_names || [];
       localStorage.setItem("permissions", JSON.stringify(permissions));
+      
       dispatch(loginSuccess(LoginRequest?.data));
-      if(permissions?.includes("Lesson Plan")) {
-        navigate("/lesson-plan")
-      }else{
-        navigate("/dashboard");
-      }
+      // if(permissions?.includes("Lesson Plan")) {
+      //   navigate("/lesson-plan")
+      // }else{
+      //   navigate("/dashboard");
+      // }
+      // navigate("/dashboard");
+      window.location.href = "/dashboard";
     } else {
       message.warning(LoginRequest?.response?.data?.message);
       dispatch(loginFailed(LoginRequest?.data));

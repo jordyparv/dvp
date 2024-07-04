@@ -1,7 +1,20 @@
 import React, { useEffect, useState } from "react";
 import SideBar from "./SideBar";
 import "./Settings.css";
-import { Button, Col, DatePicker, Input, Row, Select, Form } from "antd";
+import {
+  Button,
+  Col,
+  DatePicker,
+  Input,
+  Row,
+  Select,
+  Form,
+  Modal,
+  Checkbox,
+  message,
+  Radio,
+  Table,
+} from "antd";
 
 import axios from "axios";
 import { BsArrowRight } from "react-icons/bs";
@@ -40,6 +53,12 @@ const CourseSettings = () => {
   const [selectedSemesterName, setSelectedSemesterName] = useState("");
   const [semesterOption, setSemesterOption] = useState("");
 
+  const [selectedSession, setSelectedSession] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [checkboxState, setCheckboxState] = useState({});
+  const [activeSession, setActiveSession] = useState(null);
+  const [selectedOption, setSelectedOption] = useState("");
+
   const Swal = require("sweetalert2");
 
   const sessionRequest = async () => {
@@ -52,7 +71,7 @@ const CourseSettings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.18.255:8080/dvp_app/sessions/`,
+        url: `http://172.17.19.22:8080/dvp_app/sessions/`,
         data,
       };
 
@@ -77,7 +96,7 @@ const CourseSettings = () => {
 
   const getSessionData = async () => {
     const response = await axios.get(
-      "http://172.17.18.255:8080/dvp_app/sessions/"
+      "http://172.17.19.22:8080/dvp_app/sessions/"
     );
     console.log(response);
     setSessionData(response);
@@ -91,7 +110,7 @@ const CourseSettings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.18.255:8080/dvp_app/program_levels/`,
+        url: `http://172.17.19.22:8080/dvp_app/program_levels/`,
         data,
       };
 
@@ -117,7 +136,7 @@ const CourseSettings = () => {
   const getProgramLevel = async () => {
     try {
       const getPLData = await axios.get(
-        "http://172.17.18.255:8080/dvp_app/program_levels/"
+        "http://172.17.19.22:8080/dvp_app/program_levels/"
       );
       setPLDATA(getPLData);
       setProgramLevelOption(getPLData?.data);
@@ -135,7 +154,7 @@ const CourseSettings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.18.255:8080/dvp_app/semesters/`,
+        url: `http://172.17.19.22:8080/dvp_app/semesters/`,
         data,
       };
 
@@ -195,7 +214,7 @@ const CourseSettings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.18.255:8080/dvp_app/programs/`,
+        url: `http://172.17.19.22:8080/dvp_app/programs/`,
         data,
       };
 
@@ -222,7 +241,7 @@ const CourseSettings = () => {
   const getProgram = async () => {
     try {
       const getProgramData = await axios.get(
-        "http://172.17.18.255:8080/dvp_app/programs/"
+        "http://172.17.19.22:8080/dvp_app/programs/"
       );
       setProgramData(getProgramData);
       setProgramOption(getProgramData?.data);
@@ -243,7 +262,7 @@ const CourseSettings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.18.255:8080/dvp_app/subjects/`,
+        url: `http://172.17.19.22:8080/dvp_app/subjects/`,
         data,
       };
 
@@ -269,7 +288,7 @@ const CourseSettings = () => {
   const getSubjects = async () => {
     try {
       const getSubjectData = await axios.get(
-        "http://172.17.18.255:8080/dvp_app/subjects/"
+        "http://172.17.19.22:8080/dvp_app/subjects/"
       );
       setSubjectData(getSubjectData);
       console.log(getSubjectData, "getSubjectData ");
@@ -470,7 +489,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.18.255:8080/dvp_app/sessions/${ti.session_code}/`,
+          url: `http://172.17.19.22:8080/dvp_app/sessions/${ti.session_code}/`,
           data: formValues,
         };
 
@@ -522,7 +541,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.18.255:8080/dvp_app/program_levels/${ti.prog_level_id}/`,
+          url: `http://172.17.19.22:8080/dvp_app/program_levels/${ti.prog_level_id}/`,
           data: formValues,
         };
 
@@ -574,7 +593,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.18.255:8080/dvp_app/semesters/${ti.semester_id}/`,
+          url: `http://172.17.19.22:8080/dvp_app/semesters/${ti.semester_id}/`,
           data: formValues,
         };
 
@@ -631,7 +650,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.18.255:8080/dvp_app/programs/${ti.program_id}/`,
+          url: `http://172.17.19.22:8080/dvp_app/programs/${ti.program_id}/`,
           data: formValues,
         };
 
@@ -662,19 +681,19 @@ const CourseSettings = () => {
     try {
       // Fetch the program data from the API
       const programResponse = await axios.get(
-        "http://172.17.18.255:8080/dvp_app/programs/"
+        "http://172.17.19.22:8080/dvp_app/programs/"
       );
       programs = programResponse.data;
 
       // Fetch the semester data from the API
       const semesterResponse = await axios.get(
-        "http://172.17.18.255:8080/dvp_app/semesters/"
+        "http://172.17.19.22:8080/dvp_app/semesters/"
       );
       semesters = semesterResponse.data;
 
       // Fetch the prog_id data from the API
       const progIdResponse = await axios.get(
-        "http://172.17.18.255:8080/dvp_app/program_levels/"
+        "http://172.17.19.22:8080/dvp_app/program_levels/"
       );
       progIds = progIdResponse.data;
     } catch (error) {
@@ -771,7 +790,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.18.255:8080/dvp_app/subjects/${ti.subject_id}/`,
+          url: `http://172.17.19.22:8080/dvp_app/subjects/${ti.subject_id}/`,
           data: formValues,
         };
 
@@ -808,7 +827,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.18.255:8080/dvp_app/sessions/${emp.session_code}`,
+          url: `http://172.17.19.22:8080/dvp_app/sessions/${emp.session_code}`,
         };
 
         await axios(config);
@@ -844,7 +863,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.18.255:8080/dvp_app/program_levels/${emp.prog_level_id}`,
+          url: `http://172.17.19.22:8080/dvp_app/program_levels/${emp.prog_level_id}`,
         };
 
         await axios(config);
@@ -880,7 +899,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.18.255:8080/dvp_app/semesters/${emp.semester_id}`,
+          url: `http://172.17.19.22:8080/dvp_app/semesters/${emp.semester_id}`,
         };
 
         await axios(config);
@@ -916,7 +935,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.18.255:8080/dvp_app/programs/${emp.program_id}`,
+          url: `http://172.17.19.22:8080/dvp_app/programs/${emp.program_id}`,
         };
 
         await axios(config);
@@ -972,6 +991,46 @@ const CourseSettings = () => {
         console.error(error);
       }
     }
+  };
+  const handleCheckboxChange = (item) => {
+    setSelectedSession(item);
+    setIsModalVisible(true);
+  };
+
+  const handleOk = async () => {
+    setIsModalVisible(false);
+    if (selectedSession) {
+      try {
+        const response = await axios.post(
+          "http://172.17.19.22:8080/dvp_app/current_session/",
+          {
+            session_code: selectedSession.session_code,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        message.success("Session activation success");
+        setCheckboxState((prevState) => ({
+          ...prevState,
+          [selectedSession.session_code]: true,
+        }));
+      } catch (error) {
+        message.warning("Error activating session", error);
+      }
+    }
+    setSelectedSession(null);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+    setSelectedSession(null);
+  };
+
+  const handleSelectChange = (value) => {
+    setSelectedOption(value);
   };
 
   return (
@@ -1134,12 +1193,33 @@ const CourseSettings = () => {
                                     >
                                       Delete
                                     </Button>
+                                    <Radio
+                                      checked={
+                                        checkboxState[item.session_code] ||
+                                        false
+                                      }
+                                      onChange={() =>
+                                        handleCheckboxChange(item)
+                                      }
+                                    >
+                                      Activate
+                                    </Radio>
                                   </td>
                                 </tr>
                               </>
                             ))}
                         </tbody>
                       </table>
+                      <Modal
+                        title="Confirmation"
+                        visible={isModalVisible}
+                        onOk={handleOk}
+                        onCancel={handleCancel}
+                      >
+                        <p>
+                          Are you sure you want to make this session active?
+                        </p>
+                      </Modal>
                     </div>
                   </div>
                 </div>
@@ -1773,6 +1853,7 @@ const CourseSettings = () => {
         </div>
       </div>
     </div>
+
   );
 };
 

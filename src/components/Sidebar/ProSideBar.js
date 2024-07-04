@@ -1,4 +1,3 @@
-
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaBars, FaHome, FaLock, FaMoneyBill, FaUser } from "react-icons/fa";
 import { RiListSettingsFill } from "react-icons/ri";
@@ -20,54 +19,41 @@ const routes = [
   },
   {
     path: "/courseSettings",
-    name: "Admin Settings",
+    name: "Settings",
     icon: <BiCog />,
     subRoutes: [
       {
         path: "/admin-settings",
-        name: "User Configuration",
+        name: "Admin Settings",
         icon: <RiListSettingsFill />,
       },
-     
-      {
-        path: "/add-user",
-        name: "Add User",
-        icon: <FaUser />,
-      },
-       {
-        path: "/erf",
-        name: "Employee Registration Form",
-        icon: <FaMoneyBill />,
-      },
-    ],
-  },
-  {
-    path: "/file-manager",
-    name: "Academic Settings",
-    icon: <AiTwotoneFileExclamation />,
-    subRoutes: [
       {
         path: "/course-settings",
         name: "Course Settings",
         icon: <SiCoursera />,
       },
-     
+    ],
+  },
+  {
+    path: "/file-manager",
+    name: "Form Manager",
+    icon: <AiTwotoneFileExclamation />,
+    subRoutes: [
+      {
+        path: "/add-user",
+        name: "Add User",
+        icon: <FaUser />,
+      },
+      {
+        path: "/erf",
+        name: "Employee Registration Form",
+        icon: <FaMoneyBill />,
+      },
       {
         path: "/course-allotment",
         name: "Course Allotment",
         icon: <FaMoneyBill />,
       },
-      {
-        path: "/program-coordinator",
-        name: "Program Coordinator",
-        icon: <FaMoneyBill />,
-      },
-      {
-        path: "/view-lesson",
-        name: "View Lesson Plan",
-        icon: <FaMoneyBill />,
-      },
-     
     ],
   },
   {
@@ -78,29 +64,6 @@ const routes = [
   {
     path: "/settings",
     name: "Studio",
-    icon: <BiCog />,
-    exact: true,
-    subRoutes: [
-      {
-        path: "/Studio",
-        name: "Studio",
-        icon: <FaUser />,
-      },
-      {
-        path: "/settings/2fa",
-        name: "Camera Man",
-        icon: <FaLock />,
-      },
-      {
-        path: "/settings/billing",
-        name: "Pendings",
-        icon: <FaMoneyBill />,
-      },
-    ],
-  },
-  {
-    path: "/production-settings",
-    name: "Production Settings",
     icon: <BiCog />,
     exact: true,
     subRoutes: [
@@ -137,19 +100,12 @@ const SideBar = ({ children }) => {
 
   const permissions = JSON.parse(localStorage.getItem("permissions")) || [];
 
-  // Filter the routes excluding Dashboard and Logout
   const filteredRoutes = routes.filter(route => {
-    if (route.name === "Dashboard" || route.name === "Logout") {
-      return false;
-    }
     if (!route.subRoutes) {
       return permissions.includes(route.name);
     } else {
-      if (permissions.includes(route.name)) {
-        return true;
-      }
       route.subRoutes = route.subRoutes.filter(subRoute => permissions.includes(subRoute.name));
-      return route.subRoutes.length > 0;
+      return route.subRoutes.length > 0 || permissions.includes(route.name);
     }
   });
 
@@ -243,26 +199,6 @@ const SideBar = ({ children }) => {
             </AnimatePresence>
           </div>
           <section className="routes">
-            <NavLink
-              to="/dashboard"
-              className="link"
-              activeClassName="active"
-            >
-              <div className="icon"><FaHome /></div>
-              <AnimatePresence>
-                {isOpen && (
-                  <motion.div
-                    variants={showAnimation}
-                    initial="hidden"
-                    animate="show"
-                    exit="hidden"
-                    className="link_text"
-                  >
-                    Dashboard
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </NavLink>
             {filteredRoutes.map((route, index) => {
               if (route.subRoutes) {
                 return (
@@ -276,7 +212,28 @@ const SideBar = ({ children }) => {
                 );
               }
 
-              return (
+              return route.action === "logout" ? (
+                <div
+                  key={index}
+                  className="link"
+                  onClick={handleLogout}
+                >
+                  <div className="icon">{route.icon}</div>
+                  <AnimatePresence>
+                    {isOpen && (
+                      <motion.div
+                        variants={showAnimation}
+                        initial="hidden"
+                        animate="show"
+                        exit="hidden"
+                        className="link_text"
+                      >
+                        {route.name}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ) : (
                 <NavLink
                   to={route.path}
                   key={index}
@@ -301,27 +258,6 @@ const SideBar = ({ children }) => {
               );
             })}
           </section>
-          <div className="bottom_section">
-            <div
-              className="link"
-              onClick={handleLogout}
-            >
-              <div className="icon"><BiLogOut /></div>
-              <AnimatePresence>
-                {isOpen && (
-                  <motion.div
-                    variants={showAnimation}
-                    initial="hidden"
-                    animate="show"
-                    exit="hidden"
-                    className="link_text"
-                  >
-                    Logout
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
         </motion.div>
 
         <main>{children}</main>

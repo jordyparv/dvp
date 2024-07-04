@@ -35,14 +35,14 @@
 
 //   const getUser = async () => {
 //     const getUserData = await axios(
-//       `http://172.17.18.255:8080/dvp_app/select_user/`
+//       `http://172.17.19.22:8080/dvp_app/select_user/`
 //     );
 //     setSelectUserOption(getUserData);
 //     console.log(getUserData, "USER_SELECTED");
 //   };
 //   const getDesignation = async () => {
 //     const getDesigData = await axios(
-//       `http://172.17.18.255:8080/dvp_app/designation/`
+//       `http://172.17.19.22:8080/dvp_app/designation/`
 //     );
 //     setSelectDesigOption(getDesigData);
 //     console.log(getDesigData, "Designation");
@@ -50,7 +50,7 @@
 
 //   const getTitle = async () => {
 //     const getTitleData = await axios(
-//       `http://172.17.18.255:8080/dvp_app/title/`
+//       `http://172.17.19.22:8080/dvp_app/title/`
 //     );
 //     setTitleOption(getTitleData);
 //     console.log(getTitleData, "Title");
@@ -58,7 +58,7 @@
 
 //   const getEmpType = async () => {
 //     const getEmpTypeData = await axios(
-//       `http://172.17.18.255:8080/dvp_app/employee_type/`
+//       `http://172.17.19.22:8080/dvp_app/employee_type/`
 //     );
 //     setEmpTypeOption(getEmpTypeData);
 //     console.log(getEmpTypeData, "EMP TYPE");
@@ -92,7 +92,7 @@
 
 //   const getEmployeeData = async () => {
 //     const req = await axios.get(
-//       `http://172.17.18.255:8080/dvp_app/employee_registration/`
+//       `http://172.17.19.22:8080/dvp_app/employee_registration/`
 //     );
 //     setEmpData(req);
 //   };
@@ -114,7 +114,7 @@
 
 //       let config = {
 //         method: "POST",
-//         url: `http://172.17.18.255:8080/dvp_app/employee_registration/`,
+//         url: `http://172.17.19.22:8080/dvp_app/employee_registration/`,
 //         data,
 //       };
 
@@ -423,25 +423,25 @@ const UserRegistration = () => {
   const [empData, setEmpData] = useState([]);
 
   const getUser = async () => {
-    const getUserData = await axios(`http://172.17.18.255:8080/dvp_app/select_user/`);
+    const getUserData = await axios(`http://172.17.19.22:8080/dvp_app/select_user/`);
     setSelectUserOption(getUserData);
    
   };
 
   const getDesignation = async () => {
-    const getDesigData = await axios(`http://172.17.18.255:8080/dvp_app/designation/`);
+    const getDesigData = await axios(`http://172.17.19.22:8080/dvp_app/designation/`);
     setSelectDesigOption(getDesigData);
 
   };
 
   const getTitle = async () => {
-    const getTitleData = await axios(`http://172.17.18.255:8080/dvp_app/title/`);
+    const getTitleData = await axios(`http://172.17.19.22:8080/dvp_app/title/`);
     setTitleOption(getTitleData);
 
   };
 
   const getEmpType = async () => {
-    const getEmpTypeData = await axios(`http://172.17.18.255:8080/dvp_app/employee_type/`);
+    const getEmpTypeData = await axios(`http://172.17.19.22:8080/dvp_app/employee_type/`);
     setEmpTypeOption(getEmpTypeData);
 
   };
@@ -472,7 +472,7 @@ const UserRegistration = () => {
   };
 
   const getEmployeeData = async () => {
-    const req = await axios.get(`http://172.17.18.255:8080/dvp_app/employee_registration/`);
+    const req = await axios.get(`http://172.17.19.22:8080/dvp_app/employee_registration/`);
     setEmpData(req.data);
   };
 
@@ -485,7 +485,7 @@ const UserRegistration = () => {
         desig_id: parseInt(selectDesigSelected),
         title_id: parseInt(titleSelected),
         first_name: fName,
-        middle_name: mName,
+        middle_name: mName || "",
         last_name: lName,
         date_of_birth: dob,
         date_of_joining: doj,
@@ -493,7 +493,7 @@ const UserRegistration = () => {
 
       let config = {
         method: "POST",
-        url: `http://172.17.18.255:8080/dvp_app/employee_registration/`,
+        url: `http://172.17.19.22:8080/dvp_app/employee_registration/`,
         data,
       };
 
@@ -713,7 +713,7 @@ const UserRegistration = () => {
                         placeholder="Middle Name"
                         value={mName}
                         onChange={(e) => setMName(e.target.value)}
-                        required
+                       
                       />
                     </label>
                     <label>

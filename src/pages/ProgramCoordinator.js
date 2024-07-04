@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
-import SideBar from "./SideBar";
-import "./Settings.css";
 import { Button, Drawer, Input, Select, Table, message } from "antd";
 import axios from "axios";
-import Loader from "../../pages/Loader";
-import Swal from "sweetalert2";
 
+import Swal from "sweetalert2";
+import { useSelector } from "react-redux";
+import { subjectAction } from "../redux/Slice/subjectAction";
+import SideBar from "../components/Sidebar/SideBar";
+import Loader from "./Loader";
 
 const { Option } = Select;
 
-const CourseAllotment = () => {
+const ProgramCoordinator = () => {
   const [loading, setLoading] = useState(false);
   const [facultyOption, setFacultyOption] = useState([]);
   const [employeeId, setEmployeeId] = useState("");
@@ -23,8 +24,8 @@ const CourseAllotment = () => {
   const [subjects, setSubjects] = useState({});
 
   const [selectedSessionForEmployee, setSelectedSessionForEmployee] =
-    useState(""); // New state for session to display employees
-  const [selectedSession, setSelectedSession] = useState(""); // Existing state for
+    useState("");
+  const [selectedSession, setSelectedSession] = useState("");
 
   const [subjectsData, setSubjectData] = useState([]);
 
@@ -49,7 +50,6 @@ const CourseAllotment = () => {
       const response = await axios.get("/dvp_app/course_allotment/");
       console.log(response, "_____ewe9w");
       setSubjectData(response?.data);
-
     } catch (error) {
       console.log(error);
     }
@@ -58,7 +58,7 @@ const CourseAllotment = () => {
   const getFacultyRequest = async (session) => {
     try {
       const response = await axios.get(
-        `http://172.17.19.22:8080/dvp_app/select_faculty/?session_code=${session}`
+        `http://172.17.19.22:8080/dvp_app/select_pc/?session_code=${session}`
       );
 
       setFacultyOption(response?.data);
@@ -76,7 +76,6 @@ const CourseAllotment = () => {
       getFacultyRequest(selectedSessionForEmployee);
     }
   }, [selectedSessionForEmployee]);
-  
 
   const getSessionCodeRequest = async () => {
     try {
@@ -216,7 +215,7 @@ const CourseAllotment = () => {
       };
 
       const config = {
-        url: "/dvp_app/course_allotment/",
+        url: "/dvp_app/program_coordinators/",
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -228,10 +227,9 @@ const CourseAllotment = () => {
       const postCourseAllotment = await axios(config);
       console.log(postCourseAllotment, "COURSE ALLOTMENT");
       message.success("COURSE ALLOTMENT SUCCESS");
-      getAllotedData();
       Swal.fire({
         icon: "success",
-        title: `Course Allotment successfully`,
+        title: `PC Allotment successfully`,
         showConfirmButton: false,
         timer: 3000,
       });
@@ -239,6 +237,12 @@ const CourseAllotment = () => {
       setEmployeeId("");
     } catch (error) {
       setLoading(false);
+      Swal.fire({
+        icon: "warning",
+        title: `${error?.response?.data?.message[0]}`,
+        showConfirmButton: false,
+        timer: 3000,
+      });
       console.log(error);
     }
   };
@@ -277,7 +281,7 @@ const CourseAllotment = () => {
             <div className="container">
               <div className="title">
                 <div>
-                  <p className="title-heading">Course Allotment</p>
+                  <p className="title-heading">PC Allotment</p>
                 </div>
                 <div style={{ padding: "10px" }}>
                   <Button
@@ -286,7 +290,7 @@ const CourseAllotment = () => {
                     style={{ fontSize: "15px", cursor: "pointer" }}
                     className="title-heading"
                   >
-                    View Course Allotment : {subjectsData?.length}
+                    View PC Allotment :
                   </Button>
                 </div>
               </div>
@@ -561,7 +565,7 @@ const CourseAllotment = () => {
                     ))}
                   </div>
 
-                  <button onClick={handleCourseAllotment} type="button">
+                  <button onClick={handleCourseAllotment} type="submit">
                     submit
                   </button>
                 </form>
@@ -570,7 +574,7 @@ const CourseAllotment = () => {
 
             <Drawer
               width={900}
-              title="Course Allotment Table"
+              title="PC Allotment Table"
               onClose={onClose}
               open={open}
             >
@@ -587,4 +591,4 @@ const CourseAllotment = () => {
   );
 };
 
-export default CourseAllotment;
+export default ProgramCoordinator;

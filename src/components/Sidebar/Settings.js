@@ -45,11 +45,11 @@ const Settings = () => {
       const data = {
         role_name: roleName,
         status: roleStatus,
-        permission_id: permissionsSelect
+        permission_id: permissionsSelect,
       };
       const config = {
         method: "POST",
-        url: `http://172.17.18.255:8080/dvp_app/roles/`,
+        url: `http://172.17.19.22:8080/dvp_app/roles/`,
         data,
       };
 
@@ -78,7 +78,7 @@ const Settings = () => {
         status: permissionStatus,
       };
       let config = {
-        url: `http://172.17.18.255:8080/dvp_app/roles_permissions/`,
+        url: `http://172.17.19.22:8080/dvp_app/roles_permissions/`,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -91,7 +91,7 @@ const Settings = () => {
       message.success("Permission Added");
       Swal.fire({
         icon: "success",
-        title: `Permission ${response?.data?.permission_names} added successfully`,
+        title: `Permission ${response?.data?.permission_name} added successfully`,
         showConfirmButton: false,
         timer: 3000,
       });
@@ -113,7 +113,7 @@ const Settings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.18.255:8080/dvp_app/departments/`,
+        url: `http://172.17.19.22:8080/dvp_app/departments/`,
         data,
       };
 
@@ -143,7 +143,7 @@ const Settings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.18.255:8080/dvp_app/title/`,
+        url: `http://172.17.19.22:8080/dvp_app/title/`,
         data,
       };
 
@@ -173,7 +173,7 @@ const Settings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.18.255:8080/dvp_app/designation/`,
+        url: `http://172.17.19.22:8080/dvp_app/designation/`,
         data,
       };
 
@@ -181,7 +181,7 @@ const Settings = () => {
 
       Swal.fire({
         icon: "success",
-        title: `Designation ${roleData?.data?.desig_name} added successfully`,
+        title: `Designation ${desigData?.data?.desig_name} added successfully`,
         showConfirmButton: false,
         timer: 3000,
       });
@@ -203,7 +203,7 @@ const Settings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.18.255:8080/dvp_app/employee_type/`,
+        url: `http://172.17.19.22:8080/dvp_app/employee_type/`,
         data,
       };
 
@@ -233,7 +233,7 @@ const Settings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.18.255:8080/dvp_app/genders/`,
+        url: `http://172.17.19.22:8080/dvp_app/genders/`,
         data,
       };
 
@@ -260,7 +260,7 @@ const Settings = () => {
 
   const getRole = async () => {
     const getRoleTable = await axios(
-      `http://172.17.18.255:8080/dvp_app/roles/`
+      `http://172.17.19.22:8080/dvp_app/roles/`
     );
     setRoleData(getRoleTable);
     console.log(getRoleTable, "_____ROLE______");
@@ -268,39 +268,39 @@ const Settings = () => {
 
   const getPermissions = async () => {
     const getPermissionTable = await axios(
-      `http://172.17.18.255:8080/dvp_app/roles_permissions/`
+      `http://172.17.19.22:8080/dvp_app/roles_permissions/`
     );
     setPermissionsOption(getPermissionTable?.data);
     setPermission(getPermissionTable);
-    console.log(getPermissionTable, "PER TABLE")
+    console.log(getPermissionTable, "PER TABLE");
   };
   const getDepart = async () => {
     const getDepartTable = await axios(
-      `http://172.17.18.255:8080/dvp_app/departments/`
+      `http://172.17.19.22:8080/dvp_app/departments/`
     );
     setDepartData(getDepartTable);
   };
   const getTitle = async () => {
     const getTitleTable = await axios(
-      `http://172.17.18.255:8080/dvp_app/title/`
+      `http://172.17.19.22:8080/dvp_app/title/`
     );
     setTitleData(getTitleTable);
   };
   const getDesig = async () => {
     const getDesigTable = await axios(
-      `http://172.17.18.255:8080/dvp_app/designation/`
+      `http://172.17.19.22:8080/dvp_app/designation/`
     );
     setDesigData(getDesigTable);
   };
   const getEmpType = async () => {
     const getEmpTable = await axios(
-      `http://172.17.18.255:8080/dvp_app/employee_type/`
+      `http://172.17.19.22:8080/dvp_app/employee_type/`
     );
     setEmpData(getEmpTable);
   };
   const getGender = async () => {
     const getGenderTable = await axios(
-      `http://172.17.18.255:8080/dvp_app/genders/`
+      `http://172.17.19.22:8080/dvp_app/genders/`
     );
     setGenData(getGenderTable);
   };
@@ -346,17 +346,18 @@ const Settings = () => {
   };
 
   const handlePermissionSelect = (value) => {
-    setPermissionsSelect(value)
+    setPermissionsSelect(value);
+  };
 
-  }
 
-  const handleEditRole = async (ro) => {
+  const handleEditRole = async (ro, permissions) => {
     const { value: formValues } = await Swal.fire({
       title: "Edit Role",
       html: `
         <input id="swal-input1" class="swal2-input" placeholder="Role Name" value="${
           ro.role_name
         }">
+        
         <select id="swal-input2" class="swal2-input">
           <option value="active" ${
             ro.status === "active" ? "selected" : ""
@@ -365,24 +366,33 @@ const Settings = () => {
             ro.status === "inactive" ? "selected" : ""
           }>Inactive</option>
         </select>
+        
+        <select id="swal-input3" class="swal2-input">
+          ${permissions && permissions.map(permission => `
+            <option value="${permission}" ${
+              ro.permission_name === permission ? "selected" : ""
+            }>${permission}</option>
+          `).join('')}
+        </select>
       `,
       focusConfirm: false,
       preConfirm: () => {
         return {
           role_name: document.getElementById("swal-input1").value,
           status: document.getElementById("swal-input2").value,
+          permission_name: document.getElementById("swal-input3").value,
         };
       },
     });
-
+  
     if (formValues) {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.18.255:8080/dvp_app/roles/${ro.role_id}/`,
+          url: `http://172.17.19.22:8080/dvp_app/roles/${ro.role_id}/`,
           data: formValues,
         };
-
+  
         const response = await axios(config);
         Swal.fire({
           icon: "success",
@@ -401,6 +411,71 @@ const Settings = () => {
       }
     }
   };
+  
+
+  // const handleEditRole = async (ro, permissions) => {
+  //   const { value: formValues } = await Swal.fire({
+  //     title: "Edit Role",
+  //     html: `
+  //       <input id="swal-input1" class="swal2-input" placeholder="Role Name" value="${
+  //         ro.role_name
+  //       }">
+
+        
+        
+  //       <select id="swal-input2" class="swal2-input">
+  //         <option value="active" ${
+  //           ro.status === "active" ? "selected" : ""
+  //         }>Active</option>
+  //         <option value="inactive" ${
+  //           ro.status === "inactive" ? "selected" : ""
+  //         }>Inactive</option>
+  //       </select>
+
+  //        <select id="swal-input3" class="swal2-input">
+  //       ${permissions.map(permission => `
+  //         <option value="${permission}" ${
+  //           ro.permission_name === permission ? "selected" : ""
+  //         }>${permission}</option>
+  //       `).join('')}
+  //     </select>
+  //     `,
+  //     focusConfirm: false,
+  //     preConfirm: () => {
+  //       return {
+  //         role_name: document.getElementById("swal-input1").value,
+  //         status: document.getElementById("swal-input2").value,
+  //         permission_name: document.getElementById("swal-input3").value
+  //       };
+  //     },
+  //   });
+
+  //   if (formValues) {
+  //     try {
+  //       const config = {
+  //         method: "PUT",
+  //         url: `http://172.17.19.22:8080/dvp_app/roles/${ro.role_id}/`,
+  //         data: formValues,
+  //       };
+
+  //       const response = await axios(config);
+  //       Swal.fire({
+  //         icon: "success",
+  //         title: `Role ${response?.data?.role_name} updated successfully`,
+  //         showConfirmButton: false,
+  //         timer: 3000,
+  //       });
+  //       getRole(); // Refresh the role data after editing a role
+  //     } catch (error) {
+  //       Swal.fire({
+  //         icon: "error",
+  //         title: "Oops...",
+  //         text: error?.response?.data?.message[0] || "An error occurred",
+  //       });
+  //       console.error(error);
+  //     }
+  //   }
+  // };
 
   const handleEditDepartment = async (de) => {
     const { value: formValues } = await Swal.fire({
@@ -431,7 +506,7 @@ const Settings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.18.255:8080/dvp_app/departments/${de.dept_id}/`,
+          url: `http://172.17.19.22:8080/dvp_app/departments/${de.dept_id}/`,
           data: formValues,
         };
 
@@ -483,7 +558,7 @@ const Settings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.18.255:8080/dvp_app/title/${ti.title_id}/`,
+          url: `http://172.17.19.22:8080/dvp_app/title/${ti.title_id}/`,
           data: formValues,
         };
 
@@ -534,7 +609,7 @@ const Settings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.18.255:8080/dvp_app/designation/${ti.desig_id}/`,
+          url: `http://172.17.19.22:8080/dvp_app/designation/${ti.desig_id}/`,
           data: formValues,
         };
 
@@ -586,7 +661,7 @@ const Settings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.18.255:8080/dvp_app/employee_type/${ti.emp_type_id}/`,
+          url: `http://172.17.19.22:8080/dvp_app/employee_type/${ti.emp_type_id}/`,
           data: formValues,
         };
 
@@ -637,7 +712,7 @@ const Settings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.18.255:8080/dvp_app/genders/${ti.gender_id}/`,
+          url: `http://172.17.19.22:8080/dvp_app/genders/${ti.gender_id}/`,
           data: formValues,
         };
 
@@ -673,7 +748,7 @@ const Settings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.18.255:8080/dvp_app/roles/${role.role_id}`,
+          url: `http://172.17.19.22:8080/dvp_app/roles/${role.role_id}`,
         };
 
         await axios(config);
@@ -708,7 +783,7 @@ const Settings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.18.255:8080/dvp_app/departments/${dept.dept_id}`,
+          url: `http://172.17.19.22:8080/dvp_app/departments/${dept.dept_id}`,
         };
 
         await axios(config);
@@ -743,7 +818,7 @@ const Settings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.18.255:8080/dvp_app/title/${title.title_id}`,
+          url: `http://172.17.19.22:8080/dvp_app/title/${title.title_id}`,
         };
 
         await axios(config);
@@ -778,7 +853,7 @@ const Settings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.18.255:8080/dvp_app/designation/${desig.desig_id}`,
+          url: `http://172.17.19.22:8080/dvp_app/designation/${desig.desig_id}`,
         };
 
         await axios(config);
@@ -813,7 +888,7 @@ const Settings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.18.255:8080/dvp_app/employee_type/${emp.emp_type_id}`,
+          url: `http://172.17.19.22:8080/dvp_app/employee_type/${emp.emp_type_id}`,
         };
 
         await axios(config);
@@ -848,7 +923,7 @@ const Settings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.18.255:8080/dvp_app/genders/${gen.gender_id}`,
+          url: `http://172.17.19.22:8080/dvp_app/genders/${gen.gender_id}`,
         };
 
         await axios(config);
@@ -864,6 +939,97 @@ const Settings = () => {
           icon: "error",
           title: "Oops...",
           text: `${error?.response?.data?.message[0]}`,
+        });
+        console.error(error);
+      }
+    }
+  };
+
+  const handleDeletePermissions = async (per) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: `Do you really want to delete Permission ${per.permission_name}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const config = {
+          method: "DELETE",
+          url: `http://172.17.19.22:8080/dvp_app/roles_permissions/${per.permission_id}`,
+        };
+
+        await axios(config);
+        Swal.fire({
+          icon: "success",
+          title: `Permission ${per.permission_name} deleted successfully`,
+          showConfirmButton: false,
+          timer: 3000,
+        });
+        getPermissions();
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: `${error?.response?.data?.message[0]}`,
+        });
+        console.error(error);
+      }
+    }
+  };
+
+  const handleEditPermissions = async (per) => {
+    const { value: formValues } = await Swal.fire({
+      title: "Edit Permissions",
+      html: `
+      <input id="swal-input1" class="swal2-input" placeholder="Permission Name" value="${
+        per.permission_name
+      }">
+
+       <select id="swal-input2" class="swal2-input">
+          <option value="active" ${
+            per.status === "active" ? "selected" : ""
+          }>Active</option>
+          <option value="inactive" ${
+            per.status === "inactive" ? "selected" : ""
+          }>Inactive</option>
+        </select>
+ 
+      
+      
+    `,
+      focusConfirm: false,
+      preConfirm: () => {
+        return {
+          permission_name: document.getElementById("swal-input1").value,
+          status: document.getElementById("swal-input2").value,
+        };
+      },
+    });
+
+    if (formValues) {
+      try {
+        const config = {
+          method: "PUT",
+          url: `http://172.17.19.22:8080/dvp_app/roles_permissions/${per.permission_id}/`,
+          data: formValues,
+        };
+
+        const response = await axios(config);
+        Swal.fire({
+          icon: "success",
+          title: `Permission ${response?.data?.permission_name} updated successfully`,
+          showConfirmButton: false,
+          timer: 3000,
+        });
+        getPermissions(); // Refresh the role data after editing a role
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error?.response?.data?.message[0] || "An error occurred",
         });
         console.error(error);
       }
@@ -968,7 +1134,7 @@ const Settings = () => {
                           <button
                             style={{ background: "#18123b" }}
                             onClick={handlePermission}
-                            className="btn btn-primary"
+                            className="btn-primary"
                             type="submit"
                           >
                             Add Permission
@@ -982,13 +1148,13 @@ const Settings = () => {
                           <tr>
                             <th scope="col">S.No.</th>
                             <th scope="col">Permission Name</th>
-                      
+
                             <th scope="col">Status</th>
                             <th scope="col">Action</th>
                           </tr>
                         </thead>
                         <tbody
-                          style={{ height: "300px", overflow: "auto" }}
+                          style={{ height: "auto", overflow: "auto" }}
                           className="table-group-divider"
                         >
                           {permission &&
@@ -997,17 +1163,21 @@ const Settings = () => {
                                 <tr key={item?.role_id}>
                                   <td>{index + 1}</td>
                                   <td>{item?.permission_name}</td>
-                                 
+
                                   <td>{item?.status}</td>
                                   <td>
                                     <Button
-                                      // onClick={() => handleEditRole(item)}
+                                      onClick={() =>
+                                        handleEditPermissions(item)
+                                      }
                                     >
                                       Edit
                                     </Button>
                                     <Button
                                       danger
-                                      // onClick={() => handleDeleteRole(item)}
+                                      onClick={() =>
+                                        handleDeletePermissions(item)
+                                      }
                                     >
                                       Delete
                                     </Button>
@@ -1056,7 +1226,6 @@ const Settings = () => {
                     data-bs-parent="#accordionExample"
                   >
                     <div className="accordion-body">
-             
                       <form className="row g-3 needs-validation">
                         <div className="col-md-4">
                           <label
@@ -1150,7 +1319,7 @@ const Settings = () => {
                           </tr>
                         </thead>
                         <tbody
-                          style={{ height: "300px", overflow: "auto" }}
+                          style={{ height: "auto", overflow: "auto" }}
                           className="table-group-divider"
                         >
                           {roleData &&
@@ -1159,7 +1328,7 @@ const Settings = () => {
                                 <tr key={item?.role_id}>
                                   <td>{index + 1}</td>
                                   <td>{item?.role_name}</td>
-                                  <td>{item?.permission_names.join(",")}</td>
+                                  <td>{item?.permission_names?.join(",")}</td>
                                   <td>{item?.status}</td>
                                   <td>
                                     <Button
@@ -1278,7 +1447,7 @@ const Settings = () => {
                           </tr>
                         </thead>
                         <tbody
-                          style={{ height: "300px", overflow: "auto" }}
+                          style={{ height: "auto", overflow: "auto" }}
                           className="table-group-divider"
                         >
                           {departData &&
@@ -1407,7 +1576,7 @@ const Settings = () => {
                           </tr>
                         </thead>
                         <tbody
-                          style={{ height: "300px", overflow: "auto" }}
+                          style={{ height: "auto", overflow: "auto" }}
                           className="table-group-divider"
                         >
                           {titleData &&
@@ -1534,7 +1703,7 @@ const Settings = () => {
                           </tr>
                         </thead>
                         <tbody
-                          style={{ height: "300px", overflow: "auto" }}
+                          style={{ height: "auto", overflow: "auto" }}
                           className="table-group-divider"
                         >
                           {desigData &&
@@ -1663,7 +1832,7 @@ const Settings = () => {
                           </tr>
                         </thead>
                         <tbody
-                          style={{ height: "300px", overflow: "auto" }}
+                          style={{ height: "auto", overflow: "auto" }}
                           className="table-group-divider"
                         >
                           {empData &&
@@ -1789,7 +1958,7 @@ const Settings = () => {
                           </tr>
                         </thead>
                         <tbody
-                          style={{ height: "300px", overflow: "auto" }}
+                          style={{ height: "auto", overflow: "auto" }}
                           className="table-group-divider"
                         >
                           {genData &&
