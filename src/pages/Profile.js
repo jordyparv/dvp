@@ -142,6 +142,9 @@ const Profile = () => {
   const handleRedirect = () => {
     navigate("/view-lesson-plan");
   };
+  const handleRedirectapprovalStatus = () => {
+    navigate("/approval-status");
+  };
 
 
 
@@ -354,9 +357,9 @@ const Profile = () => {
                             {index + 1} {item?.subject_name}{" "}
                           </div>
                           <div>
-                            <Link to="/approval-status">
-                              <button className="view-button">View</button>
-                            </Link>
+                          <div style={{cursor:"pointer"}} onClick={handleRedirectapprovalStatus}>
+                            <EyeOutlined />
+                          </div>
                           </div>
                         </div>
                         <div

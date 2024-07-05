@@ -1,5 +1,3 @@
-
-
 // import React, { useEffect, useState } from "react";
 // import SideBar from "./SideBar";
 // import axios from "axios";
@@ -11,6 +9,8 @@
 // import { BsEmojiAngryFill, BsEmojiExpressionlessFill } from "react-icons/bs";
 // import { MdEmojiEmotions } from "react-icons/md";
 // import { getLesson } from "../../protectedRouting/Utils/apiUtils";
+// import EmojiPicker from "emoji-picker-react";
+// import Swal from "sweetalert2";
 
 // const ViewLessonPlan = () => {
 //   const [empIds, setEmpIds] = useState(null);
@@ -31,6 +31,7 @@
 //       const employeeId = response?.data?.employee_id;
 //       const lessonData = await getLesson(employeeId);
 //       setShowLesson(lessonData);
+//       setEmpIds(employeeId)
 //     } catch (error) {
 //       console.log(error);
 //     }
@@ -40,12 +41,22 @@
 //     getEmpId();
 //   }, []);
 
+
 //   const fetchLessonPlans = async (subjectId) => {
 //     try {
 //       setLoading(true);
 //       const response = await axios.get(
 //         `http://172.17.19.22:8080/dvp_app/get_lesson_plans/${subjectId}/`
 //       );
+
+//       // Log the entire response to see the structure
+//       console.log("Response:", response.data);
+
+//       // Log each lesson_plan_id
+//       response.data.forEach((plan) => {
+//         console.log("Lesson Plan ID:", plan.lessonPlan[0]?.lesson_plan_id);
+//       });
+
 //       setLessonPlans(response.data);
 //       setSelectedLessonPlan(
 //         response.data.length === 1 ? response.data[0].lessonPlan : null
@@ -82,9 +93,63 @@
 //     setSelectedLessonPlan(newLessonPlan);
 //   };
 
-//   const saveChanges = () => {
-//     message.success("Changes saved successfully!");
+
+// const saveChanges = async () => {
+//   // Add a confirmation prompt with Cancel button using Swal
+//   const result = await Swal.fire({
+//     title: 'Are you sure?',
+//     text: 'Do you want to update these changes?',
+//     icon: 'warning',
+//     showCancelButton: true,
+//     confirmButtonText: 'Confirm',
+//     cancelButtonText: 'Cancel',
+//     dangerMode: true,
+//   });
+
+//   if (!result.isConfirmed) return;
+
+//   // Prepare the data for the PUT request
+//   const updatedLessonPlan = selectedLessonPlan.map((module) => ({
+//     module: module.module,
+//     moduleLearningObjective: module.moduleLearningObjective,
+//     topics: module.topics.map((topic) => ({
+//       topic: topic.topic,
+//       subtopics: topic.subtopics.map((subtopic) => ({
+//         lesson_plan_id: subtopic.lesson_plan_id,
+//         subtopic: subtopic.subtopic,
+//         subtopic_learning_objective: subtopic.subtopic_learning_objective,
+//         status: subtopic.status,
+//         subtopicLearningObjective: subtopic.subtopicLearningObjective,
+//       })),
+//     })),
+//   }));
+
+//   const data = { 
+//     employee_id: empIds,
+//     subject_id:showSelectedSubjectId,
+//     updated_lesson_plan: updatedLessonPlan 
 //   };
+
+//   try {
+//     // Make the PUT request
+//     const response = await axios.put(
+//       'http://172.17.19.22:8080/dvp_app/update_lesson_plans/',
+//       data
+//     );
+//     console.log('PUT response:', response.data);
+
+//     // Show a success message with Swal
+//     Swal.fire('Success', 'Changes saved successfully!', 'success');
+//   } catch (error) {
+//     console.error('Error saving changes', error);
+
+//     // Show an error message with Swal
+//     Swal.fire('Error', 'Error saving changes. Please try again.', error?.response?.data?.error);
+//   }
+// };
+
+
+
 
 //   const addModule = () => {
 //     setSelectedLessonPlan([
@@ -98,7 +163,7 @@
 //             subtopics: [
 //               {
 //                 subtopic: "",
-//                 subtopicLearningObjective: "",
+//                 subtopic_learning_objective: "",
 //                 status: "pending",
 //               },
 //             ],
@@ -120,7 +185,7 @@
 //     newLessonPlan[moduleIndex].topics.push({
 //       topic: "",
 //       subtopics: [
-//         { subtopic: "", subtopicLearningObjective: "", status: "pending" },
+//         { subtopic: "", subtopic_learning_objective: "", status: "pending" },
 //       ],
 //     });
 //     setSelectedLessonPlan(newLessonPlan);
@@ -146,7 +211,7 @@
 //     const newLessonPlan = [...selectedLessonPlan];
 //     newLessonPlan[moduleIndex].topics[topicIndex].subtopics.push({
 //       subtopic: "",
-//       subtopicLearningObjective: "",
+//       subtopic_learning_objective: "",
 //       status: "pending",
 //     });
 //     setSelectedLessonPlan(newLessonPlan);
@@ -170,8 +235,9 @@
 //   };
 
 //   const isAnySubtopicApproved = (moduleIndex, topicIndex) => {
-//     const subtopics = selectedLessonPlan[moduleIndex].topics[topicIndex].subtopics;
-//     return subtopics.some(subtopic => subtopic.status === "approved");
+//     const subtopics =
+//       selectedLessonPlan[moduleIndex].topics[topicIndex].subtopics;
+//     return subtopics.some((subtopic) => subtopic.status === "approved");
 //   };
 
 //   return (
@@ -233,7 +299,7 @@
 //                       </div>
 //                     ) : item.status === "pending" ? (
 //                       <div style={{ background: "none" }}>
-//                         <BsEmojiExpressionlessFill size={25} />
+//                         <BsEmojiExpressionlessFill size={22} />
 //                       </div>
 //                     ) : item?.status === "rejected" ? (
 //                       <div style={{ background: "none" }}>
@@ -324,7 +390,10 @@
 //                                 alt="Add Topic"
 //                               />
 //                             </div>
-//                             {!isAnySubtopicApproved(moduleIndex, topicIndex) && (
+//                             {!isAnySubtopicApproved(
+//                               moduleIndex,
+//                               topicIndex
+//                             ) && (
 //                               <div
 //                                 onClick={() =>
 //                                   removeTopic(moduleIndex, topicIndex)
@@ -362,12 +431,18 @@
 //                               {topic.subtopics.map(
 //                                 (subtopic, subtopicIndex) => (
 //                                   <div
-//                                     style={{ padding: "20px", display: "block" }}
+//                                     style={{
+//                                       padding: "20px",
+//                                       display: "block",
+//                                     }}
 //                                     key={subtopicIndex}
 //                                     className="subtopic-section"
 //                                   >
 //                                     <h5
-//                                       style={{ color: "black", display: "flex" }}
+//                                       style={{
+//                                         color: "black",
+//                                         display: "flex",
+//                                       }}
 //                                     >
 //                                       Subtopic {subtopicIndex + 1}
 //                                       <div
@@ -416,12 +491,14 @@
 //                                           )
 //                                         }
 //                                         placeholder="Subtopic Name"
-//                                         disabled={subtopic.status === "approved"}
+//                                         disabled={
+//                                           subtopic.status === "approved"
+//                                         }
 //                                       />
 //                                       <Input
-//                                         name="subtopicLearningObjective"
+//                                         name="subtopic_learning_objective"
 //                                         value={
-//                                           subtopic.subtopicLearningObjective
+//                                           subtopic.subtopic_learning_objective
 //                                         }
 //                                         onChange={(event) =>
 //                                           handleInputChange(
@@ -432,7 +509,9 @@
 //                                           )
 //                                         }
 //                                         placeholder="Subtopic Learning Objective"
-//                                         disabled={subtopic.status === "approved"}
+//                                         disabled={
+//                                           subtopic.status === "approved"
+//                                         }
 //                                       />
 //                                     </div>
 //                                   </div>
@@ -456,8 +535,6 @@
 // };
 
 // export default ViewLessonPlan;
-
-
 import React, { useEffect, useState } from "react";
 import SideBar from "./SideBar";
 import axios from "axios";
@@ -469,6 +546,7 @@ import minus from "../../assets/images/minus.png";
 import { BsEmojiAngryFill, BsEmojiExpressionlessFill } from "react-icons/bs";
 import { MdEmojiEmotions } from "react-icons/md";
 import { getLesson } from "../../protectedRouting/Utils/apiUtils";
+import Swal from "sweetalert2";
 
 const ViewLessonPlan = () => {
   const [empIds, setEmpIds] = useState(null);
@@ -489,6 +567,7 @@ const ViewLessonPlan = () => {
       const employeeId = response?.data?.employee_id;
       const lessonData = await getLesson(employeeId);
       setShowLesson(lessonData);
+      setEmpIds(employeeId);
     } catch (error) {
       console.log(error);
     }
@@ -504,6 +583,15 @@ const ViewLessonPlan = () => {
       const response = await axios.get(
         `http://172.17.19.22:8080/dvp_app/get_lesson_plans/${subjectId}/`
       );
+
+      // Log the entire response to see the structure
+      console.log("Response:", response.data);
+
+      // Log each lesson_plan_id
+      response.data.forEach((plan) => {
+        console.log("Lesson Plan ID:", plan.lessonPlan[0]?.lesson_plan_id);
+      });
+
       setLessonPlans(response.data);
       setSelectedLessonPlan(
         response.data.length === 1 ? response.data[0].lessonPlan : null
@@ -525,7 +613,12 @@ const ViewLessonPlan = () => {
     setSelectedLessonPlan(lessonPlan?.lessonPlan);
   };
 
-  const handleInputChange = (moduleIndex, topicIndex, subtopicIndex, event) => {
+  const handleInputChange = (
+    moduleIndex,
+    topicIndex,
+    subtopicIndex,
+    event
+  ) => {
     const newLessonPlan = [...selectedLessonPlan];
     if (subtopicIndex !== null) {
       newLessonPlan[moduleIndex].topics[topicIndex].subtopics[subtopicIndex][
@@ -540,10 +633,63 @@ const ViewLessonPlan = () => {
     setSelectedLessonPlan(newLessonPlan);
   };
 
-  const saveChanges = () => {
-    const lessonPlanJSON = JSON.stringify(selectedLessonPlan, null, 2);
-    console.log("Lesson Plan JSON:", lessonPlanJSON);
-    message.success("Changes saved successfully!");
+  const saveChanges = async () => {
+    // Add a confirmation prompt with Cancel button using Swal
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to update these changes?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Confirm",
+      cancelButtonText: "Cancel",
+      dangerMode: true,
+    });
+
+    if (!result.isConfirmed) return;
+
+    // Prepare the data for the PUT request
+    const updatedLessonPlan = selectedLessonPlan.map((module) => ({
+      module: module.module,
+      moduleLearningObjective: module.moduleLearningObjective,
+      topics: module.topics.map((topic) => ({
+        topic: topic.topic,
+        subtopics: topic.subtopics.map((subtopic) => ({
+          lesson_plan_id: subtopic.lesson_plan_id,
+          subtopic: subtopic.subtopic,
+          subtopic_learning_objective: subtopic.subtopic_learning_objective,
+          status:
+            subtopic.status === "rejected" ? "pending" : subtopic.status,
+          subtopicLearningObjective: subtopic.subtopicLearningObjective,
+        })),
+      })),
+    }));
+
+    const data = {
+      employee_id: empIds,
+      subject_id: showSelectedSubjectId,
+      updated_lesson_plan: updatedLessonPlan,
+    };
+
+    try {
+      // Make the PUT request
+      const response = await axios.put(
+        "http://172.17.19.22:8080/dvp_app/update_lesson_plans/",
+        data
+      );
+      console.log("PUT response:", response.data);
+
+      // Show a success message with Swal
+      Swal.fire("Success", "Changes saved successfully!", "success");
+    } catch (error) {
+      console.error("Error saving changes", error);
+
+      // Show an error message with Swal
+      Swal.fire(
+        "Error",
+        "Error saving changes. Please try again.",
+        error?.response?.data?.error
+      );
+    }
   };
 
   const addModule = () => {
@@ -558,7 +704,7 @@ const ViewLessonPlan = () => {
             subtopics: [
               {
                 subtopic: "",
-                subtopicLearningObjective: "",
+                subtopic_learning_objective: "",
                 status: "pending",
               },
             ],
@@ -580,7 +726,7 @@ const ViewLessonPlan = () => {
     newLessonPlan[moduleIndex].topics.push({
       topic: "",
       subtopics: [
-        { subtopic: "", subtopicLearningObjective: "", status: "pending" },
+        { subtopic: "", subtopic_learning_objective: "", status: "pending" },
       ],
     });
     setSelectedLessonPlan(newLessonPlan);
@@ -606,7 +752,7 @@ const ViewLessonPlan = () => {
     const newLessonPlan = [...selectedLessonPlan];
     newLessonPlan[moduleIndex].topics[topicIndex].subtopics.push({
       subtopic: "",
-      subtopicLearningObjective: "",
+      subtopic_learning_objective: "",
       status: "pending",
     });
     setSelectedLessonPlan(newLessonPlan);
@@ -630,8 +776,9 @@ const ViewLessonPlan = () => {
   };
 
   const isAnySubtopicApproved = (moduleIndex, topicIndex) => {
-    const subtopics = selectedLessonPlan[moduleIndex].topics[topicIndex].subtopics;
-    return subtopics.some(subtopic => subtopic.status === "approved");
+    const subtopics =
+      selectedLessonPlan[moduleIndex].topics[topicIndex].subtopics;
+    return subtopics.some((subtopic) => subtopic.status === "approved");
   };
 
   return (
@@ -693,7 +840,7 @@ const ViewLessonPlan = () => {
                       </div>
                     ) : item.status === "pending" ? (
                       <div style={{ background: "none" }}>
-                        <BsEmojiExpressionlessFill size={25} />
+                        <BsEmojiExpressionlessFill size={22} />
                       </div>
                     ) : item?.status === "rejected" ? (
                       <div style={{ background: "none" }}>
@@ -784,7 +931,10 @@ const ViewLessonPlan = () => {
                                 alt="Add Topic"
                               />
                             </div>
-                            {!isAnySubtopicApproved(moduleIndex, topicIndex) && (
+                            {!isAnySubtopicApproved(
+                              moduleIndex,
+                              topicIndex
+                            ) && (
                               <div
                                 onClick={() =>
                                   removeTopic(moduleIndex, topicIndex)
@@ -822,12 +972,18 @@ const ViewLessonPlan = () => {
                               {topic.subtopics.map(
                                 (subtopic, subtopicIndex) => (
                                   <div
-                                    style={{ padding: "20px", display: "block" }}
+                                    style={{
+                                      padding: "20px",
+                                      display: "block",
+                                    }}
                                     key={subtopicIndex}
                                     className="subtopic-section"
                                   >
                                     <h5
-                                      style={{ color: "black", display: "flex" }}
+                                      style={{
+                                        color: "black",
+                                        display: "flex",
+                                      }}
                                     >
                                       Subtopic {subtopicIndex + 1}
                                       <div
@@ -881,9 +1037,9 @@ const ViewLessonPlan = () => {
                                         }
                                       />
                                       <Input
-                                        name="subtopicLearningObjective"
+                                        name="subtopic_learning_objective"
                                         value={
-                                          subtopic.subtopicLearningObjective
+                                          subtopic.subtopic_learning_objective
                                         }
                                         onChange={(event) =>
                                           handleInputChange(
