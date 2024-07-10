@@ -1,4 +1,3 @@
-
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaBars, FaHome, FaLock, FaMoneyBill, FaUser } from "react-icons/fa";
 import { RiListSettingsFill } from "react-icons/ri";
@@ -10,7 +9,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import SidebarMenu from "./SidebarMenu";
 import { useDispatch } from "react-redux";
-import { logout } from "../../redux/Slice/loginSlice";  // Adjust the path as needed
+import { logout } from "../../redux/Slice/loginSlice"; // Adjust the path as needed
 
 const routes = [
   {
@@ -28,16 +27,21 @@ const routes = [
         name: "User Configuration",
         icon: <RiListSettingsFill />,
       },
-     
+
       {
         path: "/add-user",
         name: "Add User",
         icon: <FaUser />,
       },
-       {
+      {
         path: "/erf",
         name: "Employee Registration Form",
         icon: <FaMoneyBill />,
+      },
+      {
+        path: "/slot-coordinator",
+        name: "Slot Coordinator",
+        icon: <BsCartCheck />,
       },
     ],
   },
@@ -51,7 +55,7 @@ const routes = [
         name: "Course Settings",
         icon: <SiCoursera />,
       },
-     
+
       {
         path: "/course-allotment",
         name: "Course Allotment",
@@ -67,9 +71,42 @@ const routes = [
         name: "View Lesson Plan",
         icon: <FaMoneyBill />,
       },
-     
     ],
   },
+  {
+    path: "/slot-booking",
+    name: "Slot Booking",
+    icon: <AiTwotoneFileExclamation />,
+    subRoutes: [
+      {
+        path: "/book-slot",
+        name: "Book Slot",
+        icon: <SiCoursera />,
+      },
+
+      {
+        path: "/view-slots",
+        name: "View Slots",
+        icon: <FaMoneyBill />,
+      },
+      
+    ],
+  },
+  {
+    path: "/productionSettings",
+    name: "Production Settings",
+    icon: <BiCog />,
+    subRoutes: [
+      {
+        path: "/studioSettings",
+        name: "Studio Settings",
+        icon: <RiListSettingsFill />,
+      },
+    ],
+  },
+
+ 
+ 
   {
     path: "/lesson-plan",
     name: "Lesson Plan",
@@ -98,29 +135,29 @@ const routes = [
       },
     ],
   },
-  {
-    path: "/production-settings",
-    name: "Production Settings",
-    icon: <BiCog />,
-    exact: true,
-    subRoutes: [
-      {
-        path: "/Studio",
-        name: "Studio",
-        icon: <FaUser />,
-      },
-      {
-        path: "/settings/2fa",
-        name: "Camera Man",
-        icon: <FaLock />,
-      },
-      {
-        path: "/settings/billing",
-        name: "Pendings",
-        icon: <FaMoneyBill />,
-      },
-    ],
-  },
+  // {
+  //   path: "/production-settings",
+  //   name: "Production Settings",
+  //   icon: <BiCog />,
+  //   exact: true,
+  //   subRoutes: [
+  //     {
+  //       path: "/Studio",
+  //       name: "Studio",
+  //       icon: <FaUser />,
+  //     },
+  //     {
+  //       path: "/settings/2fa",
+  //       name: "Camera Man",
+  //       icon: <FaLock />,
+  //     },
+  //     {
+  //       path: "/settings/billing",
+  //       name: "Pendings",
+  //       icon: <FaMoneyBill />,
+  //     },
+  //   ],
+  // },
   {
     path: "/",
     name: "Logout",
@@ -138,7 +175,7 @@ const SideBar = ({ children }) => {
   const permissions = JSON.parse(localStorage.getItem("permissions")) || [];
 
   // Filter the routes excluding Dashboard and Logout
-  const filteredRoutes = routes.filter(route => {
+  const filteredRoutes = routes.filter((route) => {
     if (route.name === "Dashboard" || route.name === "Logout") {
       return false;
     }
@@ -148,7 +185,9 @@ const SideBar = ({ children }) => {
       if (permissions.includes(route.name)) {
         return true;
       }
-      route.subRoutes = route.subRoutes.filter(subRoute => permissions.includes(subRoute.name));
+      route.subRoutes = route.subRoutes.filter((subRoute) =>
+        permissions.includes(subRoute.name)
+      );
       return route.subRoutes.length > 0;
     }
   });
@@ -196,7 +235,8 @@ const SideBar = ({ children }) => {
   return (
     <>
       <div className="main-container">
-        <motion.div style={{ height: "auto", minHeight: "100vh" }}
+        <motion.div
+          style={{ height: "auto", minHeight: "100vh" }}
           animate={{
             width: isOpen ? "300px" : "45px",
             transition: {
@@ -243,12 +283,10 @@ const SideBar = ({ children }) => {
             </AnimatePresence>
           </div>
           <section className="routes">
-            <NavLink
-              to="/dashboard"
-              className="link"
-              activeClassName="active"
-            >
-              <div className="icon"><FaHome /></div>
+            <NavLink to="/dashboard" className="link" activeClassName="active">
+              <div className="icon">
+                <FaHome />
+              </div>
               <AnimatePresence>
                 {isOpen && (
                   <motion.div
@@ -302,11 +340,10 @@ const SideBar = ({ children }) => {
             })}
           </section>
           <div className="bottom_section">
-            <div
-              className="link"
-              onClick={handleLogout}
-            >
-              <div className="icon"><BiLogOut /></div>
+            <div className="link" onClick={handleLogout}>
+              <div className="icon">
+                <BiLogOut />
+              </div>
               <AnimatePresence>
                 {isOpen && (
                   <motion.div

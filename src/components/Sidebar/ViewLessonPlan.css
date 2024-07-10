@@ -164,3 +164,9 @@
   background-color: #d19090;
   
 }
+.ql-formats{
+  margin-right: 0px !important;
+}
+.ql-picker-label {
+  margin-top: 5px !important;
+}

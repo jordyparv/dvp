@@ -36,6 +36,8 @@ const CourseAllotment = () => {
     semesters: {},
     subjects: {},
   });
+
+  const [ currentSession, setCurrentSession ] = useState(null);
   const [open, setOpen] = useState(false);
   const showDrawer = () => {
     setOpen(true);
@@ -55,11 +57,25 @@ const CourseAllotment = () => {
     }
   };
 
-  const getFacultyRequest = async (session) => {
+  const getCurrentSession = async() => {
+    const response = await axios.get(`http://172.17.19.22:8080/dvp_app/current_session/`);
+    setCurrentSession(response?.data?.session_code)
+    console.log(response?.data?.session_code, "__________CURRENT SESSION ____________")
+  }
+
+  useEffect(() => {
+    getCurrentSession();
+    getFacultyRequest(currentSession)
+  }, currentSession)
+
+  const getFacultyRequest = async (currentSession) => {
     try {
       const response = await axios.get(
-        `http://172.17.19.22:8080/dvp_app/select_faculty/?session_code=${session}`
+        // `http://172.17.19.22:8080/dvp_app/select_faculty/?session_code=${currentSession}`
+        `http://172.17.19.22:8080/dvp_app/select_faculty/?session_code=${currentSession}`
       );
+
+      console.log(response, "%%%%%%%%%%%%%%%%%")
 
       setFacultyOption(response?.data);
       setFormDetails((prev) => ({
@@ -268,6 +284,8 @@ const CourseAllotment = () => {
     { title: "Created At", dataIndex: "created_at", key: "created_at" },
     { title: "Status", dataIndex: "status", key: "status" },
   ];
+
+  
   return (
     <div style={{ display: "flex" }}>
       <SideBar />
@@ -300,9 +318,9 @@ const CourseAllotment = () => {
                   <div className="form-row">
                     <label>
                       <p>
-                        <span>Select Session (for Employee)</span>
+                        <span>Current Session</span>
                       </p>
-                      <Select
+                      {/* <Select
                         defaultValue="Select Session"
                         style={{ width: 220 }}
                         onChange={(e) => {
@@ -318,7 +336,8 @@ const CourseAllotment = () => {
                             {session.session_code}
                           </Option>
                         ))}
-                      </Select>
+                      </Select> */}
+                      <Input value={currentSession} placeholder="Current Session" disabled />
                     </label>
                   </div>
 
@@ -348,7 +367,7 @@ const CourseAllotment = () => {
                           ))}
                       </Select>
                     </label>
-                    <label>
+                    {/* <label>
                       <p>
                         <span>Employee ID </span>
                         <span style={{ color: "red" }}>*</span>
@@ -361,7 +380,7 @@ const CourseAllotment = () => {
                         placeholder="Employee ID"
                         required
                       />
-                    </label>
+                    </label> */}
                   </div>
                   <div className="form-row">
                     <label>

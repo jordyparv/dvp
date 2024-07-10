@@ -345,7 +345,7 @@ const Profile = () => {
             <>
               {" "}
               <div className="noti">
-                <h4>Notification</h4>
+                <h5>Lesson Plans For Approval</h5>
                 <div className="notification-wrapper">
                   {lessonStatus && lessonStatus.length > 0 ? (
                     lessonStatus &&

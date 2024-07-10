@@ -38,3 +38,8 @@ Input {
     width: 500px;
     margin-left: 30px;
   }
+.form-edit{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}

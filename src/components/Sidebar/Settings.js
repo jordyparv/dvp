@@ -270,6 +270,7 @@ const Settings = () => {
     const getPermissionTable = await axios(
       `http://172.17.19.22:8080/dvp_app/roles_permissions/`
     );
+    console.log(getPermissionTable, "_________Permission__________")
     setPermissionsOption(getPermissionTable?.data);
     setPermission(getPermissionTable);
     console.log(getPermissionTable, "PER TABLE");
@@ -1036,6 +1037,226 @@ const Settings = () => {
     }
   };
 
+  // const handleEditRoles = async (role) => {
+  //   const { value: formValues } = await Swal.fire({
+  //     title: "Edit Role",
+  //     html: `
+  //       <input id="swal-input1" class="swal2-input" placeholder="Role Name" value="${role.role_name}">
+  
+  //       <select id="swal-input3" class="swal3-input">
+  //         ${role.permission_names.map((permissionName) => (
+  //           <option key={permissionName?.role_id} value={permissionName?.permission_id}>
+  //             {permissionName?.permission_names}
+  //           </option>
+  //         ))}
+  //       </select>
+  
+  //       <select id="swal-input2" class="swal2-input">
+  //         <option value="active" ${role.status === "active" ? "selected" : ""}>Active</option>
+  //         <option value="inactive" ${role.status === "inactive" ? "selected" : ""}>Inactive</option>
+  //       </select>
+  //     `,
+  //     focusConfirm: false,
+  //     preConfirm: () => {
+  //       return {
+  //         permission_name: document.getElementById("swal-input1").value,
+  //         status: document.getElementById("swal-input2").value,
+  //       };
+  //     },
+  //   });
+  
+  //   if (formValues) {
+  //     try {
+  //       const config = {
+  //         method: "PUT",
+  //         url: `http://172.17.19.22:8080/dvp_app/roles_permissions/${role.permission_id}/`,
+  //         data: formValues,
+  //       };
+  
+  //       const response = await axios(config);
+  //       Swal.fire({
+  //         icon: "success",
+  //         title: `Permission ${response?.data?.permission_name} updated successfully`,
+  //         showConfirmButton: false,
+  //         timer: 3000,
+  //       });
+  //       getPermissions(); // Refresh the role data after editing a role
+  //     } catch (error) {
+  //       Swal.fire({
+  //         icon: "error",
+  //         title: "Oops...",
+  //         text: error?.response?.data?.message[0] || "An error occurred",
+  //       });
+  //       console.error(error);
+  //     }
+  //   }
+  // };
+
+  // const handleEditRoles = async (ti) => {
+  //   let permissions = [];
+
+
+  //   try {
+  //     // Fetch the program data from the API
+  //     const permissionResponse = await axios.get(
+  //       "http://172.17.19.22:8080/dvp_app/roles_permissions/"
+  //     );
+  //     permissions = permissionResponse.data;
+  //     console.log(permissionResponse.data, "(+++++++++++++++++++)");
+  //   } catch (error) {
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Oops...",
+  //       text: "Failed to fetch data",
+  //     });
+  //     console.error("Error fetching data:", error);
+  //     return;
+  //   }
+
+  //   // Create options for the program_name dropdown
+  //   const permissionOptions = permissions
+  //     .map(
+  //       (permissions) =>
+  //         `<option value="${permissions.permission_id}" ${
+  //           ti.permission_name === permissions.permission_name ? "selected" : ""
+  //         }>${permissions.permission_name}</option>`
+  //     )
+  //     .join("");
+
+  //   // Create options for the semester_id dropdown
+  
+  //   const { value: formValues } = await Swal.fire({
+  //     title: "Edit Role",
+  //     html: `
+  //       <input id="swal-input1" class="swal2-input" placeholder="Role Name" value="${
+  //         ti.role_name
+  //       }">
+       
+      
+  //       <select id="swal-input4" class="swal2-input" multiple>
+  //         ${permissionOptions}
+  //       </select>
+      
+  //     `,
+  //     focusConfirm: false,
+  //     preConfirm: () => {
+  //       return {
+
+  //         role_name: document.getElementById("swal-input1").value,
+
+  //         permission_names: document.getElementById("swal-input4").value,
+
+  //       };
+  //     },
+  //   });
+
+  //   if (formValues) {
+  //     try {
+  //       const config = {
+  //         method: "PUT",
+  //         url: `http://172.17.19.22:8080/dvp_app/subjects/`,
+  //         data: formValues,
+  //       };
+
+  //       const response = await axios(config);
+  //       Swal.fire({
+  //         icon: "success",
+  //         // title: `Subject ${response?.data?.subject_name} updated successfully`,
+  //         showConfirmButton: false,
+  //         timer: 3000,
+  //       });
+        
+  //     } catch (error) {
+  //       Swal.fire({
+  //         icon: "error",
+  //         title: "Oops...",
+  //         text: error?.response?.data?.message[0] || "An error occurred",
+  //       });
+  //       console.error(error);
+  //     }
+  //   }
+  // };
+  
+
+  const handleEditRoles = async (ti) => {
+    let permissions = [];
+  
+    try {
+      // Fetch the program data from the API
+      const permissionResponse = await axios.get(
+        "http://172.17.19.22:8080/dvp_app/roles_permissions/"
+      );
+      permissions = permissionResponse.data;
+      console.log(permissionResponse.data, "(+++++++++++++++++++)");
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Failed to fetch data",
+      });
+      console.error("Error fetching data:", error);
+      return;
+    }
+  
+    // Create options for the program_name dropdown
+    const permissionOptions = permissions
+      .map(
+        (permission) =>
+          `<option value="${permission.permission_id}" ${
+            ti.permission_name === permission.permission_name ? "selected" : ""
+          }>${permission.permission_name}</option>`
+      )
+      .join("");
+  
+    const { value: formValues } = await Swal.fire({
+      title: "Edit Role",
+      html: `
+        <input id="swal-input1" class="swal2-input" placeholder="Role Name" value="${
+          ti.role_name
+        }">
+       
+        <select id="swal-input4" class="swal2-input" >
+          ${permissionOptions}
+        </select>
+      `,
+      focusConfirm: false,
+      preConfirm: () => {
+        return {
+          role_name: document.getElementById("swal-input1").value,
+          permission_names: Array.from(
+            document.getElementById("swal-input4").selectedOptions
+          ).map(option => option.value),
+        };
+      },
+    });
+  
+    if (formValues) {
+      try {
+        const config = {
+          method: "PUT",
+          url: `http://172.17.19.22:8080/dvp_app/subjects/`,
+          data: formValues,
+        };
+  
+        const response = await axios(config);
+        Swal.fire({
+          icon: "success",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+        
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error?.response?.data?.message[0] || "An error occurred",
+        });
+        console.error(error);
+      }
+    }
+  };
+  
+
   return (
     <div style={{ display: "flex" }}>
       <SideBar />
@@ -1332,7 +1553,7 @@ const Settings = () => {
                                   <td>{item?.status}</td>
                                   <td>
                                     <Button
-                                      onClick={() => handleEditRole(item)}
+                                      onClick={() => handleEditRoles(item)}
                                     >
                                       Edit
                                     </Button>

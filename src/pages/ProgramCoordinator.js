@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Button, Drawer, Input, Select, Table, message } from "antd";
+import {
+  Button,
+  Drawer,
+  Input,
+  Modal,
+  Popconfirm,
+  Select,
+  Table,
+  message,
+} from "antd";
 import axios from "axios";
 
 import Swal from "sweetalert2";
@@ -37,6 +46,12 @@ const ProgramCoordinator = () => {
     semesters: {},
     subjects: {},
   });
+
+  const [currentSession, setCurrentSession] = useState(null);
+  const [totalPc, setTotalPc] = useState([]);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editingRecord, setEditingRecord] = useState("");
+
   const [open, setOpen] = useState(false);
   const showDrawer = () => {
     setOpen(true);
@@ -45,23 +60,43 @@ const ProgramCoordinator = () => {
     setOpen(false);
   };
 
-  const getAllotedData = async () => {
-    try {
-      const response = await axios.get("/dvp_app/course_allotment/");
-      console.log(response, "_____ewe9w");
-      setSubjectData(response?.data);
-    } catch (error) {
-      console.log(error);
-    }
+  // const getAllotedData = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       "http://172.17.19.22:8080/dvp_app/program_coordinators/"
+  //     );
+  //     console.log(response, "Fetched Data");
+  //     setSubjectData(response?.data);
+  //     setTotalPc(response?.data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  const getCurrentSession = async () => {
+    const response = await axios.get(
+      `http://172.17.19.22:8080/dvp_app/current_session/`
+    );
+    setCurrentSession(response?.data?.session_code);
+    console.log(
+      response?.data?.session_code,
+      "__________CURRENT SESSION ____________"
+    );
   };
 
-  const getFacultyRequest = async (session) => {
+  useEffect(() => {
+    getCurrentSession();
+    getFacultyRequest(currentSession);
+  }, currentSession);
+
+  const getFacultyRequest = async (currentSession) => {
     try {
       const response = await axios.get(
-        `http://172.17.19.22:8080/dvp_app/select_pc/?session_code=${session}`
+        `http://172.17.19.22:8080/dvp_app/select_pc/?session_code=${currentSession}`
       );
-
+      console.log(response, "((((((((((((((((((((((((")
       setFacultyOption(response?.data);
+      setTotalPc(response?.data)
       setFormDetails((prev) => ({
         ...prev,
         employees: response?.data,
@@ -260,18 +295,115 @@ const ProgramCoordinator = () => {
   console.log({ formDetails });
 
   const columns = [
-    { title: "Session Code", dataIndex: "session_code", key: "session_code" },
-    { title: "Subject Name", dataIndex: "subjects", key: "subjects" },
+    { title: "PC ID", dataIndex: "pc_id", key: "pc_id" },
+    { title: "Employee ID", dataIndex: "employee_id", key: "employee_id" },
     {
       title: "Employee Name",
       dataIndex: "employee_name",
       key: "employee_name",
     },
-
-    { title: "Program Name", dataIndex: "programs", key: "programs" },
+    { title: "Session Code", dataIndex: "session_code", key: "session_code" },
+    { title: "Session Name", dataIndex: "session_name", key: "session_name" },
+    {
+      title: "Program Names",
+      dataIndex: "prog_names",
+      key: "prog_names",
+      render: (prog_names) => prog_names.join(", "),
+    },
+    {
+      title: "Subject Names",
+      dataIndex: "subject_names",
+      key: "subject_names",
+      render: (subject_names) => subject_names.join(", "),
+    },
+    {
+      title: "Program IDs",
+      dataIndex: "program_id",
+      key: "program_id",
+      render: (program_id) => program_id.join(", "),
+    },
+    {
+      title: "Subject Names",
+      dataIndex: "subject_names",
+      key: "subject_names",
+      render: (subject_names) => subject_names.join(", "),
+    },
+    {
+      title: "Subject IDs",
+      dataIndex: "subject_id",
+      key: "subject_id",
+      render: (subject_id) => subject_id.join(", "),
+    },
     { title: "Created At", dataIndex: "created_at", key: "created_at" },
-    { title: "Status", dataIndex: "status", key: "status" },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (text, record) => (
+        <div>
+          <Button
+            onClick={() => showEditModal(record)}
+            style={{ marginRight: 8 }}
+          >
+            Edit
+          </Button>
+          <Popconfirm
+            title="Are you sure delete this entry?"
+            onConfirm={() => handleDelete(record.pc_id)}
+          >
+            <Button type="danger">Delete</Button>
+          </Popconfirm>
+        </div>
+      ),
+    },
   ];
+
+  const getAllotedData = async () => {
+    try {
+      const response = await axios.get("http://172.17.19.22:8080/dvp_app/program_coordinators/");
+      console.log(response, "Fetched Data");
+      setSubjectData(response?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://172.17.19.22:8080/dvp_app/program_coordinators/${id}/`);
+      message.success('Entry deleted successfully');
+      getAllotedData(); // Refresh the data
+    } catch (error) {
+      console.error('Error deleting entry:', error);
+      message.error('Failed to delete entry');
+    }
+  };
+
+  const showEditModal = (record) => {
+    setEditingRecord(record);
+    setEditModalVisible(true);
+  };
+
+  const handleEditSubmit = async () => {
+    try {
+      const payload = {
+        ...editingRecord,
+        prog_id: editingRecord.program_id, // Convert to prog_id as expected by backend
+      };
+      delete payload.program_id; // Remove program_id from payload
+      await axios.put(`http://172.17.19.22:8080/dvp_app/program_coordinators/${editingRecord.pc_id}/`, payload);
+      message.success('Entry updated successfully');
+      setEditModalVisible(false);
+      getAllotedData(); // Refresh the data
+    } catch (error) {
+      console.error('Error updating entry:', error);
+      message.error('Failed to update entry');
+    }
+  };
+
+  const handleFormChange = (key, value) => {
+    setEditingRecord((prev) => ({ ...prev, [key]: value }));
+  };
+
   return (
     <div style={{ display: "flex" }}>
       <SideBar />
@@ -290,7 +422,7 @@ const ProgramCoordinator = () => {
                     style={{ fontSize: "15px", cursor: "pointer" }}
                     className="title-heading"
                   >
-                    View PC Allotment :
+                    View PC Allotment : {totalPc?.length}
                   </Button>
                 </div>
               </div>
@@ -304,9 +436,9 @@ const ProgramCoordinator = () => {
                   <div className="form-row">
                     <label>
                       <p>
-                        <span>Select Session (for Employee)</span>
+                        <span>Current Session </span>
                       </p>
-                      <Select
+                      {/* <Select
                         defaultValue="Select Session"
                         style={{ width: 220 }}
                         onChange={(e) => {
@@ -322,7 +454,12 @@ const ProgramCoordinator = () => {
                             {session.session_code}
                           </Option>
                         ))}
-                      </Select>
+                      </Select> */}
+                      <Input
+                        disabled
+                        value={currentSession}
+                        placeholder="Current Session "
+                      />
                     </label>
                   </div>
 
@@ -352,7 +489,7 @@ const ProgramCoordinator = () => {
                           ))}
                       </Select>
                     </label>
-                    <label>
+                    {/* <label>
                       <p>
                         <span>Employee ID </span>
                         <span style={{ color: "red" }}>*</span>
@@ -365,7 +502,7 @@ const ProgramCoordinator = () => {
                         placeholder="Employee ID"
                         required
                       />
-                    </label>
+                    </label> */}
                   </div>
                   <div className="form-row">
                     <label>
@@ -578,12 +715,117 @@ const ProgramCoordinator = () => {
               onClose={onClose}
               open={open}
             >
-              <Table
+             {totalPc && totalPc?.length > 0 ? <> <Table
                 dataSource={subjectsData}
                 columns={columns}
-                rowKey="employee_id"
-              />
+                rowKey="pc_id"
+              /></> : `No Program Coordinator in this ${currentSession}`}
             </Drawer>
+
+
+            <Modal
+              title="Edit Entry"
+              visible={editModalVisible}
+              onOk={handleEditSubmit}
+              onCancel={() => setEditModalVisible(false)}
+            >
+              <form>
+                <div className="form-row">
+                  <label>
+                    <p>Employee Name</p>
+                    <Input
+                      value={editingRecord?.employee_name}
+                      onChange={(e) =>
+                        handleFormChange("employee_name", e.target.value)
+                      }
+                    />
+                  </label>
+                </div>
+                <div className="form-row">
+                  <label>
+                    <p>Session Code</p>
+                    <Input
+                      value={editingRecord?.session_code}
+                      onChange={(e) =>
+                        handleFormChange("session_code", e.target.value)
+                      }
+                    />
+                  </label>
+                </div>
+                <div className="form-row">
+                  <label>
+                    <p>Program Names</p>
+                    <Select
+                      mode="multiple"
+                      value={editingRecord?.prog_names}
+                      onChange={(value) =>
+                        handleFormChange("prog_names", value)
+                      }
+                    >
+                      {programIdsOption.map((item) => (
+                        <Option key={item.value} value={item.value}>
+                          {item.label}
+                        </Option>
+                      ))}
+                    </Select>
+                  </label>
+                </div>
+                <div className="form-row">
+                  <label>
+                    <p>Program IDs</p>
+                    <Select
+                      mode="multiple"
+                      value={editingRecord?.program_id}
+                      onChange={(value) =>
+                        handleFormChange("prog_id", value)
+                      }
+                    >
+                      {programIdsOption.map((item) => (
+                        <Option key={item.value} value={item.value}>
+                          {item.label}
+                        </Option>
+                      ))}
+                    </Select>
+                  </label>
+                </div>
+                <div className="form-row">
+                  <label>
+                    <p>Subject Names</p>
+                    <Select
+                      mode="multiple"
+                      value={editingRecord?.subject_names}
+                      onChange={(value) =>
+                        handleFormChange("subject_names", value)
+                      }
+                    >
+                      {subjectsData.map((item) => (
+                        <Option key={item.value} value={item.value}>
+                          {item.label}
+                        </Option>
+                      ))}
+                    </Select>
+                  </label>
+                </div>
+                <div className="form-row">
+                  <label>
+                    <p>Subject IDs</p>
+                    <Select
+                      mode="multiple"
+                      value={editingRecord?.subject_id}
+                      onChange={(value) =>
+                        handleFormChange("subject_id", value)
+                      }
+                    >
+                      {subjectsData.map((item) => (
+                        <Option key={item.value} value={item.value}>
+                          {item.label}
+                        </Option>
+                      ))}
+                    </Select>
+                  </label>
+                </div>
+              </form>
+            </Modal>
           </div>
         </div>
       </div>

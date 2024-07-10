@@ -16,6 +16,9 @@ import { useEffect } from "react";
 import ProgramCoordinator from "./pages/ProgramCoordinator";
 import ViewLessonPlan from "./components/Sidebar/ViewLessonPlan";
 import ApprovalStatus from "./components/Sidebar/ApprovalStatus";
+import BookedSlots from "./Slots/BookedSlots";
+import ViewSlots from "./Slots/ViewSlots";
+import SlotCoordinator from "./Slots/SlotCoordinator";
 
 function App() {
   return (
@@ -100,6 +103,30 @@ function App() {
           element={
             <ProtectedRoute>
              <ApprovalStatus />
+            </ProtectedRoute>
+          }
+        ></Route>
+         <Route
+          path="/book-slot"
+          element={
+            <ProtectedRoute>
+             <BookedSlots />
+            </ProtectedRoute>
+          }
+        ></Route>
+         <Route
+          path="/view-slots"
+          element={
+            <ProtectedRoute>
+             <ViewSlots />
+            </ProtectedRoute>
+          }
+        ></Route>
+         <Route
+          path="/slot-coordinator"
+          element={
+            <ProtectedRoute>
+             <SlotCoordinator />
             </ProtectedRoute>
           }
         ></Route>
