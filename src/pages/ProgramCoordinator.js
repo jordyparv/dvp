@@ -63,7 +63,7 @@ const ProgramCoordinator = () => {
   // const getAllotedData = async () => {
   //   try {
   //     const response = await axios.get(
-  //       "http://172.17.19.22:8080/dvp_app/program_coordinators/"
+  //       "http://172.17.19.25:8080/dvp_app/program_coordinators/"
   //     );
   //     console.log(response, "Fetched Data");
   //     setSubjectData(response?.data);
@@ -75,7 +75,7 @@ const ProgramCoordinator = () => {
 
   const getCurrentSession = async () => {
     const response = await axios.get(
-      `http://172.17.19.22:8080/dvp_app/current_session/`
+      `http://172.17.19.25:8080/dvp_app/current_session/`
     );
     setCurrentSession(response?.data?.session_code);
     console.log(
@@ -92,11 +92,11 @@ const ProgramCoordinator = () => {
   const getFacultyRequest = async (currentSession) => {
     try {
       const response = await axios.get(
-        `http://172.17.19.22:8080/dvp_app/select_pc/?session_code=${currentSession}`
+        `http://172.17.19.25:8080/dvp_app/select_pc/?session_code=${currentSession}`
       );
-      console.log(response, "((((((((((((((((((((((((")
+      console.log(response, "((((((((((((((((((((((((");
       setFacultyOption(response?.data);
-      setTotalPc(response?.data)
+      setTotalPc(response?.data);
       setFormDetails((prev) => ({
         ...prev,
         employees: response?.data,
@@ -115,7 +115,7 @@ const ProgramCoordinator = () => {
   const getSessionCodeRequest = async () => {
     try {
       const response = await axios.get(
-        "http://172.17.19.22:8080/dvp_app/sessions/"
+        "http://172.17.19.25:8080/dvp_app/sessions/"
       );
       console.log("Fetched sessions:", response.data); // Debugging log
 
@@ -136,7 +136,7 @@ const ProgramCoordinator = () => {
 
   const getPLRequest = async () => {
     const response = await axios.get(
-      "http://172.17.19.22:8080/dvp_app/program_levels/"
+      "http://172.17.19.25:8080/dvp_app/program_levels/"
     );
 
     setPLIdsOption(response?.data);
@@ -244,7 +244,8 @@ const ProgramCoordinator = () => {
 
       let data = {
         employee_id: parseInt(employeeId),
-        session_code: userSelectedData?.session_code,
+        // session_code: userSelectedData?.session_code,
+        session_code: currentSession,
         prog_id: userSelectedData?.programs,
         subject_id: aggregatedSubjects, // Combine all selected subject_ids into one array
       };
@@ -359,9 +360,12 @@ const ProgramCoordinator = () => {
 
   const getAllotedData = async () => {
     try {
-      const response = await axios.get("http://172.17.19.22:8080/dvp_app/program_coordinators/");
-      console.log(response, "Fetched Data");
+      const response = await axios.get(
+        "http://172.17.19.25:8080/dvp_app/program_coordinators/"
+      );
+      console.log(response?.data?.length, "Fetched Data");
       setSubjectData(response?.data);
+      setTotalPc(response?.data)
     } catch (error) {
       console.log(error);
     }
@@ -369,12 +373,14 @@ const ProgramCoordinator = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://172.17.19.22:8080/dvp_app/program_coordinators/${id}/`);
-      message.success('Entry deleted successfully');
+      await axios.delete(
+        `http://172.17.19.25:8080/dvp_app/program_coordinators/${id}/`
+      );
+      message.success("Entry deleted successfully");
       getAllotedData(); // Refresh the data
     } catch (error) {
-      console.error('Error deleting entry:', error);
-      message.error('Failed to delete entry');
+      console.error("Error deleting entry:", error);
+      message.error("Failed to delete entry");
     }
   };
 
@@ -390,13 +396,16 @@ const ProgramCoordinator = () => {
         prog_id: editingRecord.program_id, // Convert to prog_id as expected by backend
       };
       delete payload.program_id; // Remove program_id from payload
-      await axios.put(`http://172.17.19.22:8080/dvp_app/program_coordinators/${editingRecord.pc_id}/`, payload);
-      message.success('Entry updated successfully');
+      await axios.put(
+        `http://172.17.19.25:8080/dvp_app/program_coordinators/${editingRecord.pc_id}/`,
+        payload
+      );
+      message.success("Entry updated successfully");
       setEditModalVisible(false);
       getAllotedData(); // Refresh the data
     } catch (error) {
-      console.error('Error updating entry:', error);
-      message.error('Failed to update entry');
+      console.error("Error updating entry:", error);
+      message.error("Failed to update entry");
     }
   };
 
@@ -510,7 +519,7 @@ const ProgramCoordinator = () => {
                         <span>Session Code </span>
                         <span style={{ color: "red" }}>*</span>
                       </p>
-                      <Select
+                      {/* <Select
                         value={userSelectedData?.session_code}
                         onChange={(session_code) =>
                           handleUserInput("session_code", session_code)
@@ -527,7 +536,8 @@ const ProgramCoordinator = () => {
                               {item?.session_code}
                             </Option>
                           ))}
-                      </Select>
+                      </Select> */}
+                       <Input value={currentSession} placeholder="Current Session" disabled />
                     </label>
                     <label>
                       <p>
@@ -715,13 +725,12 @@ const ProgramCoordinator = () => {
               onClose={onClose}
               open={open}
             >
-             {totalPc && totalPc?.length > 0 ? <> <Table
+              <Table
                 dataSource={subjectsData}
                 columns={columns}
                 rowKey="pc_id"
-              /></> : `No Program Coordinator in this ${currentSession}`}
+              />
             </Drawer>
-
 
             <Modal
               title="Edit Entry"
@@ -776,9 +785,7 @@ const ProgramCoordinator = () => {
                     <Select
                       mode="multiple"
                       value={editingRecord?.program_id}
-                      onChange={(value) =>
-                        handleFormChange("prog_id", value)
-                      }
+                      onChange={(value) => handleFormChange("prog_id", value)}
                     >
                       {programIdsOption.map((item) => (
                         <Option key={item.value} value={item.value}>

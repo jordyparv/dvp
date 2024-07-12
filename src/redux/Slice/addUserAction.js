@@ -5,7 +5,7 @@ import { message } from "antd";
 export const addUserAction = (userData) => async (dispatch) => {
   try {
     let config = {
-      url: `http://172.17.19.22:8080/dvp_app/user_create/`,
+      url: `http://172.17.19.25:8080/dvp_app/user_create/`,
       method: "POST",
       headers: {
         "Content-Type": "application/json",

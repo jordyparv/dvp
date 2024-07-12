@@ -18,6 +18,7 @@ const ApprovalStatus = () => {
   const [approvalStatus, setApprovalStatus] = useState({});
   const [remarks, setRemarks] = useState({}); // State to hold remarks for each lesson plan
   const [selectAll, setSelectAll] = useState(false);
+  const [showSelectedSubjectId, setShowSelectedSubjectId] = useState(null);
 
   const getuserId = JSON.parse(localStorage.getItem("prod_cred"));
   const userId = getuserId?.user_id;
@@ -25,13 +26,13 @@ const ApprovalStatus = () => {
   const getEmpId = async () => {
     try {
       const response = await axios(
-        `http://172.17.19.22:8080/dvp_app/select_subject/?user_id=${userId}`
+        `http://172.17.19.25:8080/dvp_app/select_subject/?user_id=${userId}`
       );
       const employeeId = response?.data?.employee_id;
       setEmpIds(employeeId);
 
       const lessonData = await axios.get(
-        `http://172.17.19.22:8080/dvp_app/search-lesson-plan-approval/?employee_id=${employeeId}`
+        `http://172.17.19.25:8080/dvp_app/search-lesson-plan-approval/?employee_id=${employeeId}`
       );
       const lessonPlans = lessonData?.data;
       setLessonPlanName(lessonPlans);
@@ -49,9 +50,15 @@ const ApprovalStatus = () => {
       (item) => item.subject_id === subjectId
     );
     setSelectedSubjectLessonPlans(subjectData.lesson_plans);
+    setShowSelectedSubjectId(subjectId)
     setCurrentSubjectId(subjectId);
   };
 
+
+  const refreshData = async(employeeId) => {
+    const response = await axios.get(`http://172.17.19.25:8080/dvp_app/search-lesson-plan-approval/?employee_id=${employeeId}`);
+
+  }
   // const handleCheckboxChange = async (lessonPlanId, status) => {
   //   const currentStatus = approvalStatus[lessonPlanId];
   //   if (currentStatus === status) {
@@ -162,12 +169,12 @@ const ApprovalStatus = () => {
           };
   
           await axios.put(
-            `http://172.17.19.22:8080/dvp_app/lesson-plans/${plan.lesson_plan_id}/`,
+            `http://172.17.19.25:8080/dvp_app/lesson-plans/${plan.lesson_plan_id}/`,
             data
           );
         }
   
-        getEmpId();
+        refreshData()
         Swal.fire("Success", "Changes have been submitted.", "success");
       } catch (error) {
         console.log(error);
@@ -186,7 +193,11 @@ const ApprovalStatus = () => {
           <h4>Action Needed</h4>
           {lessonPlanName &&
             lessonPlanName.map((item) => (
-              <div key={item.subject_id} className="notification">
+              <div key={item.subject_id}  className={`notification ${
+                showSelectedSubjectId === item?.subject_id
+                  ? "selectedClass"
+                  : null
+              }`}>
                 <div>Lesson Plan for {item?.subject_name}</div>
                 <div>
                   <div

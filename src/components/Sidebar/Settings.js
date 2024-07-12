@@ -49,7 +49,7 @@ const Settings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.19.22:8080/dvp_app/roles/`,
+        url: `http://172.17.19.25:8080/dvp_app/roles/`,
         data,
       };
 
@@ -78,7 +78,7 @@ const Settings = () => {
         status: permissionStatus,
       };
       let config = {
-        url: `http://172.17.19.22:8080/dvp_app/roles_permissions/`,
+        url: `http://172.17.19.25:8080/dvp_app/roles_permissions/`,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -113,7 +113,7 @@ const Settings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.19.22:8080/dvp_app/departments/`,
+        url: `http://172.17.19.25:8080/dvp_app/departments/`,
         data,
       };
 
@@ -143,7 +143,7 @@ const Settings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.19.22:8080/dvp_app/title/`,
+        url: `http://172.17.19.25:8080/dvp_app/title/`,
         data,
       };
 
@@ -173,7 +173,7 @@ const Settings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.19.22:8080/dvp_app/designation/`,
+        url: `http://172.17.19.25:8080/dvp_app/designation/`,
         data,
       };
 
@@ -203,7 +203,7 @@ const Settings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.19.22:8080/dvp_app/employee_type/`,
+        url: `http://172.17.19.25:8080/dvp_app/employee_type/`,
         data,
       };
 
@@ -233,7 +233,7 @@ const Settings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.19.22:8080/dvp_app/genders/`,
+        url: `http://172.17.19.25:8080/dvp_app/genders/`,
         data,
       };
 
@@ -260,7 +260,7 @@ const Settings = () => {
 
   const getRole = async () => {
     const getRoleTable = await axios(
-      `http://172.17.19.22:8080/dvp_app/roles/`
+      `http://172.17.19.25:8080/dvp_app/roles/`
     );
     setRoleData(getRoleTable);
     console.log(getRoleTable, "_____ROLE______");
@@ -268,7 +268,7 @@ const Settings = () => {
 
   const getPermissions = async () => {
     const getPermissionTable = await axios(
-      `http://172.17.19.22:8080/dvp_app/roles_permissions/`
+      `http://172.17.19.25:8080/dvp_app/roles_permissions/`
     );
     console.log(getPermissionTable, "_________Permission__________")
     setPermissionsOption(getPermissionTable?.data);
@@ -277,31 +277,31 @@ const Settings = () => {
   };
   const getDepart = async () => {
     const getDepartTable = await axios(
-      `http://172.17.19.22:8080/dvp_app/departments/`
+      `http://172.17.19.25:8080/dvp_app/departments/`
     );
     setDepartData(getDepartTable);
   };
   const getTitle = async () => {
     const getTitleTable = await axios(
-      `http://172.17.19.22:8080/dvp_app/title/`
+      `http://172.17.19.25:8080/dvp_app/title/`
     );
     setTitleData(getTitleTable);
   };
   const getDesig = async () => {
     const getDesigTable = await axios(
-      `http://172.17.19.22:8080/dvp_app/designation/`
+      `http://172.17.19.25:8080/dvp_app/designation/`
     );
     setDesigData(getDesigTable);
   };
   const getEmpType = async () => {
     const getEmpTable = await axios(
-      `http://172.17.19.22:8080/dvp_app/employee_type/`
+      `http://172.17.19.25:8080/dvp_app/employee_type/`
     );
     setEmpData(getEmpTable);
   };
   const getGender = async () => {
     const getGenderTable = await axios(
-      `http://172.17.19.22:8080/dvp_app/genders/`
+      `http://172.17.19.25:8080/dvp_app/genders/`
     );
     setGenData(getGenderTable);
   };
@@ -390,7 +390,7 @@ const Settings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.19.22:8080/dvp_app/roles/${ro.role_id}/`,
+          url: `http://172.17.19.25:8080/dvp_app/roles/${ro.role_id}/`,
           data: formValues,
         };
   
@@ -455,7 +455,7 @@ const Settings = () => {
   //     try {
   //       const config = {
   //         method: "PUT",
-  //         url: `http://172.17.19.22:8080/dvp_app/roles/${ro.role_id}/`,
+  //         url: `http://172.17.19.25:8080/dvp_app/roles/${ro.role_id}/`,
   //         data: formValues,
   //       };
 
@@ -507,7 +507,7 @@ const Settings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.19.22:8080/dvp_app/departments/${de.dept_id}/`,
+          url: `http://172.17.19.25:8080/dvp_app/departments/${de.dept_id}/`,
           data: formValues,
         };
 
@@ -559,7 +559,7 @@ const Settings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.19.22:8080/dvp_app/title/${ti.title_id}/`,
+          url: `http://172.17.19.25:8080/dvp_app/title/${ti.title_id}/`,
           data: formValues,
         };
 
@@ -610,7 +610,7 @@ const Settings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.19.22:8080/dvp_app/designation/${ti.desig_id}/`,
+          url: `http://172.17.19.25:8080/dvp_app/designation/${ti.desig_id}/`,
           data: formValues,
         };
 
@@ -662,7 +662,7 @@ const Settings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.19.22:8080/dvp_app/employee_type/${ti.emp_type_id}/`,
+          url: `http://172.17.19.25:8080/dvp_app/employee_type/${ti.emp_type_id}/`,
           data: formValues,
         };
 
@@ -713,7 +713,7 @@ const Settings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.19.22:8080/dvp_app/genders/${ti.gender_id}/`,
+          url: `http://172.17.19.25:8080/dvp_app/genders/${ti.gender_id}/`,
           data: formValues,
         };
 
@@ -749,7 +749,7 @@ const Settings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.19.22:8080/dvp_app/roles/${role.role_id}`,
+          url: `http://172.17.19.25:8080/dvp_app/roles/${role.role_id}`,
         };
 
         await axios(config);
@@ -784,7 +784,7 @@ const Settings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.19.22:8080/dvp_app/departments/${dept.dept_id}`,
+          url: `http://172.17.19.25:8080/dvp_app/departments/${dept.dept_id}`,
         };
 
         await axios(config);
@@ -819,7 +819,7 @@ const Settings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.19.22:8080/dvp_app/title/${title.title_id}`,
+          url: `http://172.17.19.25:8080/dvp_app/title/${title.title_id}`,
         };
 
         await axios(config);
@@ -854,7 +854,7 @@ const Settings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.19.22:8080/dvp_app/designation/${desig.desig_id}`,
+          url: `http://172.17.19.25:8080/dvp_app/designation/${desig.desig_id}`,
         };
 
         await axios(config);
@@ -889,7 +889,7 @@ const Settings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.19.22:8080/dvp_app/employee_type/${emp.emp_type_id}`,
+          url: `http://172.17.19.25:8080/dvp_app/employee_type/${emp.emp_type_id}`,
         };
 
         await axios(config);
@@ -924,7 +924,7 @@ const Settings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.19.22:8080/dvp_app/genders/${gen.gender_id}`,
+          url: `http://172.17.19.25:8080/dvp_app/genders/${gen.gender_id}`,
         };
 
         await axios(config);
@@ -959,7 +959,7 @@ const Settings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.19.22:8080/dvp_app/roles_permissions/${per.permission_id}`,
+          url: `http://172.17.19.25:8080/dvp_app/roles_permissions/${per.permission_id}`,
         };
 
         await axios(config);
@@ -1014,7 +1014,7 @@ const Settings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.19.22:8080/dvp_app/roles_permissions/${per.permission_id}/`,
+          url: `http://172.17.19.25:8080/dvp_app/roles_permissions/${per.permission_id}/`,
           data: formValues,
         };
 
@@ -1069,7 +1069,7 @@ const Settings = () => {
   //     try {
   //       const config = {
   //         method: "PUT",
-  //         url: `http://172.17.19.22:8080/dvp_app/roles_permissions/${role.permission_id}/`,
+  //         url: `http://172.17.19.25:8080/dvp_app/roles_permissions/${role.permission_id}/`,
   //         data: formValues,
   //       };
   
@@ -1099,7 +1099,7 @@ const Settings = () => {
   //   try {
   //     // Fetch the program data from the API
   //     const permissionResponse = await axios.get(
-  //       "http://172.17.19.22:8080/dvp_app/roles_permissions/"
+  //       "http://172.17.19.25:8080/dvp_app/roles_permissions/"
   //     );
   //     permissions = permissionResponse.data;
   //     console.log(permissionResponse.data, "(+++++++++++++++++++)");
@@ -1154,7 +1154,7 @@ const Settings = () => {
   //     try {
   //       const config = {
   //         method: "PUT",
-  //         url: `http://172.17.19.22:8080/dvp_app/subjects/`,
+  //         url: `http://172.17.19.25:8080/dvp_app/subjects/`,
   //         data: formValues,
   //       };
 
@@ -1184,7 +1184,7 @@ const Settings = () => {
     try {
       // Fetch the program data from the API
       const permissionResponse = await axios.get(
-        "http://172.17.19.22:8080/dvp_app/roles_permissions/"
+        "http://172.17.19.25:8080/dvp_app/roles_permissions/"
       );
       permissions = permissionResponse.data;
       console.log(permissionResponse.data, "(+++++++++++++++++++)");
@@ -1234,7 +1234,7 @@ const Settings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.19.22:8080/dvp_app/subjects/`,
+          url: `http://172.17.19.25:8080/dvp_app/subjects/`,
           data: formValues,
         };
   

@@ -170,3 +170,12 @@
 .ql-picker-label {
   margin-top: 5px !important;
 }
+.modalApproved{
+  color: green;
+}
+.modalPending{
+  color: #dc3545;
+}
+.ant-modal-content{
+  width: fit-content;
+}

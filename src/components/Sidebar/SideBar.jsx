@@ -38,11 +38,7 @@ const routes = [
         name: "Employee Registration Form",
         icon: <FaMoneyBill />,
       },
-      {
-        path: "/slot-coordinator",
-        name: "Slot Coordinator",
-        icon: <BsCartCheck />,
-      },
+     
     ],
   },
   {

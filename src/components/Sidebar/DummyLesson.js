@@ -33,7 +33,7 @@ const ViewLessonPlan = () => {
   const getEmpId = async () => {
     try {
       const response = await axios(
-        `http://172.17.19.22:8080/dvp_app/select_subject/?user_id=${userId}`
+        `http://172.17.19.25:8080/dvp_app/select_subject/?user_id=${userId}`
       );
       const employeeId = response?.data?.employee_id;
       setEmpIds(employeeId);

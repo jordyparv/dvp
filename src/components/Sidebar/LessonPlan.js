@@ -151,7 +151,7 @@ const LessonPlan = () => {
   const handleFinalSubmit = async (e) => {
     try {
       const response = await axios.post(
-        "http://172.17.19.22:8080/dvp_app/lesson-plans/",
+        "http://172.17.19.25:8080/dvp_app/lesson-plans/",
         submittedData
       );
       console.log(response.data, "Submitted");
@@ -183,7 +183,7 @@ const LessonPlan = () => {
   const getSubject = async () => {
     try {
       const response = await axios(
-        `http://172.17.19.22:8080/dvp_app/select_subject/?user_id=${userId}`
+        `http://172.17.19.25:8080/dvp_app/select_subject/?user_id=${userId}`
       );
       console.log(response?.data, "SUBJECTS");
       const getEmpId = response?.data?.employee_id;
@@ -197,7 +197,7 @@ const LessonPlan = () => {
   const getSession = async () => {
     try {
       const response = await axios(
-        `http://172.17.19.22:8080/dvp_app/current_session/`
+        `http://172.17.19.25:8080/dvp_app/current_session/`
       );
       console.log(response?.data, "Session");
       setCurrentSession(response?.data);

@@ -71,7 +71,7 @@ const CourseSettings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.19.22:8080/dvp_app/sessions/`,
+        url: `http://172.17.19.25:8080/dvp_app/sessions/`,
         data,
       };
 
@@ -96,7 +96,7 @@ const CourseSettings = () => {
 
   const getSessionData = async () => {
     const response = await axios.get(
-      "http://172.17.19.22:8080/dvp_app/sessions/"
+      "http://172.17.19.25:8080/dvp_app/sessions/"
     );
     console.log(response);
     setSessionData(response);
@@ -110,7 +110,7 @@ const CourseSettings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.19.22:8080/dvp_app/program_levels/`,
+        url: `http://172.17.19.25:8080/dvp_app/program_levels/`,
         data,
       };
 
@@ -136,7 +136,7 @@ const CourseSettings = () => {
   const getProgramLevel = async () => {
     try {
       const getPLData = await axios.get(
-        "http://172.17.19.22:8080/dvp_app/program_levels/"
+        "http://172.17.19.25:8080/dvp_app/program_levels/"
       );
       setPLDATA(getPLData);
       setProgramLevelOption(getPLData?.data);
@@ -154,7 +154,7 @@ const CourseSettings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.19.22:8080/dvp_app/semesters/`,
+        url: `http://172.17.19.25:8080/dvp_app/semesters/`,
         data,
       };
 
@@ -214,7 +214,7 @@ const CourseSettings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.19.22:8080/dvp_app/programs/`,
+        url: `http://172.17.19.25:8080/dvp_app/programs/`,
         data,
       };
 
@@ -241,7 +241,7 @@ const CourseSettings = () => {
   const getProgram = async () => {
     try {
       const getProgramData = await axios.get(
-        "http://172.17.19.22:8080/dvp_app/programs/"
+        "http://172.17.19.25:8080/dvp_app/programs/"
       );
       setProgramData(getProgramData);
       setProgramOption(getProgramData?.data);
@@ -262,7 +262,7 @@ const CourseSettings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.19.22:8080/dvp_app/subjects/`,
+        url: `http://172.17.19.25:8080/dvp_app/subjects/`,
         data,
       };
 
@@ -288,7 +288,7 @@ const CourseSettings = () => {
   const getSubjects = async () => {
     try {
       const getSubjectData = await axios.get(
-        "http://172.17.19.22:8080/dvp_app/subjects/"
+        "http://172.17.19.25:8080/dvp_app/subjects/"
       );
       setSubjectData(getSubjectData);
       console.log(getSubjectData, "getSubjectData ");
@@ -489,7 +489,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.19.22:8080/dvp_app/sessions/${ti.session_code}/`,
+          url: `http://172.17.19.25:8080/dvp_app/sessions/${ti.session_code}/`,
           data: formValues,
         };
 
@@ -541,7 +541,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.19.22:8080/dvp_app/program_levels/${ti.prog_level_id}/`,
+          url: `http://172.17.19.25:8080/dvp_app/program_levels/${ti.prog_level_id}/`,
           data: formValues,
         };
 
@@ -593,7 +593,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.19.22:8080/dvp_app/semesters/${ti.semester_id}/`,
+          url: `http://172.17.19.25:8080/dvp_app/semesters/${ti.semester_id}/`,
           data: formValues,
         };
 
@@ -650,7 +650,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.19.22:8080/dvp_app/programs/${ti.program_id}/`,
+          url: `http://172.17.19.25:8080/dvp_app/programs/${ti.program_id}/`,
           data: formValues,
         };
 
@@ -681,19 +681,19 @@ const CourseSettings = () => {
     try {
       // Fetch the program data from the API
       const programResponse = await axios.get(
-        "http://172.17.19.22:8080/dvp_app/programs/"
+        "http://172.17.19.25:8080/dvp_app/programs/"
       );
       programs = programResponse.data;
 
       // Fetch the semester data from the API
       const semesterResponse = await axios.get(
-        "http://172.17.19.22:8080/dvp_app/semesters/"
+        "http://172.17.19.25:8080/dvp_app/semesters/"
       );
       semesters = semesterResponse.data;
 
       // Fetch the prog_id data from the API
       const progIdResponse = await axios.get(
-        "http://172.17.19.22:8080/dvp_app/program_levels/"
+        "http://172.17.19.25:8080/dvp_app/program_levels/"
       );
       progIds = progIdResponse.data;
     } catch (error) {
@@ -790,7 +790,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.19.22:8080/dvp_app/subjects/${ti.subject_id}/`,
+          url: `http://172.17.19.25:8080/dvp_app/subjects/${ti.subject_id}/`,
           data: formValues,
         };
 
@@ -827,7 +827,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.19.22:8080/dvp_app/sessions/${emp.session_code}`,
+          url: `http://172.17.19.25:8080/dvp_app/sessions/${emp.session_code}`,
         };
 
         await axios(config);
@@ -863,7 +863,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.19.22:8080/dvp_app/program_levels/${emp.prog_level_id}`,
+          url: `http://172.17.19.25:8080/dvp_app/program_levels/${emp.prog_level_id}`,
         };
 
         await axios(config);
@@ -899,7 +899,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.19.22:8080/dvp_app/semesters/${emp.semester_id}`,
+          url: `http://172.17.19.25:8080/dvp_app/semesters/${emp.semester_id}`,
         };
 
         await axios(config);
@@ -935,7 +935,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.19.22:8080/dvp_app/programs/${emp.program_id}`,
+          url: `http://172.17.19.25:8080/dvp_app/programs/${emp.program_id}`,
         };
 
         await axios(config);
@@ -1002,7 +1002,7 @@ const CourseSettings = () => {
     if (selectedSession) {
       try {
         const response = await axios.post(
-          "http://172.17.19.22:8080/dvp_app/current_session/",
+          "http://172.17.19.25:8080/dvp_app/current_session/",
           {
             session_code: selectedSession.session_code,
           },

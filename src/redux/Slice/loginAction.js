@@ -9,7 +9,7 @@ export const loginUser = (email, password, navigate) => async (dispatch) => {
       password: password,
     };
     const config = {
-      url: `http://172.17.19.22:8080/dvp_app/login/`,
+      url: `http://172.17.19.25:8080/dvp_app/login/`,
 
       method: "POST",
       headers: {

@@ -58,7 +58,7 @@ const CourseAllotment = () => {
   };
 
   const getCurrentSession = async() => {
-    const response = await axios.get(`http://172.17.19.22:8080/dvp_app/current_session/`);
+    const response = await axios.get(`http://172.17.19.25:8080/dvp_app/current_session/`);
     setCurrentSession(response?.data?.session_code)
     console.log(response?.data?.session_code, "__________CURRENT SESSION ____________")
   }
@@ -71,8 +71,8 @@ const CourseAllotment = () => {
   const getFacultyRequest = async (currentSession) => {
     try {
       const response = await axios.get(
-        // `http://172.17.19.22:8080/dvp_app/select_faculty/?session_code=${currentSession}`
-        `http://172.17.19.22:8080/dvp_app/select_faculty/?session_code=${currentSession}`
+        // `http://172.17.19.25:8080/dvp_app/select_faculty/?session_code=${currentSession}`
+        `http://172.17.19.25:8080/dvp_app/select_faculty/?session_code=${currentSession}`
       );
 
       console.log(response, "%%%%%%%%%%%%%%%%%")
@@ -97,7 +97,7 @@ const CourseAllotment = () => {
   const getSessionCodeRequest = async () => {
     try {
       const response = await axios.get(
-        "http://172.17.19.22:8080/dvp_app/sessions/"
+        "http://172.17.19.25:8080/dvp_app/sessions/"
       );
       console.log("Fetched sessions:", response.data); // Debugging log
 
@@ -118,7 +118,7 @@ const CourseAllotment = () => {
 
   const getPLRequest = async () => {
     const response = await axios.get(
-      "http://172.17.19.22:8080/dvp_app/program_levels/"
+      "http://172.17.19.25:8080/dvp_app/program_levels/"
     );
 
     setPLIdsOption(response?.data);
@@ -226,7 +226,8 @@ const CourseAllotment = () => {
 
       let data = {
         employee_id: parseInt(employeeId),
-        session_code: userSelectedData?.session_code,
+        // session_code: userSelectedData?.session_code,
+        session_code: currentSession,
         prog_id: userSelectedData?.programs,
         subject_id: aggregatedSubjects, // Combine all selected subject_ids into one array
       };
@@ -388,7 +389,7 @@ const CourseAllotment = () => {
                         <span>Session Code </span>
                         <span style={{ color: "red" }}>*</span>
                       </p>
-                      <Select
+                      {/* <Select
                         value={userSelectedData?.session_code}
                         onChange={(session_code) =>
                           handleUserInput("session_code", session_code)
@@ -405,7 +406,8 @@ const CourseAllotment = () => {
                               {item?.session_code}
                             </Option>
                           ))}
-                      </Select>
+                      </Select> */}
+                       <Input value={currentSession} placeholder="Current Session" disabled />
                     </label>
                     <label>
                       <p>
@@ -485,7 +487,7 @@ const CourseAllotment = () => {
                               <span>Select Semester </span>
                               <span style={{ color: "red" }}>*</span>
                             </p>
-                            <Select
+                            <Select style={{width:"200px"}}
                               mode="multiple"
                               value={
                                 userSelectedData?.semesters[program_id] || []
@@ -538,7 +540,7 @@ const CourseAllotment = () => {
                                 <span>Select Subjects</span>
                                 <span style={{ color: "red" }}>*</span>
                               </p>
-                              <Select
+                              <Select style={{width:"300px"}}
                                 mode="multiple"
                                 value={
                                   userSelectedData?.subjects[program_id]

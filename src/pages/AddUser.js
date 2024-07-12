@@ -52,7 +52,7 @@ const AddUser = () => {
   const departmentRequest = async () => {
     try {
       const getDepartment = await axios(
-        "http://172.17.19.22:8080/dvp_app/departments/"
+        "http://172.17.19.25:8080/dvp_app/departments/"
       );
 
       //   setUserDepartment(getDepartment);
@@ -68,7 +68,7 @@ const AddUser = () => {
   const userRoleRequest = async () => {
     try {
       const getUserRole = await axios(
-        "http://172.17.19.22:8080/dvp_app/roles/"
+        "http://172.17.19.25:8080/dvp_app/roles/"
       );
 
       setUserRoleOption(getUserRole);
@@ -83,7 +83,7 @@ const AddUser = () => {
   const userGenderReq = async () => {
     try {
       const getUserGender = await axios(
-        "http://172.17.19.22:8080/dvp_app/genders/"
+        "http://172.17.19.25:8080/dvp_app/genders/"
       );
 
       setUserGenderOption(getUserGender);
@@ -97,7 +97,7 @@ const AddUser = () => {
   const userTable = async () => {
     try {
       const getUserData = await axios(
-        "http://172.17.19.22:8080/dvp_app/user_create/"
+        "http://172.17.19.25:8080/dvp_app/user_create/"
       );
 
       setUserData(getUserData);
@@ -165,7 +165,7 @@ const AddUser = () => {
 
     try {
       await axios.put(
-        `http://172.17.19.22:8080/dvp_app/user_table/${currentUser.id}/`,
+        `http://172.17.19.25:8080/dvp_app/user_table/${currentUser.id}/`,
         formData
       );
       message.success("User updated successfully!");

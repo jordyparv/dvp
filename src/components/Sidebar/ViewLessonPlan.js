@@ -49,13 +49,15 @@ const ViewLessonPlan = () => {
   const [showScript, setShowScript] = useState([]);
   const [scriptModal, setScriptModal] = useState(false);
 
+  const [scriptDataStatus, setScriptDataStatus] = useState("");
+
   const getuserId = JSON.parse(localStorage.getItem("prod_cred"));
   const userId = getuserId?.user_id;
 
   const getEmpId = async () => {
     try {
       const response = await axios.get(
-        `http://172.17.19.22:8080/dvp_app/select_subject/?user_id=${userId}`
+        `http://172.17.19.25:8080/dvp_app/select_subject/?user_id=${userId}`
       );
       const employeeId = response?.data?.employee_id;
       const lessonData = await getLesson(employeeId);
@@ -74,7 +76,7 @@ const ViewLessonPlan = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://172.17.19.22:8080/dvp_app/get_lesson_plans/${subjectId}/`
+        `http://172.17.19.25:8080/dvp_app/get_lesson_plans/${subjectId}/`
       );
 
       // Log the entire response to see the structure
@@ -161,7 +163,7 @@ const ViewLessonPlan = () => {
     try {
       // Make the PUT request
       const response = await axios.put(
-        "http://172.17.19.22:8080/dvp_app/update_lesson_plans/",
+        "http://172.17.19.25:8080/dvp_app/update_lesson_plans/",
         data
       );
       console.log("PUT response:", response.data);
@@ -271,7 +273,7 @@ const ViewLessonPlan = () => {
 
   const getSubtopic = async (subjectId) => {
     const response = await axios.get(
-      `http://172.17.19.22:8080/dvp_app/approved_subtopics/${subjectId}/`
+      `http://172.17.19.25:8080/dvp_app/approved_subtopics/${subjectId}/`
     );
     console.log(response?.data, "GET IT");
     setShowLessonDrawer(response?.data);
@@ -319,7 +321,7 @@ const ViewLessonPlan = () => {
         console.log(data);
         setShowScript(data);
         const response = await axios.post(
-          "http://172.17.19.22:8080/dvp_app/subtopic_uploads/",
+          "http://172.17.19.25:8080/dvp_app/subtopic_uploads/",
           data
         );
         Swal.fire({
@@ -362,12 +364,14 @@ const ViewLessonPlan = () => {
       setCurrentLessonPlanId(lessonPlanId);
       console.log(lessonPlanId, "VIEW ID");
       const response = await axios.get(
-        `http://172.17.19.22:8080/dvp_app/search_script/${lessonPlanId}/`
+        `http://172.17.19.25:8080/dvp_app/search_script/${lessonPlanId}/`
       );
       setScriptData(response);
+      setScriptDataStatus(response?.data);
       console.log(response, "VVVVVVVVVVVVVVVVVVVVVVVVVVVv");
     } catch (error) {
       console.log(error);
+      message.warning(`${error}`);
     }
   };
   //text style
@@ -403,6 +407,12 @@ const ViewLessonPlan = () => {
     "image",
     "video",
   ];
+
+  const showError = () => {
+    message.warning(
+      "Your Script for this subtopic is already approved, cannot be updated"
+    );
+  };
 
   return (
     <div style={{ display: "flex" }} className="production">
@@ -517,9 +527,7 @@ const ViewLessonPlan = () => {
                   <th scope="col">Topic</th>
                   <th scope="col">Sub Topic</th>
                   <th scope="col">Approved By</th>
-                  <th style={{ background: "#f3c1c1" }} scope="col">
-                    Upload Script
-                  </th>
+                  <th scope="col">Upload Script</th>
                   <th scope="col">Status</th>
                   <th scope="col">Remark</th>
                 </tr>
@@ -539,17 +547,37 @@ const ViewLessonPlan = () => {
                       </td>
 
                       <td className="text-center">
-                        <Popover
-                          title={`Upload Script for subtopic ${item?.subtopic}`}
-                        >
-                          <img
-                            onClick={() =>
-                              showModalScript(item?.lesson_plan_id)
-                            }
-                            style={{ width: "25px", cursor: "pointer" }}
-                            src={pastescript}
-                          />
-                        </Popover>
+                        {item?.approved === "Approved" ? (
+                          <>
+                            {" "}
+                            <Popover title={`Already Approved `}>
+                              <img
+                                onClick={showError}
+                                style={{
+                                  width: "25px",
+                                  cursor: "pointer",
+                                  filter: "blur(1px)",
+                                }}
+                                src={pastescript}
+                              />
+                            </Popover>
+                          </>
+                        ) : (
+                          <>
+                            {" "}
+                            <Popover
+                              title={`Upload Script for subtopic ${item?.subtopic}`}
+                            >
+                              <img
+                                onClick={() =>
+                                  showModalScript(item?.lesson_plan_id)
+                                }
+                                style={{ width: "25px", cursor: "pointer" }}
+                                src={pastescript}
+                              />
+                            </Popover>
+                          </>
+                        )}
                         <EyeOutlined
                           onClick={() => showMyScript(item?.lesson_plan_id)}
                           style={{
@@ -559,9 +587,10 @@ const ViewLessonPlan = () => {
                           }}
                         />
                       </td>
-                      <td>Pending</td>
+                      <td>{item?.approved}</td>
+                      {/* <td>{item?.approved === "approved" ? "Approved" : item?.approved === "rejected" ? "Rejected" : "Pending"}</td> */}
                       <td>
-                        <Popover title="Remark">Remark</Popover>
+                        <Popover title="Remark">{item?.remarks}</Popover>
                       </td>
                     </tr>
                   ))}
@@ -590,9 +619,20 @@ const ViewLessonPlan = () => {
             placeholder="Write your script here..."
           />
         </Modal>
-        <Modal title="View Script" open={scriptModal} onOk={handleCancel}>
-        {/* <p>{scriptData ? stripHtmlTags(scriptData?.data?.script) : ''}</p> */}
-        <div dangerouslySetInnerHTML={{ __html: scriptData?.data?.script }} />
+        <Modal   title="View Script" open={scriptModal} onOk={handleCancel}>
+          {/* <p>{scriptData ? stripHtmlTags(scriptData?.data?.script) : ''}</p> */}
+          {/* <div dangerouslySetInnerHTML={{ __html: scriptData?.data?.script }} /> */}
+          <div >
+            {scriptData?.data?.script ? (
+              <div
+                dangerouslySetInnerHTML={{ __html: scriptData.data.script }}
+              />
+            ) : (
+              <p>Script not found</p>
+            )}
+          </div>
+
+          {/* <div  className={scriptData?.data?.approved === "approved" ? "modalApproved" : "modalPending"} >{scriptData?.data?.approved === "approved" ? "Approved by PC" : scriptData?.data?.approved === "pending" ? "Pending" : "Rejected"}</div> */}
         </Modal>
 
         {loading ? (

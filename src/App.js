@@ -19,6 +19,7 @@ import ApprovalStatus from "./components/Sidebar/ApprovalStatus";
 import BookedSlots from "./Slots/BookedSlots";
 import ViewSlots from "./Slots/ViewSlots";
 import SlotCoordinator from "./Slots/SlotCoordinator";
+import ScriptStatus from "./components/Sidebar/ScriptStatus";
 
 function App() {
   return (
@@ -127,6 +128,14 @@ function App() {
           element={
             <ProtectedRoute>
              <SlotCoordinator />
+            </ProtectedRoute>
+          }
+        ></Route>
+         <Route
+          path="/script-status"
+          element={
+            <ProtectedRoute>
+             <ScriptStatus />
             </ProtectedRoute>
           }
         ></Route>

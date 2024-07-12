@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Profile.css";
-import { Avatar, Calendar, Empty, List } from "antd";
+import { Avatar, Badge, Calendar, Empty, List } from "antd";
 
 import {
   Button,
@@ -26,11 +26,15 @@ import Calender from "./Calender";
 import {
   getApprovalStatus,
   getLesson,
+  getScriptStatus,
 } from "../protectedRouting/Utils/apiUtils";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { EyeOutlined } from "@ant-design/icons";
 import pending from "../assets/images/pending.gif";
+import lesson from "../assets/images/lesson.png";
+import go from "../assets/images/go.png";
+import script from "../assets/images/script.png";
 const { Option } = Select;
 
 const Profile = () => {
@@ -42,6 +46,7 @@ const Profile = () => {
   const [employee_ids, setEmployee_ids] = useState(null);
   const [lessonPlanName, setLessonPlanName] = useState([]);
   const [lessonPlans, setLessonPlans] = useState(null);
+  const [scriptStatus, setScriptStatus] = useState(null);
 
   const [lessonStatus, setLessonStatus] = useState([]);
 
@@ -89,7 +94,7 @@ const Profile = () => {
   const getLesson = async (employeeId) => {
     try {
       const response = await axios(
-        `http://172.17.19.22:8080/dvp_app/lesson-plans/search/?employee_id=${employeeId}`
+        `http://172.17.19.25:8080/dvp_app/lesson-plans/search/?employee_id=${employeeId}`
       );
       console.log(response?.data, "Lesson");
       return response?.data;
@@ -101,7 +106,7 @@ const Profile = () => {
   const getEmpId = async () => {
     try {
       const response = await axios(
-        `http://172.17.19.22:8080/dvp_app/select_subject/?user_id=${userId}`
+        `http://172.17.19.25:8080/dvp_app/select_subject/?user_id=${userId}`
       );
       const employeeId = response?.data?.employee_id;
       const employeeIds = response?.data?.employee_id;
@@ -110,7 +115,10 @@ const Profile = () => {
 
       const lessonData = await getLesson(employeeId);
       const lessonStatus = await getApprovalStatus(employeeId);
+      const scriptStatus = await getScriptStatus(employeeId);
+
       setLessonStatus(lessonStatus);
+      setScriptStatus(scriptStatus);
       console.log(lessonStatus, "LESSON STATSU***************");
       setLessonPlanName(lessonData);
 
@@ -130,7 +138,7 @@ const Profile = () => {
   const getSession = async () => {
     try {
       const response = await axios(
-        `http://172.17.19.22:8080/dvp_app/current_session/`
+        `http://172.17.19.25:8080/dvp_app/current_session/`
       );
       console.log(response?.data, "Session");
       setCurrentSession(response?.data);
@@ -145,8 +153,9 @@ const Profile = () => {
   const handleRedirectapprovalStatus = () => {
     navigate("/approval-status");
   };
-
-
+  const handleRedirectScriptStatus = () => {
+    navigate("/script-status");
+  };
 
   return (
     <div style={{ display: "flex" }} classNameName="production">
@@ -273,7 +282,10 @@ const Profile = () => {
                           {index + 1} {item?.subject_name}{" "}
                         </div>
                         <div>
-                          <div style={{cursor:"pointer"}} onClick={handleRedirect}>
+                          <div
+                            style={{ cursor: "pointer" }}
+                            onClick={handleRedirect}
+                          >
                             <EyeOutlined />
                           </div>
                         </div>
@@ -344,59 +356,137 @@ const Profile = () => {
           ) : profile?.role_names[0] === "Program Coordinator" ? (
             <>
               {" "}
-              <div className="noti">
-                <h5>Lesson Plans For Approval</h5>
-                <div className="notification-wrapper">
-                  {lessonStatus && lessonStatus.length > 0 ? (
-                    lessonStatus &&
-                    lessonStatus.map((item, index) => (
-                      <>
-                        <div key={item.subject_id} className="notification">
-                          <div>
-                            {" "}
-                            {index + 1} {item?.subject_name}{" "}
-                          </div>
-                          <div>
-                          <div style={{cursor:"pointer"}} onClick={handleRedirectapprovalStatus}>
-                            <EyeOutlined />
-                          </div>
-                          </div>
-                        </div>
-                        <div
-                          style={{
-                            marginTop: "-20px",
-                            width: "55vw",
-                            background: "#2A629A",
-                            zIndex: "-99",
-                            height: "50px",
-                          }}
-                          className="notification"
-                        >
-                          <div>
-                            Received from :{" "}
-                            {item?.lesson_plans[0]?.employee_name}
-                          </div>
+              <div className="notification-center">
+                <div className="noti-left">
+                  <div className="left-head">
+                    <div>
+                      <span style={{ display: "flex", padding: "7px" }}>
+                        <img
+                          style={{ width: "32px", marginRight: "12px" }}
+                          src={lesson}
+                        />
+                        <h6 style={{ letterSpacing: "1px" }}>
+                          Lesson Plan Approval Request
+                        </h6>
+                      </span>
+                    </div>
+                    <div>
+                      {" "}
+                      <Badge count={lessonStatus?.length}>
+                        <Avatar shape="square" size="large" />
+                      </Badge>
+                    </div>
+                  </div>
 
-                          <div
-                            className={
-                              item?.pc_details?.lesson_plan_status === "pending"
-                                ? "pending"
-                                : "notPending"
-                            }
-                          >
-                            Status :{" "}
-                            {item?.pc_details?.lesson_plan_status === "pending"
-                              ? "Pending"
-                              : item?.pc_details?.lesson_plan_status}
-                          </div>
-                        </div>
-                      </>
-                    ))
-                  ) : (
-                    <>
-                      <div>You don't have any lesson plan request</div>
-                    </>
-                  )}
+                  <div className="left-body">
+                    <div>
+                      <ul>
+                        {lessonStatus &&
+                          lessonStatus?.map((item) => (
+                            <>
+                              {" "}
+                              <li onClick={handleRedirectapprovalStatus} style={{cursor:"pointer"}}>
+                                <div>
+                                  <span
+                                    style={{
+                                      fontWeight: "bold",
+                                      marginRight: "5px",
+                                    }}
+                                  >
+                                    {item?.subject_name.slice(0, 22)}
+                                    {"..."} ({item?.subject_code})
+                                  </span>{" "}
+                                  <span style={{ marginRight: "5px" }}>
+                                    from
+                                  </span>
+                                  <span style={{ fontWeight: "bold" }}>
+                                    {item?.lesson_plans[0]?.employee_name?.slice(
+                                      0,
+                                      10
+                                    )}
+                                    {"..."}
+                                    <img
+                                      
+                                      style={{
+                                        width: "30px",
+                                        marginLeft: "5px",
+                                        cursor: "pointer",
+                                      }}
+                                      src={go}
+                                    />
+                                  </span>{" "}
+                                  <hr style={{ width: "50%" }} />
+                                </div>
+                              </li>
+                            </>
+                          ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div className="noti-right">
+                  <div className="left-head">
+                    <div>
+                      <span style={{ display: "flex", padding: "7px" }}>
+                        <img
+                          style={{ width: "32px", marginRight: "12px" }}
+                          src={script}
+                        />
+                        <h6 style={{ letterSpacing: "1px" }}>
+                          Script Approval Request
+                        </h6>
+                      </span>
+                    </div>
+                    <div>
+                      {" "}
+                      <Badge count={scriptStatus?.length}>
+                        <Avatar shape="square" size="large" />
+                      </Badge>
+                    </div>
+                  </div>
+
+                  <div className="left-body">
+                    <div>
+                      <ul>
+                        {scriptStatus &&
+                          scriptStatus?.map((item) => (
+                            <>
+                              {" "}
+                              <li onClick={handleRedirectScriptStatus} style={{cursor:"pointer"}}>
+                                <div>
+                                  <span
+                                    style={{
+                                      fontWeight: "bold",
+                                      marginRight: "5px",
+                                    }}
+                                  >
+                                    {item?.subject_name.slice(0, 22)}
+                                    {"..."} ({item?.subject_code})
+                                  </span>{" "}
+                                  <span style={{ marginRight: "5px" }}>
+                                    from
+                                  </span>
+                                  <span style={{ fontWeight: "bold" }}>
+                                    {item?.employee_name.slice(0, 10)}
+                                    {"..."}
+                                    <img
+                                      
+                                      style={{
+                                        width: "30px",
+                                        marginLeft: "5px",
+                                        
+                                      }}
+                                      src={go}
+                                    />
+                                  </span>{" "}
+                                  <hr style={{ width: "50%" }} />
+                                </div>
+                              </li>
+                            </>
+                          ))}
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               </div>
             </>

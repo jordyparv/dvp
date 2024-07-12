@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from "react";
 import "./UserRegistration.css";
 import {
@@ -74,14 +72,15 @@ const UserRegistration = () => {
     });
   };
 
-  const handleDelete = (userId) => {
+  const handleDelete = (employee_id) => {
     setIsDeleting(true);
-    setDeletingUserId(userId);
+    setDeletingUserId(employee_id);
   };
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`/api/users/${deletingUserId}`);
+      await axios.delete(`
+http://172.17.19.25:8080/dvp_app/employee_registration/${deletingUserId}/`);
       message.success("User deleted successfully");
       fetchUsers();
     } catch (error) {
@@ -107,7 +106,7 @@ const UserRegistration = () => {
       title_id: parseInt(titleSelected),
       first_name: fName,
       middle_name: mName || "",
-      last_name: lName,
+      last_name: lName || "",
       date_of_birth: dob,
       date_of_joining: doj,
     };
@@ -130,26 +129,28 @@ const UserRegistration = () => {
 
   const getUser = async () => {
     const getUserData = await axios(
-      `http://172.17.19.22:8080/dvp_app/select_user/`
+      `http://172.17.19.25:8080/dvp_app/select_user/`
     );
+    console.log(getUserData, "UUUUUUUUUUUUUUUUUUUUU")
     setSelectUserOption(getUserData);
+
   };
 
   const getDesignation = async () => {
     const getDesigData = await axios(
-      `http://172.17.19.22:8080/dvp_app/designation/`
+      `http://172.17.19.25:8080/dvp_app/designation/`
     );
     setSelectDesigOption(getDesigData);
   };
 
   const getTitle = async () => {
-    const getTitleData = await axios(`http://172.17.19.22:8080/dvp_app/title/`);
+    const getTitleData = await axios(`http://172.17.19.25:8080/dvp_app/title/`);
     setTitleOption(getTitleData);
   };
 
   const getEmpType = async () => {
     const getEmpTypeData = await axios(
-      `http://172.17.19.22:8080/dvp_app/employee_type/`
+      `http://172.17.19.25:8080/dvp_app/employee_type/`
     );
     setEmpTypeOption(getEmpTypeData);
   };
@@ -183,7 +184,7 @@ const UserRegistration = () => {
 
   const getEmployeeData = async () => {
     const req = await axios.get(
-      `http://172.17.19.22:8080/dvp_app/employee_registration/`
+      `http://172.17.19.25:8080/dvp_app/employee_registration/`
     );
     setEmpData(req.data);
   };
@@ -198,14 +199,14 @@ const UserRegistration = () => {
         title_id: parseInt(titleSelected),
         first_name: fName,
         middle_name: mName || "",
-        last_name: lName,
+        last_name: lName || "",
         date_of_birth: dob,
         date_of_joining: doj,
       };
 
       let config = {
         method: "POST",
-        url: `http://172.17.19.22:8080/dvp_app/employee_registration/`,
+        url: `http://172.17.19.25:8080/dvp_app/employee_registration/`,
         data,
       };
 
@@ -223,9 +224,9 @@ const UserRegistration = () => {
       setFName("");
       setLName("");
       setMName("");
-      setTitleSelected("");
+      // setTitleSelected("");
       setEmpCode("");
-      selectUserSelected("");
+      // selectUserSelected("");
     } catch (error) {
       Swal.fire({
         icon: "warning",
@@ -277,7 +278,7 @@ const UserRegistration = () => {
       render: (text, record) => (
         <>
           <Button onClick={() => handleEdit(record)}>Edit</Button>
-          <Button onClick={() => handleDelete(record.id)} danger>
+          <Button onClick={() => handleDelete(record.employee_id)} danger>
             Delete
           </Button>
         </>
@@ -343,7 +344,7 @@ const UserRegistration = () => {
                         ))}
                       </Select>
                     </label>
-                    <label>
+                    <label style={{display:"none"}}>
                       <p>
                         <span>User ID </span>
                         <span style={{ color: "red" }}>*</span>
@@ -351,10 +352,10 @@ const UserRegistration = () => {
                       <Input
                         disabled
                         type="text"
-                        name="userName"
+                        
                         value={selectedUserId}
-                        placeholder="User ID"
-                        required
+                      
+                  
                       />
                     </label>
                     <label>
@@ -450,7 +451,7 @@ const UserRegistration = () => {
                     <label>
                       <p>
                         <span>Middle Name </span>
-                        <span style={{ color: "red" }}>*</span>
+                        {/* <span style={{ color: "red" }}>*</span> */}
                       </p>
                       <Input
                         name="mName"
@@ -462,14 +463,14 @@ const UserRegistration = () => {
                     <label>
                       <p>
                         <span>Last Name </span>
-                        <span style={{ color: "red" }}>*</span>
+                        {/* <span style={{ color: "red" }}>*</span> */}
                       </p>
                       <Input
                         name="mlName"
                         placeholder="Last Name"
                         value={lName}
                         onChange={(e) => setLName(e.target.value)}
-                        required
+                        // required
                       />
                     </label>
                   </div>
@@ -515,25 +516,19 @@ const UserRegistration = () => {
                   onCancel={cancelEdit}
                   onOk={saveEdit}
                 >
-                 <form className="form-edit" style={{padding:"10px"}}>
-                  <label>Enter Employee Code</label>
+                  <form className="form-edit" style={{ padding: "10px" }}>
+                    <label>Enter Employee Code</label>
                     <Input
                       value={empCode}
                       onChange={(e) => setEmpCode(e.target.value)}
                       placeholder="User Name"
                       disabled
                     />
-                 
+
                     <label>Enter User Name</label>
-                    <Input
-                      
-                      placeholder="User Name"
-                    />
+                    <Input placeholder="User Name" />
                     <label>Enter Email</label>
-                    <Input
-                      
-                      placeholder="User Email"
-                    />
+                    <Input placeholder="User Email" />
                     {/* <label>Enter New Password</label>
                     <Input
                       value={userPassword}
@@ -542,40 +537,19 @@ const UserRegistration = () => {
                       type="password"
                     /> */}
                     <label>Select Gender</label>
-                    <Select
-                      
-                      placeholder="Select Gender"
-                    >
-                      
-                    </Select>
+                    <Select placeholder="Select Gender"></Select>
                     <label>Select Role</label>
-                    <Select
-                     
-                      placeholder="Select Role"
-                    >
-                     
-                    </Select>
+                    <Select placeholder="Select Role"></Select>
                     <label>Select Department</label>
-                    <Select
-                     
-                      placeholder="Select Department"
-                    >
-                     
-                    </Select>
+                    <Select placeholder="Select Department"></Select>
                     <label>Mobile No:-</label>
-                    <Input
-                     
-                      placeholder="User Mobile"
-                    />
-                 
+                    <Input placeholder="User Mobile" />
+
                     <label>Select Status</label>
-                    <Select
-                     
-                      placeholder="Select Status"
-                    >
-                     <Option>Select Status</Option>
-                     <Option value="active">Active </Option>
-                     <Option value="inactive">Inactive</Option>
+                    <Select placeholder="Select Status">
+                      <Option>Select Status</Option>
+                      <Option value="active">Active </Option>
+                      <Option value="inactive">Inactive</Option>
                     </Select>
                   </form>
                 </Modal>
