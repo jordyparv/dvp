@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import SideBar from "./SideBar";
 import "./Settings.css";
-import { Button, Drawer, Input, Select, Table, message } from "antd";
+import { Button, Drawer, Input, Modal, Select, Table, message } from "antd";
 import axios from "axios";
 import Loader from "../../pages/Loader";
 import Swal from "sweetalert2";
-
+import edit from "../../assets/images/edit.png";
+import dele from "../../assets/images/dele.png";
 
 const { Option } = Select;
 
@@ -37,8 +38,73 @@ const CourseAllotment = () => {
     subjects: {},
   });
 
-  const [ currentSession, setCurrentSession ] = useState(null);
+  const [currentSession, setCurrentSession] = useState(null);
   const [open, setOpen] = useState(false);
+
+  const [selectedProgramLevel, setSelectedProgramLevel] = useState(null);
+  const [selectedPrograms, setSelectedPrograms] = useState([]);
+  const [selectedSubjects, setSelectedSubjects] = useState([]);
+  const [allProgramLevels, setAllProgramLevels] = useState([]);
+  const [allPrograms, setAllPrograms] = useState([]);
+  const [allSubjects, setAllSubjects] = useState([]);
+  const [selectedProgramIds, setSelectedProgramIds] = useState([]);
+  const [selectedSubjectIds, setSelectedSubjectIds] = useState([]);
+  const [sessionCode, setSessionCode] = useState([]);
+
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editingRecord, setEditingRecord] = useState("");
+  const [courseAllotment, setCourseAllotment] = useState([]);
+
+  const [subjectSearch, setSubjectSearch] = useState("");
+
+  // filter subjects
+  const filteredSubjects = allSubjects?.filter((subject) =>
+    subject.subject_code.toLowerCase().includes(subjectSearch.toLowerCase()) ||
+    subject.subject_name.toLowerCase().includes(subjectSearch.toLowerCase())
+  );
+  // const handleSubjectSearchChange = (e) => {
+  //   setSubjectSearch(e.target.value);
+  // };
+
+  const handleSubjectSearchChange = (e) => {
+    setSubjectSearch(e.target.value);
+  };
+
+  // const handleSubjectChange = (e) => {
+  //   const subjectId = e.target.value;
+  //   setSelectedSubjectIds((prevSelected) =>
+  //     prevSelected.includes(subjectId)
+  //       ? prevSelected.filter((id) => id !== subjectId)
+  //       : [...prevSelected, subjectId]
+  //   );
+  // };
+
+  const handleSubjectChange = (e) => {
+    const subjectId = e.target.value;
+    const { value, checked } = e.target;
+    console.log("Selected Subject ID: ", subjectId); 
+    // setSelectedSubjectIds((prevSelected) =>
+    //   prevSelected.includes(subjectId)
+    //     ? prevSelected.filter((id) => id !== subjectId)
+    //     : [...prevSelected, subjectId]
+    // );
+       setSelectedSubjectIds((prevState) =>
+      checked
+        ? [...prevState, Number(value)]
+        : prevState.filter((id) => id !== Number(value))
+    );
+  };
+    // const handleSubjectChange = (e) => {
+  //   const { value, checked } = e.target;
+  //   setSelectedSubjectIds((prevState) =>
+  //     checked
+  //       ? [...prevState, Number(value)]
+  //       : prevState.filter((id) => id !== Number(value))
+  //   );
+  // };
+  
+
+
   const showDrawer = () => {
     setOpen(true);
   };
@@ -50,23 +116,28 @@ const CourseAllotment = () => {
     try {
       const response = await axios.get("/dvp_app/course_allotment/");
       console.log(response, "_____ewe9w");
-      setSubjectData(response?.data);
 
+      setSubjectData(response?.data);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const getCurrentSession = async() => {
-    const response = await axios.get(`http://172.17.19.25:8080/dvp_app/current_session/`);
-    setCurrentSession(response?.data?.session_code)
-    console.log(response?.data?.session_code, "__________CURRENT SESSION ____________")
-  }
+  const getCurrentSession = async () => {
+    const response = await axios.get(
+      `http://172.17.19.25:8080/dvp_app/current_session/`
+    );
+    setCurrentSession(response?.data?.session_code);
+    console.log(
+      response?.data?.session_code,
+      "__________CURRENT SESSION ____________"
+    );
+  };
 
   useEffect(() => {
     getCurrentSession();
-    getFacultyRequest(currentSession)
-  }, currentSession)
+    getFacultyRequest(currentSession);
+  }, currentSession);
 
   const getFacultyRequest = async (currentSession) => {
     try {
@@ -75,7 +146,7 @@ const CourseAllotment = () => {
         `http://172.17.19.25:8080/dvp_app/select_faculty/?session_code=${currentSession}`
       );
 
-      console.log(response, "%%%%%%%%%%%%%%%%%")
+      console.log(response, "%%%%%%%%%%%%%%%%%");
 
       setFacultyOption(response?.data);
       setFormDetails((prev) => ({
@@ -92,7 +163,6 @@ const CourseAllotment = () => {
       getFacultyRequest(selectedSessionForEmployee);
     }
   }, [selectedSessionForEmployee]);
-  
 
   const getSessionCodeRequest = async () => {
     try {
@@ -284,9 +354,150 @@ const CourseAllotment = () => {
     { title: "Program Name", dataIndex: "programs", key: "programs" },
     { title: "Created At", dataIndex: "created_at", key: "created_at" },
     { title: "Status", dataIndex: "status", key: "status" },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (text, record) => (
+        <div style={{ display: "flex" }}>
+          <div style={{ marginRight: "10px" }}>
+            <img
+              style={{ width: "27px", cursor: "pointer" }}
+              onClick={() => showEditModal(record?.course_allotment_ids)}
+              src={edit}
+              alt="editLogo"
+            />
+          </div>
+          <div
+            style={{ marginLeft: "10px", cursor: "pointer" }}
+            // onConfirm={() => handleDelete(record.pc_id)}
+          >
+            <img src={dele} alt="del" />
+          </div>
+        </div>
+      ),
+    },
   ];
 
-  
+  const fetchData = async (course_allotment_ids) => {
+    try {
+      const response = await axios.get(
+        `http://172.17.19.25:8080/dvp_app/course-reasigned/${course_allotment_ids}/`
+      );
+      console.log(courseAllotment, "GGGGGGGG");
+      const data = response.data;
+      setCourseAllotment(data?.course_allotment_id);
+      setSelectedProgramLevel(data.selected_program_level);
+      setSelectedPrograms(data.selected_programs);
+      setSelectedSubjects(data.selected_subjects);
+      setAllProgramLevels(data.all_program_levels);
+      setAllPrograms(data.all_programs);
+      setAllSubjects(data.all_subjects);
+      setSessionCode(data?.session_code);
+
+      setSelectedProgramIds(
+        data.selected_programs.map((program) => program.program_id)
+      );
+      setSelectedSubjectIds(
+        data.selected_subjects.map((subject) => subject.subject_id)
+      );
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const handleProgramChange = (e) => {
+    const { value, checked } = e.target;
+    setSelectedProgramIds((prevState) =>
+      checked
+        ? [...prevState, Number(value)]
+        : prevState.filter((id) => id !== Number(value))
+    );
+  };
+
+
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Handle form submission logic here
+  };
+
+  const handleEditSubmit = async () => {
+    try {
+      const updatedRecord = {
+        ...editingRecord,
+        program_level: selectedProgramLevel,
+        programs: selectedPrograms,
+        subjects: selectedSubjects,
+      };
+
+      const response = await axios.patch(
+        `/dvp_app/course_allotment/${editingRecord.id}/`,
+        updatedRecord
+      );
+
+      message.success("Entry updated successfully");
+      setEditModalVisible(false);
+      setEditingRecord(null);
+      getAllotedData(employeeId); // Refresh data for the current employee
+    } catch (error) {
+      console.error("Failed to update entry:", error);
+      message.error("Failed to update entry. Please try again.");
+    }
+  };
+
+  const handleDelete = async (id) => {
+    // try {
+    //   await axios.delete(
+    //     `http://172.17.19.25:8080/dvp_app/program_coordinators/${id}/`
+    //   );
+    //   message.success("Entry deleted successfully");
+    //   getAllotedData(); // Refresh the data
+    // } catch (error) {
+    //   console.error("Error deleting entry:", error);
+    //   message.error("Failed to delete entry");
+    // }
+  };
+
+  const showEditModal = (course_allotment_ids) => {
+    fetchData(course_allotment_ids);
+    setEditingRecord(course_allotment_ids);
+    console.log(course_allotment_ids, "EEEEEEEEEE");
+    setEditModalVisible(true);
+  };
+
+  const handleReAssigned = async () => {
+    try {
+      const data = {
+        employee_id: parseInt(employeeId),
+        session_code: currentSession,
+        program_ids: selectedProgramIds,
+        subject_ids: selectedSubjectIds,
+      };
+
+      const config = {
+        url: `/dvp_app/course_allotment/`,
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json, text/plain, */*",
+        },
+        data,
+      };
+
+      const response = await axios(config);
+      console.log(response, "RE-ASSIGNED SUCCESS");
+
+      message.success("Course reassigned successfully");
+      setEditModalVisible(false); // Close the modal
+      getAllotedData(); // Refresh the data after update
+    } catch (error) {
+      console.error("Failed to reassign courses:", error);
+      message.error("Failed to reassign courses. Please try again.");
+    }
+  };
+
+  console.log(filteredSubjects, "FILRER SUBJECTS............");
+
   return (
     <div style={{ display: "flex" }}>
       <SideBar />
@@ -321,24 +532,12 @@ const CourseAllotment = () => {
                       <p>
                         <span>Current Session</span>
                       </p>
-                      {/* <Select
-                        defaultValue="Select Session"
-                        style={{ width: 220 }}
-                        onChange={(e) => {
-                          console.log("Selected session for employee:", e);
-                          setSelectedSessionForEmployee(e);
-                        }}
-                      >
-                        {sessionCodeOption?.map((session) => (
-                          <Option
-                            key={session.session_code}
-                            value={session.session_code}
-                          >
-                            {session.session_code}
-                          </Option>
-                        ))}
-                      </Select> */}
-                      <Input value={currentSession} placeholder="Current Session" disabled />
+
+                      <Input
+                        value={currentSession}
+                        placeholder="Current Session"
+                        disabled
+                      />
                     </label>
                   </div>
 
@@ -368,20 +567,6 @@ const CourseAllotment = () => {
                           ))}
                       </Select>
                     </label>
-                    {/* <label>
-                      <p>
-                        <span>Employee ID </span>
-                        <span style={{ color: "red" }}>*</span>
-                      </p>
-                      <Input
-                        disabled
-                        value={employeeId}
-                        type="text"
-                        name="userName"
-                        placeholder="Employee ID"
-                        required
-                      />
-                    </label> */}
                   </div>
                   <div className="form-row">
                     <label>
@@ -389,25 +574,12 @@ const CourseAllotment = () => {
                         <span>Session Code </span>
                         <span style={{ color: "red" }}>*</span>
                       </p>
-                      {/* <Select
-                        value={userSelectedData?.session_code}
-                        onChange={(session_code) =>
-                          handleUserInput("session_code", session_code)
-                        }
-                        name="sessionCode"
-                        required
-                      >
-                        {formDetails?.sessions?.length &&
-                          formDetails?.sessions?.map((item) => (
-                            <Option
-                              value={item?.session_code}
-                              key={item?.session_code}
-                            >
-                              {item?.session_code}
-                            </Option>
-                          ))}
-                      </Select> */}
-                       <Input value={currentSession} placeholder="Current Session" disabled />
+
+                      <Input
+                        value={currentSession}
+                        placeholder="Current Session"
+                        disabled
+                      />
                     </label>
                     <label>
                       <p>
@@ -487,7 +659,8 @@ const CourseAllotment = () => {
                               <span>Select Semester </span>
                               <span style={{ color: "red" }}>*</span>
                             </p>
-                            <Select style={{width:"200px"}}
+                            <Select
+                              style={{ width: "200px" }}
                               mode="multiple"
                               value={
                                 userSelectedData?.semesters[program_id] || []
@@ -540,7 +713,8 @@ const CourseAllotment = () => {
                                 <span>Select Subjects</span>
                                 <span style={{ color: "red" }}>*</span>
                               </p>
-                              <Select style={{width:"300px"}}
+                              <Select
+                                style={{ width: "300px" }}
                                 mode="multiple"
                                 value={
                                   userSelectedData?.subjects[program_id]
@@ -582,7 +756,11 @@ const CourseAllotment = () => {
                     ))}
                   </div>
 
-                  <button onClick={handleCourseAllotment} type="button">
+                  <button
+                    className="submitButton"
+                    onClick={handleCourseAllotment}
+                    type="button"
+                  >
                     submit
                   </button>
                 </form>
@@ -601,6 +779,95 @@ const CourseAllotment = () => {
                 rowKey="employee_id"
               />
             </Drawer>
+            <Modal
+              title="Course Reassigned"
+              visible={editModalVisible}
+              onOk={handleEditSubmit}
+              onCancel={() => setEditModalVisible(false)}
+            >
+              <>
+                <form style={{ width: "500px" }} onSubmit={handleSubmit}>
+                  <fieldset>
+                    <p>Course Reassign</p>
+                  </fieldset>
+                  <fieldset>
+                    <Input
+                      style={{ width: "350px" }}
+                      value={sessionCode?.session_code}
+                      disabled
+                    />
+                  </fieldset>
+                  <fieldset>
+                    <legend>Select Programs:</legend>
+                    {allPrograms.map((program) => (
+                      <div key={program.program_id}>
+                        <input
+                          type="checkbox"
+                          id={`program-${program.program_id}`}
+                          value={program.program_id}
+                          checked={selectedProgramIds.includes(
+                            program.program_id
+                          )}
+                          onChange={handleProgramChange}
+                        />
+                        <label htmlFor={`program-${program.program_id}`}>
+                          {program.program_name}
+                        </label>
+                      </div>
+                    ))}
+                  </fieldset>
+                  <fieldset>
+                    <label>Search Subject</label>
+                    <Input
+                      value={subjectSearch}
+                      onChange={handleSubjectSearchChange}
+                      placeholder="Search Subjects"
+                    />
+
+                    <legend>Select Subjects:</legend>
+                    {/* {allSubjects.map((subject) => (
+                      <div key={subject.subject_id}>
+                        <input
+                          type="checkbox"
+                          id={`subject-${subject.subject_id}`}
+                          value={subject.subject_id}
+                          checked={selectedSubjectIds.includes(
+                            subject.subject_id
+                          )}
+                          onChange={handleSubjectChange}
+                        />
+                        <label htmlFor={`subject-${subject?.subject_id}`}>
+                          {subject?.subject_name + " " + subject?.subject_code}
+                        </label>
+                      </div>
+                    ))} */}
+
+                    <div>
+                      {filteredSubjects.map((subject) => (
+                        <div key={subject.subject_id}>
+                          <input
+                            type="checkbox"
+                            id={`subject-${subject.subject_id}`}
+                            value={subject.subject_id}
+                            checked={selectedSubjectIds.includes(
+                              subject.subject_id
+                            )}
+                            onChange={handleSubjectChange}
+                          />
+                          <label htmlFor={`subject-${subject.subject_id}`}>
+                            {subject.subject_name + " " + subject.subject_code}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </fieldset>
+
+                  <button onClick={handleReAssigned} type="submit">
+                    Submit
+                  </button>
+                </form>
+              </>
+            </Modal>
           </div>
         </div>
       </div>

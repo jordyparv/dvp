@@ -80,3 +80,6 @@ button:hover {
     transform: rotate(180deg);
   }
 }
+.submitButton{
+  width: 300px !important;
+}

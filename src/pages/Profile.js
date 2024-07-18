@@ -222,7 +222,7 @@ const Profile = () => {
           {profile?.role_names[0] == "Admin" ? (
             <>
               {" "}
-              <div className="noti">
+              {/* <div className="noti">
                 <h5>Notification</h5>
                 <div className="notification">
                   <div> 1 Lesson plan from Antra Maddan</div>
@@ -260,7 +260,7 @@ const Profile = () => {
                     <button className="reject">Reject</button>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </>
           ) : profile?.role_names[0] === "Teacher" ? (
             <div className="noti">

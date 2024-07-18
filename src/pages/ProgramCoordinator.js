@@ -15,6 +15,8 @@ import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import { subjectAction } from "../redux/Slice/subjectAction";
 import SideBar from "../components/Sidebar/SideBar";
+import edit from "../assets/images/edit.png";
+import dele from "../assets/images/dele.png";
 import Loader from "./Loader";
 
 const { Option } = Select;
@@ -51,6 +53,16 @@ const ProgramCoordinator = () => {
   const [totalPc, setTotalPc] = useState([]);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingRecord, setEditingRecord] = useState("");
+
+  //reasign
+  const [selectedProgramLevel, setSelectedProgramLevel] = useState(null);
+  const [selectedPrograms, setSelectedPrograms] = useState([]);
+  const [selectedSubjects, setSelectedSubjects] = useState([]);
+  const [allProgramLevels, setAllProgramLevels] = useState([]);
+  const [allPrograms, setAllPrograms] = useState([]);
+  const [allSubjects, setAllSubjects] = useState([]);
+  const [selectedProgramIds, setSelectedProgramIds] = useState([]);
+  const [selectedSubjectIds, setSelectedSubjectIds] = useState([]);
 
   const [open, setOpen] = useState(false);
   const showDrawer = () => {
@@ -296,63 +308,47 @@ const ProgramCoordinator = () => {
   console.log({ formDetails });
 
   const columns = [
-    { title: "PC ID", dataIndex: "pc_id", key: "pc_id" },
-    { title: "Employee ID", dataIndex: "employee_id", key: "employee_id" },
     {
       title: "Employee Name",
       dataIndex: "employee_name",
       key: "employee_name",
     },
     { title: "Session Code", dataIndex: "session_code", key: "session_code" },
-    { title: "Session Name", dataIndex: "session_name", key: "session_name" },
+
     {
       title: "Program Names",
       dataIndex: "prog_names",
       key: "prog_names",
       render: (prog_names) => prog_names.join(", "),
     },
+
     {
       title: "Subject Names",
       dataIndex: "subject_names",
       key: "subject_names",
       render: (subject_names) => subject_names.join(", "),
     },
-    {
-      title: "Program IDs",
-      dataIndex: "program_id",
-      key: "program_id",
-      render: (program_id) => program_id.join(", "),
-    },
-    {
-      title: "Subject Names",
-      dataIndex: "subject_names",
-      key: "subject_names",
-      render: (subject_names) => subject_names.join(", "),
-    },
-    {
-      title: "Subject IDs",
-      dataIndex: "subject_id",
-      key: "subject_id",
-      render: (subject_id) => subject_id.join(", "),
-    },
+
     { title: "Created At", dataIndex: "created_at", key: "created_at" },
     {
       title: "Actions",
       key: "actions",
       render: (text, record) => (
-        <div>
-          <Button
-            onClick={() => showEditModal(record)}
-            style={{ marginRight: 8 }}
-          >
-            Edit
-          </Button>
-          <Popconfirm
-            title="Are you sure delete this entry?"
+        <div style={{ display: "flex" }}>
+          <div style={{ marginRight: "10px" }}>
+            <img
+              style={{ width: "27px", cursor: "pointer" }}
+              onClick={() => showEditModal(record)}
+              src={edit}
+              alt="editLogo"
+            />
+          </div>
+          <div
+            style={{ marginLeft: "10px", cursor: "pointer" }}
             onConfirm={() => handleDelete(record.pc_id)}
           >
-            <Button type="danger">Delete</Button>
-          </Popconfirm>
+            <img src={dele} alt="del" />
+          </div>
         </div>
       ),
     },
@@ -365,7 +361,7 @@ const ProgramCoordinator = () => {
       );
       console.log(response?.data?.length, "Fetched Data");
       setSubjectData(response?.data);
-      setTotalPc(response?.data)
+      setTotalPc(response?.data);
     } catch (error) {
       console.log(error);
     }
@@ -413,6 +409,65 @@ const ProgramCoordinator = () => {
     setEditingRecord((prev) => ({ ...prev, [key]: value }));
   };
 
+  //reasign
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://172.17.19.25:8080/dvp_app/course-reasigned/3/"
+        );
+
+        const data = response.data;
+
+        setSelectedProgramLevel(data.selected_program_level);
+        setSelectedPrograms(data.selected_programs);
+        setSelectedSubjects(data.selected_subjects);
+        setAllProgramLevels(data.all_program_levels);
+        setAllPrograms(data.all_programs);
+        setAllSubjects(data.all_subjects);
+
+        setSelectedProgramIds(
+          data.selected_programs.map((program) => program.program_id)
+        );
+        setSelectedSubjectIds(
+          data.selected_subjects.map((subject) => subject.subject_id)
+        );
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleProgramChange = (e) => {
+    const { value, checked } = e.target;
+    setSelectedProgramIds((prevState) =>
+      checked
+        ? [...prevState, Number(value)]
+        : prevState.filter((id) => id !== Number(value))
+    );
+  };
+
+  const handleSubjectChange = (e) => {
+    const { value, checked } = e.target;
+    setSelectedSubjectIds((prevState) =>
+      checked
+        ? [...prevState, Number(value)]
+        : prevState.filter((id) => id !== Number(value))
+    );
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Handle form submission logic here
+  };
+
+  // if (!selectedProgramLevel || !allProgramLevels.length || !allPrograms.length || !allSubjects.length) {
+  //   return <div>Loading...</div>;
+  // }
+
   return (
     <div style={{ display: "flex" }}>
       <SideBar />
@@ -447,23 +502,7 @@ const ProgramCoordinator = () => {
                       <p>
                         <span>Current Session </span>
                       </p>
-                      {/* <Select
-                        defaultValue="Select Session"
-                        style={{ width: 220 }}
-                        onChange={(e) => {
-                          console.log("Selected session for employee:", e);
-                          setSelectedSessionForEmployee(e);
-                        }}
-                      >
-                        {sessionCodeOption?.map((session) => (
-                          <Option
-                            key={session.session_code}
-                            value={session.session_code}
-                          >
-                            {session.session_code}
-                          </Option>
-                        ))}
-                      </Select> */}
+
                       <Input
                         disabled
                         value={currentSession}
@@ -498,20 +537,6 @@ const ProgramCoordinator = () => {
                           ))}
                       </Select>
                     </label>
-                    {/* <label>
-                      <p>
-                        <span>Employee ID </span>
-                        <span style={{ color: "red" }}>*</span>
-                      </p>
-                      <Input
-                        disabled
-                        value={employeeId}
-                        type="text"
-                        name="userName"
-                        placeholder="Employee ID"
-                        required
-                      />
-                    </label> */}
                   </div>
                   <div className="form-row">
                     <label>
@@ -519,25 +544,12 @@ const ProgramCoordinator = () => {
                         <span>Session Code </span>
                         <span style={{ color: "red" }}>*</span>
                       </p>
-                      {/* <Select
-                        value={userSelectedData?.session_code}
-                        onChange={(session_code) =>
-                          handleUserInput("session_code", session_code)
-                        }
-                        name="sessionCode"
-                        required
-                      >
-                        {formDetails?.sessions?.length &&
-                          formDetails?.sessions?.map((item) => (
-                            <Option
-                              value={item?.session_code}
-                              key={item?.session_code}
-                            >
-                              {item?.session_code}
-                            </Option>
-                          ))}
-                      </Select> */}
-                       <Input value={currentSession} placeholder="Current Session" disabled />
+
+                      <Input
+                        value={currentSession}
+                        placeholder="Current Session"
+                        disabled
+                      />
                     </label>
                     <label>
                       <p>
@@ -732,105 +744,55 @@ const ProgramCoordinator = () => {
               />
             </Drawer>
 
-            <Modal
+            <Modal 
               title="Edit Entry"
               visible={editModalVisible}
               onOk={handleEditSubmit}
               onCancel={() => setEditModalVisible(false)}
             >
-              <form>
-                <div className="form-row">
-                  <label>
-                    <p>Employee Name</p>
-                    <Input
-                      value={editingRecord?.employee_name}
-                      onChange={(e) =>
-                        handleFormChange("employee_name", e.target.value)
-                      }
-                    />
-                  </label>
-                </div>
-                <div className="form-row">
-                  <label>
-                    <p>Session Code</p>
-                    <Input
-                      value={editingRecord?.session_code}
-                      onChange={(e) =>
-                        handleFormChange("session_code", e.target.value)
-                      }
-                    />
-                  </label>
-                </div>
-                <div className="form-row">
-                  <label>
-                    <p>Program Names</p>
-                    <Select
-                      mode="multiple"
-                      value={editingRecord?.prog_names}
-                      onChange={(value) =>
-                        handleFormChange("prog_names", value)
-                      }
-                    >
-                      {programIdsOption.map((item) => (
-                        <Option key={item.value} value={item.value}>
-                          {item.label}
-                        </Option>
-                      ))}
-                    </Select>
-                  </label>
-                </div>
-                <div className="form-row">
-                  <label>
-                    <p>Program IDs</p>
-                    <Select
-                      mode="multiple"
-                      value={editingRecord?.program_id}
-                      onChange={(value) => handleFormChange("prog_id", value)}
-                    >
-                      {programIdsOption.map((item) => (
-                        <Option key={item.value} value={item.value}>
-                          {item.label}
-                        </Option>
-                      ))}
-                    </Select>
-                  </label>
-                </div>
-                <div className="form-row">
-                  <label>
-                    <p>Subject Names</p>
-                    <Select
-                      mode="multiple"
-                      value={editingRecord?.subject_names}
-                      onChange={(value) =>
-                        handleFormChange("subject_names", value)
-                      }
-                    >
-                      {subjectsData.map((item) => (
-                        <Option key={item.value} value={item.value}>
-                          {item.label}
-                        </Option>
-                      ))}
-                    </Select>
-                  </label>
-                </div>
-                <div className="form-row">
-                  <label>
-                    <p>Subject IDs</p>
-                    <Select
-                      mode="multiple"
-                      value={editingRecord?.subject_id}
-                      onChange={(value) =>
-                        handleFormChange("subject_id", value)
-                      }
-                    >
-                      {subjectsData.map((item) => (
-                        <Option key={item.value} value={item.value}>
-                          {item.label}
-                        </Option>
-                      ))}
-                    </Select>
-                  </label>
-                </div>
+
+              <form style={{width:"500px"}} onSubmit={handleSubmit}>
+                <fieldset>
+                  <legend>Select Programs:</legend>
+                  {allPrograms.map((program) => (
+                    <div key={program.program_id}>
+                      <input
+                        type="checkbox"
+                        id={`program-${program.program_id}`}
+                        value={program.program_id}
+                        checked={selectedProgramIds.includes(
+                          program.program_id
+                        )}
+                        onChange={handleProgramChange}
+                      />
+                      <label htmlFor={`program-${program.program_id}`}>
+                        {program.program_name}
+                      </label>
+                    </div>
+                  ))}
+                </fieldset>
+
+                <fieldset>
+                  <legend>Select Subjects:</legend>
+                  {allSubjects.map((subject) => (
+                    <div key={subject.subject_id}>
+                      <input
+                        type="checkbox"
+                        id={`subject-${subject.subject_id}`}
+                        value={subject.subject_id}
+                        checked={selectedSubjectIds.includes(
+                          subject.subject_id
+                        )}
+                        onChange={handleSubjectChange}
+                      />
+                      <label htmlFor={`subject-${subject.subject_id}`}>
+                        {subject.subject_name}
+                      </label>
+                    </div>
+                  ))}
+                </fieldset>
+
+                <button type="submit">Submit</button>
               </form>
             </Modal>
           </div>
