@@ -1171,16 +1171,14 @@ const CourseSettings = () => {
                                   <td>{item?.session_code}</td>
                                   <td>{item?.start_year}</td>
                                   <td>
-                                    {item?.start_month == "01"
-                                      ? "January"
-                                      : "July"}
-                                  </td>
-                                  <td>
-                                    {item?.end_month == "05"
-                                      ? "May"
-                                      : "December"}
+                                    {item?.start_month}
+                                     
                                   </td>
                                   <td>{item?.end_year}</td>
+                                  <td>
+                                    {item?.end_month }
+                                  </td>
+                                 
                                   <td>
                                     <Button
                                       onClick={() => handleEditSession(item)}

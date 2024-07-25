@@ -20,6 +20,7 @@ import BookedSlots from "./Slots/BookedSlots";
 import ViewSlots from "./Slots/ViewSlots";
 import SlotCoordinator from "./Slots/SlotCoordinator";
 import ScriptStatus from "./components/Sidebar/ScriptStatus";
+import StudioSettings from "./Slots/StudioSettings";
 
 function App() {
   return (
@@ -136,6 +137,14 @@ function App() {
           element={
             <ProtectedRoute>
              <ScriptStatus />
+            </ProtectedRoute>
+          }
+        ></Route>
+         <Route
+          path="/studio-settings"
+          element={
+            <ProtectedRoute>
+             <StudioSettings />
             </ProtectedRoute>
           }
         ></Route>

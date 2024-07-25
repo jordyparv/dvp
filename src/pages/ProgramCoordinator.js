@@ -50,7 +50,7 @@ const ProgramCoordinator = () => {
   });
 
   const [currentSession, setCurrentSession] = useState(null);
-  const [totalPc, setTotalPc] = useState([]);
+  const [totalPc, setTotalPc] = useState("");
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingRecord, setEditingRecord] = useState("");
 
@@ -63,6 +63,9 @@ const ProgramCoordinator = () => {
   const [allSubjects, setAllSubjects] = useState([]);
   const [selectedProgramIds, setSelectedProgramIds] = useState([]);
   const [selectedSubjectIds, setSelectedSubjectIds] = useState([]);
+  const [courseAllotmentId, setCourseAllotmentId] = useState([]);
+  const [subjectSearch, setSubjectSearch] = useState("");
+  const [pcCount, setPcCount] = useState("");
 
   const [open, setOpen] = useState(false);
   const showDrawer = () => {
@@ -71,19 +74,6 @@ const ProgramCoordinator = () => {
   const onClose = () => {
     setOpen(false);
   };
-
-  // const getAllotedData = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       "http://172.17.19.25:8080/dvp_app/program_coordinators/"
-  //     );
-  //     console.log(response, "Fetched Data");
-  //     setSubjectData(response?.data);
-  //     setTotalPc(response?.data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   const getCurrentSession = async () => {
     const response = await axios.get(
@@ -338,7 +328,7 @@ const ProgramCoordinator = () => {
           <div style={{ marginRight: "10px" }}>
             <img
               style={{ width: "27px", cursor: "pointer" }}
-              onClick={() => showEditModal(record)}
+              onClick={() => showEditModal(record?.pc_id)}
               src={edit}
               alt="editLogo"
             />
@@ -362,6 +352,7 @@ const ProgramCoordinator = () => {
       console.log(response?.data?.length, "Fetched Data");
       setSubjectData(response?.data);
       setTotalPc(response?.data);
+      setPcCount(response?.data);
     } catch (error) {
       console.log(error);
     }
@@ -380,30 +371,39 @@ const ProgramCoordinator = () => {
     }
   };
 
-  const showEditModal = (record) => {
-    setEditingRecord(record);
+  const showEditModal = (pc_id) => {
+    setEditingRecord(pc_id);
+    setEditModalVisible(true);
+    setCourseAllotmentId(pc_id);
+    fetchData(pc_id);
+    setEditingRecord(pc_id);
+
+    console.log(pc_id, "EEEEEEEEEE");
+
+    setSelectedSubjects(subjects || []);
+
     setEditModalVisible(true);
   };
 
-  const handleEditSubmit = async () => {
-    try {
-      const payload = {
-        ...editingRecord,
-        prog_id: editingRecord.program_id, // Convert to prog_id as expected by backend
-      };
-      delete payload.program_id; // Remove program_id from payload
-      await axios.put(
-        `http://172.17.19.25:8080/dvp_app/program_coordinators/${editingRecord.pc_id}/`,
-        payload
-      );
-      message.success("Entry updated successfully");
-      setEditModalVisible(false);
-      getAllotedData(); // Refresh the data
-    } catch (error) {
-      console.error("Error updating entry:", error);
-      message.error("Failed to update entry");
-    }
-  };
+  // const handleEditSubmit = async () => {
+  //   try {
+  //     const payload = {
+  //       ...editingRecord,
+  //       prog_id: editingRecord.program_id, // Convert to prog_id as expected by backend
+  //     };
+  //     delete payload.program_id; // Remove program_id from payload
+  //     await axios.put(
+  //       `http://172.17.19.25:8080/dvp_app/program_coordinators/${editingRecord.pc_id}/`,
+  //       payload
+  //     );
+  //     message.success("Entry updated successfully");
+  //     setEditModalVisible(false);
+  //     getAllotedData(); // Refresh the data
+  //   } catch (error) {
+  //     console.error("Error updating entry:", error);
+  //     message.error("Failed to update entry");
+  //   }
+  // };
 
   const handleFormChange = (key, value) => {
     setEditingRecord((prev) => ({ ...prev, [key]: value }));
@@ -411,35 +411,31 @@ const ProgramCoordinator = () => {
 
   //reasign
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          "http://172.17.19.25:8080/dvp_app/course-reasigned/3/"
-        );
+  const fetchData = async (pc_id) => {
+    try {
+      const response = await axios.get(
+        `http://172.17.19.25:8080/dvp_app/course-reasigned-pc/${pc_id}/`
+      );
 
-        const data = response.data;
+      const data = response.data;
 
-        setSelectedProgramLevel(data.selected_program_level);
-        setSelectedPrograms(data.selected_programs);
-        setSelectedSubjects(data.selected_subjects);
-        setAllProgramLevels(data.all_program_levels);
-        setAllPrograms(data.all_programs);
-        setAllSubjects(data.all_subjects);
+      setSelectedProgramLevel(data.selected_program_level);
+      setSelectedPrograms(data.selected_programs);
+      setSelectedSubjects(data.selected_subjects);
+      setAllProgramLevels(data.all_program_levels);
+      setAllPrograms(data.all_programs);
+      setAllSubjects(data.all_subjects);
 
-        setSelectedProgramIds(
-          data.selected_programs.map((program) => program.program_id)
-        );
-        setSelectedSubjectIds(
-          data.selected_subjects.map((subject) => subject.subject_id)
-        );
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
+      setSelectedProgramIds(
+        data.selected_programs.map((program) => program.program_id)
+      );
+      setSelectedSubjectIds(
+        data.selected_subjects.map((subject) => subject.subject_id)
+      );
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const handleProgramChange = (e) => {
     const { value, checked } = e.target;
@@ -450,8 +446,40 @@ const ProgramCoordinator = () => {
     );
   };
 
+  // const handleSubjectChange = (e) => {
+  //   const { value, checked } = e.target;
+  //   setSelectedSubjectIds((prevState) =>
+  //     checked
+  //       ? [...prevState, Number(value)]
+  //       : prevState.filter((id) => id !== Number(value))
+  //   );
+  // };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Handle form submission logic here
+  };
+
+  const filteredSubjects = allSubjects?.filter(
+    (subject) =>
+      subject.subject_code
+        .toLowerCase()
+        .includes(subjectSearch.toLowerCase()) ||
+      subject.subject_name.toLowerCase().includes(subjectSearch.toLowerCase())
+  );
+  // const handleSubjectSearchChange = (e) => {
+  //   setSubjectSearch(e.target.value);
+  // };
+
+  const handleSubjectSearchChange = (e) => {
+    setSubjectSearch(e.target.value);
+  };
+
   const handleSubjectChange = (e) => {
+    const subjectId = e.target.value;
     const { value, checked } = e.target;
+    console.log("Selected Subject ID: ", subjectId);
+
     setSelectedSubjectIds((prevState) =>
       checked
         ? [...prevState, Number(value)]
@@ -459,14 +487,43 @@ const ProgramCoordinator = () => {
     );
   };
 
-  const handleSubmit = (e) => {
+  const handleEditSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-  };
+    try {
+      console.log("Editing record:", editingRecord);
 
-  // if (!selectedProgramLevel || !allProgramLevels.length || !allPrograms.length || !allSubjects.length) {
-  //   return <div>Loading...</div>;
-  // }
+      // const currentSelectedSubjects = editingRecord.selected_subjects || [];
+      const currentSelectedSubjects = editingRecord.selected_subjects || [];
+
+      const combinedSubjects = [
+        ...new Set([
+          ...selectedSubjectIds,
+          ...currentSelectedSubjects.map((subject) => subject.subject_id),
+        ]),
+      ];
+
+      const updatedRecord = {
+        subject_id: combinedSubjects,
+      };
+
+      console.log("Updated record:", updatedRecord);
+      const response = await axios.patch(
+        `/dvp_app/pc-course-allotment-update/${courseAllotmentId}/`,
+        updatedRecord
+      );
+
+      console.log(response, "TTTTTTTTT");
+
+      message.success("Entry updated successfully");
+      setEditModalVisible(false);
+      setEditingRecord(null);
+      getAllotedData();
+      getAllotedData(employeeId); // Refresh data for the current employee
+    } catch (error) {
+      console.error("Failed to update entry:", error);
+      message.error("Failed to update entry. Please try again.");
+    }
+  };
 
   return (
     <div style={{ display: "flex" }}>
@@ -486,7 +543,7 @@ const ProgramCoordinator = () => {
                     style={{ fontSize: "15px", cursor: "pointer" }}
                     className="title-heading"
                   >
-                    View PC Allotment : {totalPc?.length}
+                    View PC Allotment : {pcCount?.length}
                   </Button>
                 </div>
               </div>
@@ -504,6 +561,7 @@ const ProgramCoordinator = () => {
                       </p>
 
                       <Input
+                        style={{ width: "340px" }}
                         disabled
                         value={currentSession}
                         placeholder="Current Session "
@@ -539,7 +597,7 @@ const ProgramCoordinator = () => {
                     </label>
                   </div>
                   <div className="form-row">
-                    <label>
+                    <label style={{ display: "none" }}>
                       <p>
                         <span>Session Code </span>
                         <span style={{ color: "red" }}>*</span>
@@ -723,10 +781,13 @@ const ProgramCoordinator = () => {
                       </div>
                     ))}
                   </div>
-
+                  <div style={{width:"200px", justifyContent:"center", display:"flex"}}>
                   <button onClick={handleCourseAllotment} type="submit">
                     submit
                   </button>
+                  </div>
+
+                 
                 </form>
               )}
             </div>
@@ -744,55 +805,43 @@ const ProgramCoordinator = () => {
               />
             </Drawer>
 
-            <Modal 
+            <Modal
               title="Edit Entry"
               visible={editModalVisible}
               onOk={handleEditSubmit}
               onCancel={() => setEditModalVisible(false)}
             >
-
-              <form style={{width:"500px"}} onSubmit={handleSubmit}>
+              <form style={{ width: "500px" }} onSubmit={handleSubmit}>
                 <fieldset>
-                  <legend>Select Programs:</legend>
-                  {allPrograms.map((program) => (
-                    <div key={program.program_id}>
-                      <input
-                        type="checkbox"
-                        id={`program-${program.program_id}`}
-                        value={program.program_id}
-                        checked={selectedProgramIds.includes(
-                          program.program_id
-                        )}
-                        onChange={handleProgramChange}
-                      />
-                      <label htmlFor={`program-${program.program_id}`}>
-                        {program.program_name}
-                      </label>
-                    </div>
-                  ))}
-                </fieldset>
+                  <label>Search Subject</label>
+                  <Input
+                    value={subjectSearch}
+                    onChange={handleSubjectSearchChange}
+                    placeholder="Search Subjects"
+                  />
 
-                <fieldset>
                   <legend>Select Subjects:</legend>
-                  {allSubjects.map((subject) => (
-                    <div key={subject.subject_id}>
-                      <input
-                        type="checkbox"
-                        id={`subject-${subject.subject_id}`}
-                        value={subject.subject_id}
-                        checked={selectedSubjectIds.includes(
-                          subject.subject_id
-                        )}
-                        onChange={handleSubjectChange}
-                      />
-                      <label htmlFor={`subject-${subject.subject_id}`}>
-                        {subject.subject_name}
-                      </label>
-                    </div>
-                  ))}
-                </fieldset>
 
-                <button type="submit">Submit</button>
+                  <div>
+                    {filteredSubjects.map((subject) => (
+                      <div key={subject.subject_id}>
+                        <input
+                          type="checkbox"
+                          id={`subject-${subject.subject_id}`}
+                          value={subject.subject_id}
+                          checked={selectedSubjectIds.includes(
+                            subject.subject_id
+                          )}
+                          onChange={handleSubjectChange}
+                        />
+                        <label htmlFor={`subject-${subject.subject_id}`}>
+                          {subject.subject_name + " " + subject.subject_code}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </fieldset>
+               
               </form>
             </Modal>
           </div>

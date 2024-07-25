@@ -1,560 +1,110 @@
-// import React, { useState } from "react";
-// import SideBar from "../components/Sidebar/SideBar";
-// import { DatePicker, Row, Col, Card } from "antd";
-// import moment from "moment";
-
-// const { Meta } = Card;
-
-// const BookedSlots = () => {
-//   const [selectedDate, setSelectedDate] = useState(moment());
-//   const [selectedSlot, setSelectedSlot] = useState(null);
-
-//   const handleDateChange = (date) => {
-//     setSelectedDate(date);
-//   };
-
-//   const handleSlotSelect = (slot) => {
-//     setSelectedSlot(slot);
-//     // Perform any other actions when slot is selected, like booking
-//   };
-
-//   return (
-//     <div style={{ display: "flex" }}>
-//       <SideBar />
-//       <div
-//         style={{
-//           display: "flex",
-//           flexDirection: "column",
-//           alignItems: "center",
-//           marginBottom: "40px",
-//         }}
-//         className="production"
-//       >
-//         <h5>Book Your Slot</h5>
-
-//         <div
-//           style={{
-//             display: "flex",
-//             justifyContent: "space-between",
-//             width: "100%",
-//             marginTop: "50px",
-//           }}
-//         >
-//           {/* Calendar Display */}
-//           <div style={{ width: "30%", paddingRight: 20 }}>
-//             <DatePicker
-//               style={{ marginBottom: 20, marginLeft: "50px" }}
-//               onChange={handleDateChange}
-//               //   value={selectedDate}
-//               open
-//             />
-//           </div>
-
-//           {/* Studio Booking Slots */}
-//           <div style={{ width: "50%", paddingLeft: 20 }}>
-//             <Row gutter={[16, 16]}>
-//               {/* Studio 1 */}
-//               <Col span={24}>
-//                 <Card hoverable>
-//                   <Meta title="Studio 1" />
-//                   <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
-//                     <li
-//                       style={{
-//                         display: "inline-block",
-//                         margin: "5px",
-//                         padding: "10px",
-//                         border: "1px solid #ccc",
-//                         cursor: "pointer",
-//                         background:
-//                           selectedSlot === "Studio 1 - 10:00 - 10:45"
-//                             ? "#1890ff"
-//                             : "transparent",
-//                         color:
-//                           selectedSlot === "Studio 1 - 10:00 - 10:45"
-//                             ? "#fff"
-//                             : "#000",
-//                       }}
-//                       onClick={() =>
-//                         handleSlotSelect("Studio 1 - 10:00 - 10:45")
-//                       }
-//                     >
-//                       10:00 - 10:45
-//                     </li>
-//                     <li
-//                       style={{
-//                         display: "inline-block",
-//                         margin: "5px",
-//                         padding: "10px",
-//                         border: "1px solid #ccc",
-//                         cursor: "pointer",
-//                         background:
-//                           selectedSlot === "Studio 1 - 11:00 - 11:45"
-//                             ? "#1890ff"
-//                             : "transparent",
-//                         color:
-//                           selectedSlot === "Studio 1 - 11:00 - 11:45"
-//                             ? "#fff"
-//                             : "#000",
-//                       }}
-//                       onClick={() =>
-//                         handleSlotSelect("Studio 1 - 11:00 - 11:45")
-//                       }
-//                     >
-//                       11:00 - 11:45
-//                     </li>
-//                     <li
-//                       style={{
-//                         display: "inline-block",
-//                         margin: "5px",
-//                         padding: "10px",
-//                         border: "1px solid #ccc",
-//                         cursor: "pointer",
-//                         background:
-//                           selectedSlot === "Studio 1 - 12:00 - 12:45"
-//                             ? "#1890ff"
-//                             : "transparent",
-//                         color:
-//                           selectedSlot === "Studio 1 - 12:00 - 12:45"
-//                             ? "#fff"
-//                             : "#000",
-//                       }}
-//                       onClick={() =>
-//                         handleSlotSelect("Studio 1 - 12:00 - 12:45")
-//                       }
-//                     >
-//                       12:00 - 12:45
-//                     </li>
-//                     <li
-//                       style={{
-//                         display: "inline-block",
-//                         margin: "5px",
-//                         padding: "10px",
-//                         border: "1px solid #ccc",
-//                         cursor: "pointer",
-//                         background:
-//                           selectedSlot === "Studio 1 - 2:00 - 2:45"
-//                             ? "#1890ff"
-//                             : "transparent",
-//                         color:
-//                           selectedSlot === "Studio 1 - 2:00 - 2:45"
-//                             ? "#fff"
-//                             : "#000",
-//                       }}
-//                       onClick={() => handleSlotSelect("Studio 1 - 2:00 - 2:45")}
-//                     >
-//                       2:00 - 2:45
-//                     </li>
-//                     <li
-//                       style={{
-//                         display: "inline-block",
-//                         margin: "5px",
-//                         padding: "10px",
-//                         border: "1px solid #ccc",
-//                         cursor: "pointer",
-//                         background:
-//                           selectedSlot === "Studio 1 - 3:00 - 3:45"
-//                             ? "#1890ff"
-//                             : "transparent",
-//                         color:
-//                           selectedSlot === "Studio 1 - 3:00 - 3:45"
-//                             ? "#fff"
-//                             : "#000",
-//                       }}
-//                       onClick={() => handleSlotSelect("Studio 1 - 3:00 - 3:45")}
-//                     >
-//                       3:00 - 3:45
-//                     </li>
-
-//                     {/* Add more slots as needed */}
-//                   </ul>
-//                 </Card>
-//               </Col>
-
-//               {/* Studio 2 */}
-//               <Col span={24}>
-//                 <Card hoverable>
-//                   <Meta title="Studio 2" />
-//                   <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
-//                     <li
-//                       style={{
-//                         display: "inline-block",
-//                         margin: "5px",
-//                         padding: "10px",
-//                         border: "1px solid #ccc",
-//                         cursor: "pointer",
-//                         background:
-//                           selectedSlot === "Studio 2 - 10:00 - 10:45"
-//                             ? "#1890ff"
-//                             : "transparent",
-//                         color:
-//                           selectedSlot === "Studio 2 - 10:00 - 10:45"
-//                             ? "#fff"
-//                             : "#000",
-//                       }}
-//                       onClick={() =>
-//                         handleSlotSelect("Studio 2 - 10:00 - 10:45")
-//                       }
-//                     >
-//                       10:00 - 10:45
-//                     </li>
-//                     <li
-//                       style={{
-//                         display: "inline-block",
-//                         margin: "5px",
-//                         padding: "10px",
-//                         border: "1px solid #ccc",
-//                         cursor: "pointer",
-//                         background:
-//                           selectedSlot === "Studio 2 - 11:00 - 11:45"
-//                             ? "#1890ff"
-//                             : "transparent",
-//                         color:
-//                           selectedSlot === "Studio 2 - 11:00 - 11:45"
-//                             ? "#fff"
-//                             : "#000",
-//                       }}
-//                       onClick={() =>
-//                         handleSlotSelect("Studio 2 - 11:00 - 11:45")
-//                       }
-//                     >
-//                       11:00 - 11:45
-//                     </li>
-//                     <li
-//                       style={{
-//                         display: "inline-block",
-//                         margin: "5px",
-//                         padding: "10px",
-//                         border: "1px solid #ccc",
-//                         cursor: "pointer",
-//                         background:
-//                           selectedSlot === "Studio 2 - 12:00 - 12:45"
-//                             ? "#1890ff"
-//                             : "transparent",
-//                         color:
-//                           selectedSlot === "Studio 2 - 12:00 - 12:45"
-//                             ? "#fff"
-//                             : "#000",
-//                       }}
-//                       onClick={() =>
-//                         handleSlotSelect("Studio 2 - 12:00 - 12:45")
-//                       }
-//                     >
-//                       12:00 - 12:45
-//                     </li>
-//                     <li
-//                       style={{
-//                         display: "inline-block",
-//                         margin: "5px",
-//                         padding: "10px",
-//                         border: "1px solid #ccc",
-//                         cursor: "pointer",
-//                         background:
-//                           selectedSlot === "Studio 2 - 2:00 - 2:45"
-//                             ? "#1890ff"
-//                             : "transparent",
-//                         color:
-//                           selectedSlot === "Studio 2 - 2:00 - 2:45"
-//                             ? "#fff"
-//                             : "#000",
-//                       }}
-//                       onClick={() => handleSlotSelect("Studio 2 - 2:00 - 2:45")}
-//                     >
-//                       2:00 - 2:45
-//                     </li>
-//                     <li
-//                       style={{
-//                         display: "inline-block",
-//                         margin: "5px",
-//                         padding: "10px",
-//                         border: "1px solid #ccc",
-//                         cursor: "pointer",
-//                         background:
-//                           selectedSlot === "Studio 2 - 3:00 - 3:45"
-//                             ? "#1890ff"
-//                             : "transparent",
-//                         color:
-//                           selectedSlot === "Studio 2 - 3:00 - 3:45"
-//                             ? "#fff"
-//                             : "#000",
-//                       }}
-//                       onClick={() => handleSlotSelect("Studio 2 - 3:00 - 3:45")}
-//                     >
-//                       3:00 - 3:45
-//                     </li>
-
-//                     {/* Add more slots as needed */}
-//                   </ul>
-//                 </Card>
-//               </Col>
-
-//               {/* Studio 3 */}
-//               <Col span={24}>
-//                 <Card hoverable>
-//                   <Meta title="Studio 3" />
-//                   <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
-//                     <li
-//                       style={{
-//                         display: "inline-block",
-//                         margin: "5px",
-//                         padding: "10px",
-//                         border: "1px solid #ccc",
-//                         cursor: "pointer",
-//                         background:
-//                           selectedSlot === "Studio 3 - 10:00 - 10:45"
-//                             ? "#1890ff"
-//                             : "transparent",
-//                         color:
-//                           selectedSlot === "Studio 3 - 10:00 - 10:45"
-//                             ? "#fff"
-//                             : "#000",
-//                       }}
-//                       onClick={() =>
-//                         handleSlotSelect("Studio 3 - 10:00 - 10:45")
-//                       }
-//                     >
-//                       10:00 - 10:45
-//                     </li>
-//                     <li
-//                       style={{
-//                         display: "inline-block",
-//                         margin: "5px",
-//                         padding: "10px",
-//                         border: "1px solid #ccc",
-//                         cursor: "pointer",
-//                         background:
-//                           selectedSlot === "Studio 3 - 11:00 - 11:45"
-//                             ? "#1890ff"
-//                             : "transparent",
-//                         color:
-//                           selectedSlot === "Studio 3 - 11:00 - 11:45"
-//                             ? "#fff"
-//                             : "#000",
-//                       }}
-//                       onClick={() =>
-//                         handleSlotSelect("Studio 3 - 11:00 - 11:45")
-//                       }
-//                     >
-//                       11:00 - 11:45
-//                     </li>
-//                     <li
-//                       style={{
-//                         display: "inline-block",
-//                         margin: "5px",
-//                         padding: "10px",
-//                         border: "1px solid #ccc",
-//                         cursor: "pointer",
-//                         background:
-//                           selectedSlot === "Studio 3 - 12:00 - 12:45"
-//                             ? "#1890ff"
-//                             : "transparent",
-//                         color:
-//                           selectedSlot === "Studio 3 - 12:00 - 12:45"
-//                             ? "#fff"
-//                             : "#000",
-//                       }}
-//                       onClick={() =>
-//                         handleSlotSelect("Studio 3 - 12:00 - 12:45")
-//                       }
-//                     >
-//                       12:00 - 12:45
-//                     </li>
-//                     <li
-//                       style={{
-//                         display: "inline-block",
-//                         margin: "5px",
-//                         padding: "10px",
-//                         border: "1px solid #ccc",
-//                         cursor: "pointer",
-//                         background:
-//                           selectedSlot === "Studio 3 - 2:00 - 2:45"
-//                             ? "#1890ff"
-//                             : "transparent",
-//                         color:
-//                           selectedSlot === "Studio 3 - 2:00 - 2:45"
-//                             ? "#fff"
-//                             : "#000",
-//                       }}
-//                       onClick={() => handleSlotSelect("Studio 3 - 2:00 - 2:45")}
-//                     >
-//                       2:00 - 2:45
-//                     </li>
-//                     <li
-//                       style={{
-//                         display: "inline-block",
-//                         margin: "5px",
-//                         padding: "10px",
-//                         border: "1px solid #ccc",
-//                         cursor: "pointer",
-//                         background:
-//                           selectedSlot === "Studio 3 - 3:00 - 3:45"
-//                             ? "#1890ff"
-//                             : "transparent",
-//                         color:
-//                           selectedSlot === "Studio 3 - 3:00 - 3:45"
-//                             ? "#fff"
-//                             : "#000",
-//                       }}
-//                       onClick={() => handleSlotSelect("Studio 3 - 3:00 - 3:45")}
-//                     >
-//                       3:00 - 3:45
-//                     </li>
-
-//                     {/* Add more slots as needed */}
-//                   </ul>
-//                 </Card>
-//               </Col>
-
-//               <Col span={24}>
-//                 <Card hoverable>
-//                   <Meta title="Studio 4" />
-//                   <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
-//                     <li
-//                       style={{
-//                         display: "inline-block",
-//                         margin: "5px",
-//                         padding: "10px",
-//                         border: "1px solid #ccc",
-//                         cursor: "pointer",
-//                         background:
-//                           selectedSlot === "Studio 4 - 10:00 - 10:45"
-//                             ? "#1890ff"
-//                             : "transparent",
-//                         color:
-//                           selectedSlot === "Studio 4 - 10:00 - 10:45"
-//                             ? "#fff"
-//                             : "#000",
-//                       }}
-//                       onClick={() =>
-//                         handleSlotSelect("Studio 4 - 10:00 - 10:45")
-//                       }
-//                     >
-//                       10:00 - 10:45
-//                     </li>
-//                     <li
-//                       style={{
-//                         display: "inline-block",
-//                         margin: "5px",
-//                         padding: "10px",
-//                         border: "1px solid #ccc",
-//                         cursor: "pointer",
-//                         background:
-//                           selectedSlot === "Studio 4 - 11:00 - 11:45"
-//                             ? "#1890ff"
-//                             : "transparent",
-//                         color:
-//                           selectedSlot === "Studio 4 - 11:00 - 11:45"
-//                             ? "#fff"
-//                             : "#000",
-//                       }}
-//                       onClick={() =>
-//                         handleSlotSelect("Studio 4 - 11:00 - 11:45")
-//                       }
-//                     >
-//                       11:00 - 11:45
-//                     </li>
-//                     <li
-//                       style={{
-//                         display: "inline-block",
-//                         margin: "5px",
-//                         padding: "10px",
-//                         border: "1px solid #ccc",
-//                         cursor: "pointer",
-//                         background:
-//                           selectedSlot === "Studio 4 - 12:00 - 12:45"
-//                             ? "#1890ff"
-//                             : "transparent",
-//                         color:
-//                           selectedSlot === "Studio 4 - 12:00 - 12:45"
-//                             ? "#fff"
-//                             : "#000",
-//                       }}
-//                       onClick={() =>
-//                         handleSlotSelect("Studio 4 - 12:00 - 12:45")
-//                       }
-//                     >
-//                       12:00 - 12:45
-//                     </li>
-//                     <li
-//                       style={{
-//                         display: "inline-block",
-//                         margin: "5px",
-//                         padding: "10px",
-//                         border: "1px solid #ccc",
-//                         cursor: "pointer",
-//                         background:
-//                           selectedSlot === "Studio 4 - 2:00 - 2:45"
-//                             ? "#1890ff"
-//                             : "transparent",
-//                         color:
-//                           selectedSlot === "Studio 4 - 2:00 - 2:45"
-//                             ? "#fff"
-//                             : "#000",
-//                       }}
-//                       onClick={() => handleSlotSelect("Studio 4 - 2:00 - 2:45")}
-//                     >
-//                       2:00 - 2:45
-//                     </li>
-//                     <li
-//                       style={{
-//                         display: "inline-block",
-//                         margin: "5px",
-//                         padding: "10px",
-//                         border: "1px solid #ccc",
-//                         cursor: "pointer",
-//                         background:
-//                           selectedSlot === "Studio 4 - 3:00 - 3:45"
-//                             ? "#1890ff"
-//                             : "transparent",
-//                         color:
-//                           selectedSlot === "Studio 4 - 3:00 - 3:45"
-//                             ? "#fff"
-//                             : "#000",
-//                       }}
-//                       onClick={() => handleSlotSelect("Studio 4 - 3:00 - 3:45")}
-//                     >
-//                       3:00 - 3:45
-//                     </li>
-
-//                     {/* Add more slots as needed */}
-//                   </ul>
-//                 </Card>
-//               </Col>
-
-//               {/* Add more studios and their slots as needed */}
-//             </Row>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default BookedSlots;
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import SideBar from "../components/Sidebar/SideBar";
 import "./Studio.css";
-import { DatePicker, Input } from "antd";
+import { DatePicker, Input, Modal, Button, Select, Popover } from "antd";
+import axios from "axios";
+import { Option } from "antd/es/mentions";
 
 const BookedSlots = () => {
-  const [ loginName, setLoginName ] = useState([]);
+  const [loginName, setLoginName] = useState([]);
+  const [studioData, setStudioData] = useState([]);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [ subjectOption, setSubjectOption ] = useState([]);
+  const [ subjectSelected, setSubjectSelected ] = useState([]);
 
-  
-  
+ const [ employeeOption, setEmployeeOption ] = useState([]);
+ const [ employeeSelected, setEmployeeSelected ] = useState([]);
+  const [ courseData, setCourseData ] = useState([]);
+  const [cardActive, setCardActive] = useState(null);
+  const [formData, setFormData] = useState({
+    input1: "",
+    input2: "",
+    input3: "",
+  });
+
+  const [facultyData, setFacultyData] = useState([]);
+
+  const slotCardRef = useRef(null);
+
   const onChange = (date, dateString) => {
     console.log(date, dateString);
   };
 
+  useEffect(() => {
+    const getUserInfo = JSON.parse(localStorage.getItem("prod_cred"));
+    setLoginName(getUserInfo?.user_name);
+  }, []);
 
-useEffect(() => {
-  const getUserInfo = JSON.parse(localStorage.getItem("prod_cred"));
-  setLoginName(getUserInfo?.user_name);
-  // if(getUserInfo?.user_name) {
-  //   const userName = getUserInfo?.user_name?.split(" ")[0];
-  //   setLoginName(userName)
-  // }
-}, [])
+  const getStudio = async () => {
+    const response = await axios.get(
+      "http://172.17.19.25:8080/dvp_app/all_studio_slots"
+    );
+    console.log(response, "STUDIO NAME");
+    setStudioData(response?.data);
+  };
 
-  
+  useEffect(() => {
+    getStudio();
+    getCourseAllotment();
+ 
+  }, []);
+
+
+
+  const handleSlotClick = (slot, event) => {
+    setSelectedSlot(slot);
+    setCardActive(slot);
+    setIsMenuVisible(true);
+    const slotCard = event.currentTarget;
+    slotCardRef.current = slotCard;
+  };
+
+  const handleBookSlotClick = () => {
+    setIsMenuVisible(false);
+    setIsModalVisible(true);
+  };
+
+  const handleModalOk = () => {
+    console.log("Form Data:", formData);
+    setIsModalVisible(false);
+    setFormData({
+      input1: "",
+      input2: "",
+      input3: "",
+    });
+  };
+
+  const handleModalCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+
+
+  const getCourseAllotment = async () => {
+    try {
+      const response = await axios.get(
+        `http://172.17.19.25:8080/dvp_app/course_allotment/`
+      );
+      setCourseData(response?.data)
+      setEmployeeOption(response?.data)
+      setSubjectOption(response?.data)
+
+      console.log(response, "RRRRRRRRRRRRRRRRRRRR");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleEmployeeChange = (value) => {
+    setEmployeeSelected(value)
+  }
 
   return (
     <>
@@ -614,135 +164,136 @@ useEffect(() => {
               </div>
               <div className="user-picture"></div>
             </div>
-            <div style={{ display: "flex", justifyContent:"flex-end" }}>
-              <div className="slot-row">
-                <div className="slot-name">
-                  <h5>STUDIO 1</h5>
-                  <p>Theory</p>
-                </div>
-                <div className="slot-card">
-                  <div className="slot-time">10:00 - 10:45</div>
-                  <div className="slot-status">Teacher Name</div>
-                  <div className="faculty">Manish Kumar</div>
-                </div>
-                <div className="slot-card">
-                  <div className="slot-time">10:00 - 10:45</div>
-                  <div className="slot-status">Teacher Name</div>
-                  <div className="faculty">Manish Kumar</div>
-                </div>
-                <div className="slot-card">
-                  <div className="slot-time">10:00 - 10:45</div>
-                  <div className="slot-status">Teacher Name</div>
-                  <div className="faculty">Manish Kumar</div>
-                </div>
-                <div className="slot-card">
-                  <div className="slot-time">10:00 - 10:45</div>
-                  <div className="slot-status">Teacher Name</div>
-                  <div className="faculty">Manish Kumar</div>
-                </div>
-                <div className="slot-card">
-                  <div className="slot-time">10:00 - 10:45</div>
-                  <div className="slot-status">Teacher Name</div>
-                  <div className="faculty">Manish Kumar</div>
-                </div>
-              </div>
-              <div className="slot-row">
-                <div className="slot-name">
-                  <h5>STUDIO 2</h5>
-                  <p>Theory</p>
-                </div>
-                <div className="slot-card">
-                  <div className="slot-time">10:00 - 10:45</div>
-                  <div className="slot-status">Teacher Name</div>
-                  <div className="faculty">Manish Kumar</div>
-                </div>
-                <div className="slot-card">
-                  <div className="slot-time">10:00 - 10:45</div>
-                  <div className="slot-status">Teacher Name</div>
-                  <div className="faculty">Manish Kumar</div>
-                </div>
-                <div className="slot-card">
-                  <div className="slot-time">10:00 - 10:45</div>
-                  <div className="slot-status">Teacher Name</div>
-                  <div className="faculty">Manish Kumar</div>
-                </div>
-                <div className="slot-card">
-                  <div className="slot-time">10:00 - 10:45</div>
-                  <div className="slot-status">Teacher Name</div>
-                  <div className="faculty">Manish Kumar</div>
-                </div>
-                <div className="slot-card">
-                  <div className="slot-time">10:00 - 10:45</div>
-                  <div className="slot-status">Teacher Name</div>
-                  <div className="faculty">Manish Kumar</div>
-                </div>
-              </div>
-              <div className="slot-row">
-                <div className="slot-name">
-                  <h5>STUDIO 3</h5>
-                  <p>Theory</p>
-                </div>
-                <div className="slot-card">
-                  <div className="slot-time">10:00 - 10:45</div>
-                  <div className="slot-status">Teacher Name</div>
-                  <div className="faculty">Manish Kumar</div>
-                </div>
-                <div className="slot-card">
-                  <div className="slot-time">10:00 - 10:45</div>
-                  <div className="slot-status">Teacher Name</div>
-                  <div className="faculty">Manish Kumar</div>
-                </div>
-                <div className="slot-card">
-                  <div className="slot-time">10:00 - 10:45</div>
-                  <div className="slot-status">Teacher Name</div>
-                  <div className="faculty">Manish Kumar</div>
-                </div>
-                <div className="slot-card">
-                  <div className="slot-time">10:00 - 10:45</div>
-                  <div className="slot-status">Teacher Name</div>
-                  <div className="faculty">Manish Kumar</div>
-                </div>
-                <div className="slot-card">
-                  <div className="slot-time">10:00 - 10:45</div>
-                  <div className="slot-status">Teacher Name</div>
-                  <div className="faculty">Manish Kumar</div>
-                </div>
-              </div>
-              <div className="slot-row">
-                <div className="slot-name">
-                  <h5>STUDIO 4</h5>
-                  <p>Practical</p>
-                </div>
-                <div className="slot-card">
-                  <div className="slot-time">10:00 - 10:45</div>
-                  <div className="slot-status">Teacher Name</div>
-                  <div className="faculty">Manish Kumar</div>
-                </div>
-                <div className="slot-card">
-                  <div className="slot-time">10:00 - 10:45</div>
-                  <div className="slot-status">Teacher Name</div>
-                  <div className="faculty">Manish Kumar</div>
-                </div>
-                <div className="slot-card">
-                  <div className="slot-time">10:00 - 10:45</div>
-                  <div className="slot-status">Teacher Name</div>
-                  <div className="faculty">Manish Kumar</div>
-                </div>
-                <div className="slot-card">
-                  <div className="slot-time">10:00 - 10:45</div>
-                  <div className="slot-status">Teacher Name</div>
-                  <div className="faculty">Manish Kumar</div>
-                </div>
-                <div className="slot-card">
-                  <div className="slot-time">10:00 - 10:45</div>
-                  <div className="slot-status">Teacher Name</div>
-                  <div className="faculty">Manish Kumar</div>
-                </div>
-              </div>
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                height: "100vh",
+                overflow: "auto",
+                marginTop: "49px",
+                width: "100%",
+              }}
+            >
+              {studioData &&
+                studioData?.map((item) => (
+                  <div key={item.studio_name} className="slot-row">
+                    <div className="slot-name">
+                      <h5>{item?.studio_name}</h5>
+                      <p>{item?.studio_type}</p>
+                    </div>
+                    {item?.slots &&
+                      item?.slots?.map((studio) => (
+                        <div
+                          key={studio.slot_id}
+                          className={`slot-card ${
+                            cardActive === studio ? "clickedSlot" : ""
+                          }`}
+                          onClick={(e) => handleSlotClick(studio, e)}
+                        >
+                          <div
+                            className={`slot-time ${
+                              cardActive === studio ? "slotTime" : ""
+                            }`}
+                          >
+                            {studio?.start_time} - {studio?.end_time}
+                          </div>
+                          <div
+                            className={`slot-status ${
+                              cardActive === studio ? "slotStatus" : ""
+                            }`}
+                          >
+                            Status
+                          </div>
+                          <Popover title={studio?.status}>
+                          <div className="faculty">Not Booked</div>
+
+                          </Popover>
+                        </div>
+                      ))}
+                  </div>
+                ))}
             </div>
           </div>
         </div>
       </div>
+      {isMenuVisible && slotCardRef.current && (
+        <div
+          className="slot-menu"
+          style={{
+            position: "absolute",
+            top:
+              slotCardRef.current.getBoundingClientRect().bottom +
+              window.scrollY +
+              5,
+            left:
+              slotCardRef.current.getBoundingClientRect().left + window.scrollX,
+          }}
+        >
+          {/* <Button className="dynamicButton" onClick={handleBookSlotClick}>Book Slot</Button> */}
+          <>
+            <div className="small-dynamic-button">
+              <div onClick={handleBookSlotClick} className="set">
+                Book
+              </div>
+              <div className="set">Settings</div>
+              {/* <div className="set">Notify</div> */}
+            </div>
+            <div className="triangle"></div>
+          </>
+        </div>
+      )}
+      <Modal
+        title="Book Slot"
+        visible={isModalVisible}
+        onOk={handleModalOk}
+        onCancel={handleModalCancel}
+      >
+        <div style={{marginBottom:"10px", width:"300px"}}>
+        <Select
+          placeholder="Select Faculty"
+          required
+          style={{
+            width: "100%",
+            
+          }}
+          value={employeeSelected}
+          onChange={handleEmployeeChange}
+        >
+          {employeeOption &&
+            employeeOption.map((item) => (
+              <Option value={item?.employee_id} key={item?.course_allotment_ids}>
+                {item?.employee_name}
+              </Option>
+            ))}
+        </Select>
+        </div>
+       
+        <div style={{marginBottom:"10px", width:"300px"}}>
+        <Select
+          placeholder="Select Faculty"
+          required
+          style={{
+            width: "100%",
+            
+          }}
+          value={employeeSelected}
+          onChange={handleEmployeeChange}
+        >
+          {employeeOption &&
+            employeeOption.map((item) => (
+              <Option value={item?.employee_id} key={item?.course_allotment_ids}>
+                {item?.employee_name}
+              </Option>
+            ))}
+        </Select>
+        </div>
+        <Input
+          placeholder="Input 3"
+          name="input3"
+          value={formData.input3}
+          onChange={handleInputChange}
+        />
+      </Modal>
     </>
   );
 };

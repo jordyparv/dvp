@@ -391,24 +391,25 @@ const Profile = () => {
                                     style={{
                                       fontWeight: "bold",
                                       marginRight: "5px",
+                                      fontSize:"14px"
                                     }}
                                   >
                                     {item?.subject_name.slice(0, 22)}
                                     {"..."} ({item?.subject_code})
                                   </span>{" "}
-                                  <span style={{ marginRight: "5px" }}>
+                                  <span style={{ marginRight: "5px", fontSize:"14px" }}>
                                     from
                                   </span>
-                                  <span style={{ fontWeight: "bold" }}>
+                                  <span style={{ fontWeight: "bold", fontSize:"14px" }}>
                                     {item?.lesson_plans[0]?.employee_name?.slice(
                                       0,
-                                      10
+                                      20
                                     )}
                                     {"..."}
                                     <img
                                       
                                       style={{
-                                        width: "30px",
+                                        width: "20px",
                                         marginLeft: "5px",
                                         cursor: "pointer",
                                       }}
@@ -458,21 +459,22 @@ const Profile = () => {
                                     style={{
                                       fontWeight: "bold",
                                       marginRight: "5px",
+                                      fontSize:"14px"
                                     }}
                                   >
                                     {item?.subject_name.slice(0, 22)}
                                     {"..."} ({item?.subject_code})
                                   </span>{" "}
-                                  <span style={{ marginRight: "5px" }}>
+                                  <span style={{ marginRight: "5px", fontSize:"14px" }}>
                                     from
                                   </span>
-                                  <span style={{ fontWeight: "bold" }}>
-                                    {item?.employee_name.slice(0, 10)}
+                                  <span style={{ fontWeight: "bold", fontSize:"14px" }}>
+                                    {item?.employee_name.slice(0, 20)}
                                     {"..."}
                                     <img
                                       
                                       style={{
-                                        width: "30px",
+                                        width: "20px",
                                         marginLeft: "5px",
                                         
                                       }}

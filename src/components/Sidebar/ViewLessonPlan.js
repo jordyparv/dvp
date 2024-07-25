@@ -24,6 +24,7 @@ import Swal from "sweetalert2";
 import TextArea from "antd/es/input/TextArea";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // import styles
+import { useNavigate } from "react-router-dom";
 
 const stripHtmlTags = (html) => {
   const doc = new DOMParser().parseFromString(html, "text/html");
@@ -53,6 +54,7 @@ const ViewLessonPlan = () => {
 
   const getuserId = JSON.parse(localStorage.getItem("prod_cred"));
   const userId = getuserId?.user_id;
+  const navigate = useNavigate();
 
   const getEmpId = async () => {
     try {
@@ -414,6 +416,10 @@ const ViewLessonPlan = () => {
     );
   };
 
+  const handleBackPage = () => {
+    navigate(-1);
+  };
+
   return (
     <div style={{ display: "flex" }} className="production">
       <SideBar />
@@ -434,7 +440,12 @@ const ViewLessonPlan = () => {
             </div>
           </span>
         </div>
-
+        <div
+          style={{ cursor: "pointer", fontWeight: "bold" }}
+          onClick={handleBackPage}
+        >
+          Back
+        </div>
         <div className="notification-wrapper">
           <h6>Your Lesson Plan</h6>
           {showLesson &&
@@ -619,10 +630,8 @@ const ViewLessonPlan = () => {
             placeholder="Write your script here..."
           />
         </Modal>
-        <Modal   title="View Script" open={scriptModal} onOk={handleCancel}>
-          {/* <p>{scriptData ? stripHtmlTags(scriptData?.data?.script) : ''}</p> */}
-          {/* <div dangerouslySetInnerHTML={{ __html: scriptData?.data?.script }} /> */}
-          <div >
+        <Modal title="View Script" onCancel={handleCancel} open={scriptModal} onOk={handleCancel}>
+          <div>
             {scriptData?.data?.script ? (
               <div
                 dangerouslySetInnerHTML={{ __html: scriptData.data.script }}

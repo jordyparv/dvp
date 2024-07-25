@@ -54,13 +54,16 @@ const CourseAllotment = () => {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingRecord, setEditingRecord] = useState("");
   const [courseAllotment, setCourseAllotment] = useState([]);
-
+  const [courseAllotmentId, setCourseAllotmentId] = useState([]);
   const [subjectSearch, setSubjectSearch] = useState("");
 
   // filter subjects
-  const filteredSubjects = allSubjects?.filter((subject) =>
-    subject.subject_code.toLowerCase().includes(subjectSearch.toLowerCase()) ||
-    subject.subject_name.toLowerCase().includes(subjectSearch.toLowerCase())
+  const filteredSubjects = allSubjects?.filter(
+    (subject) =>
+      subject.subject_code
+        .toLowerCase()
+        .includes(subjectSearch.toLowerCase()) ||
+      subject.subject_name.toLowerCase().includes(subjectSearch.toLowerCase())
   );
   // const handleSubjectSearchChange = (e) => {
   //   setSubjectSearch(e.target.value);
@@ -70,40 +73,17 @@ const CourseAllotment = () => {
     setSubjectSearch(e.target.value);
   };
 
-  // const handleSubjectChange = (e) => {
-  //   const subjectId = e.target.value;
-  //   setSelectedSubjectIds((prevSelected) =>
-  //     prevSelected.includes(subjectId)
-  //       ? prevSelected.filter((id) => id !== subjectId)
-  //       : [...prevSelected, subjectId]
-  //   );
-  // };
-
   const handleSubjectChange = (e) => {
     const subjectId = e.target.value;
     const { value, checked } = e.target;
-    console.log("Selected Subject ID: ", subjectId); 
-    // setSelectedSubjectIds((prevSelected) =>
-    //   prevSelected.includes(subjectId)
-    //     ? prevSelected.filter((id) => id !== subjectId)
-    //     : [...prevSelected, subjectId]
-    // );
-       setSelectedSubjectIds((prevState) =>
+    console.log("Selected Subject ID: ", subjectId);
+
+    setSelectedSubjectIds((prevState) =>
       checked
         ? [...prevState, Number(value)]
         : prevState.filter((id) => id !== Number(value))
     );
   };
-    // const handleSubjectChange = (e) => {
-  //   const { value, checked } = e.target;
-  //   setSelectedSubjectIds((prevState) =>
-  //     checked
-  //       ? [...prevState, Number(value)]
-  //       : prevState.filter((id) => id !== Number(value))
-  //   );
-  // };
-  
-
 
   const showDrawer = () => {
     setOpen(true);
@@ -118,6 +98,9 @@ const CourseAllotment = () => {
       console.log(response, "_____ewe9w");
 
       setSubjectData(response?.data);
+      if (response?.data?.employee_id) {
+        setEmployeeId(response.data.employee_id);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -142,7 +125,6 @@ const CourseAllotment = () => {
   const getFacultyRequest = async (currentSession) => {
     try {
       const response = await axios.get(
-        // `http://172.17.19.25:8080/dvp_app/select_faculty/?session_code=${currentSession}`
         `http://172.17.19.25:8080/dvp_app/select_faculty/?session_code=${currentSession}`
       );
 
@@ -169,9 +151,8 @@ const CourseAllotment = () => {
       const response = await axios.get(
         "http://172.17.19.25:8080/dvp_app/sessions/"
       );
-      console.log("Fetched sessions:", response.data); // Debugging log
+      console.log("Fetched sessions:", response.data);
 
-      // Filter out null values and ensure unique keys
       const validSessions = response.data.filter(
         (session) => session.id !== null
       );
@@ -367,10 +348,7 @@ const CourseAllotment = () => {
               alt="editLogo"
             />
           </div>
-          <div
-            style={{ marginLeft: "10px", cursor: "pointer" }}
-            // onConfirm={() => handleDelete(record.pc_id)}
-          >
+          <div style={{ marginLeft: "10px", cursor: "pointer" }}>
             <img src={dele} alt="del" />
           </div>
         </div>
@@ -383,7 +361,7 @@ const CourseAllotment = () => {
       const response = await axios.get(
         `http://172.17.19.25:8080/dvp_app/course-reasigned/${course_allotment_ids}/`
       );
-      console.log(courseAllotment, "GGGGGGGG");
+      console.log(courseAllotment, response, "GGGGGGGG");
       const data = response.data;
       setCourseAllotment(data?.course_allotment_id);
       setSelectedProgramLevel(data.selected_program_level);
@@ -414,30 +392,41 @@ const CourseAllotment = () => {
     );
   };
 
-
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission logic here
   };
 
-  const handleEditSubmit = async () => {
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
     try {
+      console.log("Editing record:", editingRecord);
+
+      // const currentSelectedSubjects = editingRecord.selected_subjects || [];
+      const currentSelectedSubjects = editingRecord.selected_subjects || [];
+
+      const combinedSubjects = [
+        ...new Set([
+          ...selectedSubjectIds,
+          ...currentSelectedSubjects.map((subject) => subject.subject_id),
+        ]),
+      ];
+
       const updatedRecord = {
-        ...editingRecord,
-        program_level: selectedProgramLevel,
-        programs: selectedPrograms,
-        subjects: selectedSubjects,
+        subject_id: combinedSubjects,
       };
 
+      console.log("Updated record:", updatedRecord);
       const response = await axios.patch(
-        `/dvp_app/course_allotment/${editingRecord.id}/`,
+        `/dvp_app/course-allotment-update/${courseAllotmentId}/`,
         updatedRecord
       );
+
+      console.log(response, "TTTTTTTTT");
 
       message.success("Entry updated successfully");
       setEditModalVisible(false);
       setEditingRecord(null);
+      getAllotedData();
       getAllotedData(employeeId); // Refresh data for the current employee
     } catch (error) {
       console.error("Failed to update entry:", error);
@@ -459,42 +448,15 @@ const CourseAllotment = () => {
   };
 
   const showEditModal = (course_allotment_ids) => {
+    setCourseAllotmentId(course_allotment_ids);
     fetchData(course_allotment_ids);
     setEditingRecord(course_allotment_ids);
     console.log(course_allotment_ids, "EEEEEEEEEE");
+    setSelectedSubjects(subjects || []);
     setEditModalVisible(true);
   };
 
-  const handleReAssigned = async () => {
-    try {
-      const data = {
-        employee_id: parseInt(employeeId),
-        session_code: currentSession,
-        program_ids: selectedProgramIds,
-        subject_ids: selectedSubjectIds,
-      };
 
-      const config = {
-        url: `/dvp_app/course_allotment/`,
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json, text/plain, */*",
-        },
-        data,
-      };
-
-      const response = await axios(config);
-      console.log(response, "RE-ASSIGNED SUCCESS");
-
-      message.success("Course reassigned successfully");
-      setEditModalVisible(false); // Close the modal
-      getAllotedData(); // Refresh the data after update
-    } catch (error) {
-      console.error("Failed to reassign courses:", error);
-      message.error("Failed to reassign courses. Please try again.");
-    }
-  };
 
   console.log(filteredSubjects, "FILRER SUBJECTS............");
 
@@ -528,12 +490,12 @@ const CourseAllotment = () => {
               ) : (
                 <form className="register-form">
                   <div className="form-row">
-                    <label>
+                    <label >
                       <p>
                         <span>Current Session</span>
                       </p>
 
-                      <Input
+                      <Input style={{width:"340px"}}
                         value={currentSession}
                         placeholder="Current Session"
                         disabled
@@ -569,7 +531,7 @@ const CourseAllotment = () => {
                     </label>
                   </div>
                   <div className="form-row">
-                    <label>
+                    <label style={{display:"none"}}>
                       <p>
                         <span>Session Code </span>
                         <span style={{ color: "red" }}>*</span>
@@ -783,6 +745,7 @@ const CourseAllotment = () => {
               title="Course Reassigned"
               visible={editModalVisible}
               onOk={handleEditSubmit}
+              // onOk={handleReAssigned}
               onCancel={() => setEditModalVisible(false)}
             >
               <>
@@ -797,25 +760,7 @@ const CourseAllotment = () => {
                       disabled
                     />
                   </fieldset>
-                  <fieldset>
-                    <legend>Select Programs:</legend>
-                    {allPrograms.map((program) => (
-                      <div key={program.program_id}>
-                        <input
-                          type="checkbox"
-                          id={`program-${program.program_id}`}
-                          value={program.program_id}
-                          checked={selectedProgramIds.includes(
-                            program.program_id
-                          )}
-                          onChange={handleProgramChange}
-                        />
-                        <label htmlFor={`program-${program.program_id}`}>
-                          {program.program_name}
-                        </label>
-                      </div>
-                    ))}
-                  </fieldset>
+
                   <fieldset>
                     <label>Search Subject</label>
                     <Input
@@ -825,22 +770,6 @@ const CourseAllotment = () => {
                     />
 
                     <legend>Select Subjects:</legend>
-                    {/* {allSubjects.map((subject) => (
-                      <div key={subject.subject_id}>
-                        <input
-                          type="checkbox"
-                          id={`subject-${subject.subject_id}`}
-                          value={subject.subject_id}
-                          checked={selectedSubjectIds.includes(
-                            subject.subject_id
-                          )}
-                          onChange={handleSubjectChange}
-                        />
-                        <label htmlFor={`subject-${subject?.subject_id}`}>
-                          {subject?.subject_name + " " + subject?.subject_code}
-                        </label>
-                      </div>
-                    ))} */}
 
                     <div>
                       {filteredSubjects.map((subject) => (
@@ -862,9 +791,9 @@ const CourseAllotment = () => {
                     </div>
                   </fieldset>
 
-                  <button onClick={handleReAssigned} type="submit">
+                  {/* <button onClick={handleReAssigned} type="submit">
                     Submit
-                  </button>
+                  </button> */}
                 </form>
               </>
             </Modal>

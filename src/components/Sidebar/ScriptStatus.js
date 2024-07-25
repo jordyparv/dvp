@@ -7,6 +7,7 @@ import { Modal } from "antd"; // Import Modal from Ant Design
 import "./ViewLessonPlan.css";
 import send1 from "../../assets/images/send1.png";
 import { getScriptStatus } from "../../protectedRouting/Utils/apiUtils";
+import { useNavigate } from "react-router-dom";
 
 const ScriptStatus = () => {
   const [empIds, setEmpIds] = useState(null);
@@ -27,6 +28,8 @@ const ScriptStatus = () => {
 
   const getuserId = JSON.parse(localStorage.getItem("prod_cred"));
   const userId = getuserId?.user_id;
+
+  const navigate = useNavigate();
 
   const getEmpId = async () => {
     try {
@@ -118,9 +121,16 @@ const ScriptStatus = () => {
       );
       Swal.fire("Success", "Approved", "success");
       getEmpId();
+      setTimeout(() => {
+        window.location.reload();
+      })
     } catch (error) {
       Swal.fire("Error", "Failed to submit approval", "error");
     }
+  };
+
+  const handleBackPage = () => {
+    navigate(-1);
   };
 
   return (
@@ -152,6 +162,12 @@ const ScriptStatus = () => {
             ))}
         </div>
         <div className="lesson-table-wrapper">
+        <div
+          style={{ cursor: "pointer", fontWeight: "bold", marginBottom:"20px" }}
+          onClick={handleBackPage}
+        >
+          Back
+        </div>
           <h4>Pending Script Approval Request</h4>
           {selectedScript.length > 0 && (
             <div className="lesson-table-container">

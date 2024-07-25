@@ -38,7 +38,6 @@ const routes = [
         name: "Employee Registration Form",
         icon: <FaMoneyBill />,
       },
-     
     ],
   },
   {
@@ -69,6 +68,18 @@ const routes = [
       },
     ],
   },
+  // {
+  //   path: "/studio-settings",
+  //   name: "Studio Settings",
+  //   icon: <BiCog />,
+  //   subRoutes: [
+  //     {
+  //       path: "/studio-settings",
+  //       name: "Studio Configuration",
+  //       icon: <RiListSettingsFill />,
+  //     },
+  //   ],
+  // },
   {
     path: "/slot-booking",
     name: "Slot Booking",
@@ -85,7 +96,6 @@ const routes = [
         name: "View Slots",
         icon: <FaMoneyBill />,
       },
-      
     ],
   },
   {
@@ -94,15 +104,13 @@ const routes = [
     icon: <BiCog />,
     subRoutes: [
       {
-        path: "/studioSettings",
+        path: "/studio-settings",
         name: "Studio Settings",
         icon: <RiListSettingsFill />,
       },
     ],
   },
 
- 
- 
   {
     path: "/lesson-plan",
     name: "Lesson Plan",

@@ -103,7 +103,7 @@
 }
 .status-info-card{
     display: flex;
-    width:73%;
+    width:93%;
     min-width: 200px;
     background-color: white;
     height: 20%;
@@ -259,16 +259,23 @@
     align-items: center;
     cursor: pointer;
     
+
+    
 }
-.slot-card:hover{
+.clickedSlot{
+    cursor: pointer;
     border: 1px solid rgb(51, 255, 0);
     box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
     background-color: rgb(180, 218, 191);
-}
-.slot-card .slot-time:hover {
-    color: rgb(0, 0, 0);
+    background-color: #001526;
+    color: white;
 
 }
+.slotNotSelected{
+    background-color: white;
+}
+
+
 
 .slot-time{
     color: #001526;
@@ -285,4 +292,137 @@
     font-family: sans-serif;
 }
 
+
+/* studio  */
+.studio-settings{
+    width: 100%;
+    display: flex;
+    background-color: #e2e8ec;
+    height: 100vh;
+    margin-left: -20px;
+    flex-direction: column;
+
+}
+.studio-heading{
+    font-weight: bold;
+    color: #001526;
+    font-size: 20px;
+    padding: 10px;
+}
+.studio-dropdown{
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    /* border: 3px solid black; */
+
+}
+.studio-dropdown Select {
+    width: 200px !important;
+}
+.studio-record{
+    width: 100%;
+    height: 100vh;
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.styled-table {
+    background: #f9f9f9;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+  }
   
+  .styled-table .ant-table-thead > tr > th {
+    background: #001529;
+    color: #fff;
+    font-weight: bold;
+  }
+  
+  .styled-table .ant-table-tbody > tr > td {
+    background: #fff;
+    color: #333;
+  }
+  
+  .status-active {
+    color: green;
+  }
+  
+  .status-inactive {
+    color: red;
+  }
+  .labelTop{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: -10px;
+  }
+.dynamicButton{
+    margin-left: -35px;
+    margin-top: -58px;
+    position: absolute;
+    background-color: #001529;
+    color: white;
+
+}
+.dynamicButton :hover{
+ 
+}
+
+.small-dynamic-button{
+    width: 100px;
+    height: 80px;
+    background-color: #001526;
+    display: flex;
+    margin-left: -102px;
+    margin-top: -44px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 6px;
+    flex-direction: column;
+
+
+}
+.set{
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: rgb(255, 255, 255);
+    border-bottom: 1px solid grey;
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 4px;
+    cursor: pointer;
+
+}
+.slotTime{
+    color: #e7ebee;
+    font-weight: bold;
+    font-size: 14px;
+}
+.slotStatus{
+    font-size: 12px;
+    color: #c2c6c9;
+}
+.triangle{
+    width: 10px;
+    height: 10px;
+    background-color: #001526;
+    margin-top: -69px;
+    rotate: 45deg;
+   
+    /* position: absolute; */
+    margin-left: -10px;
+}
+.ant-modal-body{
+   display: flex;
+   justify-content: center;
+   flex-direction: column;
+   align-items: center;
+   /* width: 400px; */
+
+}

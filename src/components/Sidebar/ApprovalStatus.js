@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState } from "react";
 import SideBar from "./SideBar";
 import axios from "axios";
@@ -7,6 +5,7 @@ import Swal from "sweetalert2";
 import { EyeOutlined } from "@ant-design/icons";
 
 import "./ViewLessonPlan.css";
+import { useNavigate } from "react-router-dom";
 
 const ApprovalStatus = () => {
   const [empIds, setEmpIds] = useState(null);
@@ -22,6 +21,8 @@ const ApprovalStatus = () => {
 
   const getuserId = JSON.parse(localStorage.getItem("prod_cred"));
   const userId = getuserId?.user_id;
+
+  const navigate = useNavigate();
 
   const getEmpId = async () => {
     try {
@@ -50,56 +51,20 @@ const ApprovalStatus = () => {
       (item) => item.subject_id === subjectId
     );
     setSelectedSubjectLessonPlans(subjectData.lesson_plans);
-    setShowSelectedSubjectId(subjectId)
+    setShowSelectedSubjectId(subjectId);
     setCurrentSubjectId(subjectId);
   };
 
-
-  const refreshData = async(employeeId) => {
-    const response = await axios.get(`http://172.17.19.25:8080/dvp_app/search-lesson-plan-approval/?employee_id=${employeeId}`);
-
-  }
-  // const handleCheckboxChange = async (lessonPlanId, status) => {
-  //   const currentStatus = approvalStatus[lessonPlanId];
-  //   if (currentStatus === status) {
-  //     const { [lessonPlanId]: _, ...rest } = approvalStatus; // Remove the entry from the state
-  //     setApprovalStatus(rest);
-  //     setRemarks((prevRemarks) => {
-  //       const { [lessonPlanId]: _, ...restRemarks } = prevRemarks;
-  //       return restRemarks;
-  //     });
-  //   } else {
-  //     const { value: remark } = await Swal.fire({
-  //       title:
-  //         status === "approved" ? "Approve Lesson Plan" : "Reject Lesson Plan",
-  //       input: status === "approved" ? "hidden" : "textarea",
-  //       inputLabel: "Remark",
-  //       inputPlaceholder:
-  //         status === "approved" ? "" : "Enter reason for rejection",
-  //       showCancelButton: true,
-  //       inputValidator: (value) => {
-  //         if (!value && status !== "approved") {
-  //           return "You need to write something!";
-  //         }
-  //       },
-  //     });
-
-  //     if (remark || status === "approved") {
-  //       setApprovalStatus((prevStatus) => ({
-  //         ...prevStatus,
-  //         [lessonPlanId]: status,
-  //       }));
-  //       setRemarks((prevRemarks) => ({
-  //         ...prevRemarks,
-  //         [lessonPlanId]: remark || "Approved",
-  //       }));
-  //     }
-  //   }
-  // };
+  const refreshData = async (employeeId) => {
+    const response = await axios.get(
+      `http://172.17.19.25:8080/dvp_app/search-lesson-plan-approval/?employee_id=${employeeId}`
+    );
+    console.log(response, "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
+  };
 
   const handleCheckboxChange = (lessonPlanId, status) => {
     const currentStatus = approvalStatus[lessonPlanId];
-  
+
     if (currentStatus === status) {
       const { [lessonPlanId]: _, ...rest } = approvalStatus;
       setApprovalStatus(rest);
@@ -118,7 +83,6 @@ const ApprovalStatus = () => {
       }));
     }
   };
-  
 
   const handleSelectAllChange = () => {
     setSelectAll(!selectAll);
@@ -143,7 +107,7 @@ const ApprovalStatus = () => {
       Swal.fire("Error", "No lesson plans to submit.", "error");
       return;
     }
-  
+
     const confirmResult = await Swal.fire({
       title: "Are you sure you want to submit the changes?",
       icon: "warning",
@@ -151,30 +115,24 @@ const ApprovalStatus = () => {
       confirmButtonText: "Yes",
       cancelButtonText: "No",
     });
-  
+
     if (confirmResult.isConfirmed) {
       try {
         for (const plan of selectedSubjectLessonPlans) {
           const data = {
-            module: "Updated Module", 
-            module_learning_objective: "Updated learning objective",
-            topic: "Updated Topic",
-            subtopic: "Updated Subtopic",
-            subtopic_learning_objective: "Updated subtopic learning objective",
             approved: approvalStatus[plan.lesson_plan_id] || "pending",
             remarks: remarks[plan.lesson_plan_id] || "",
-            session_code: plan.session_code,
-            employee_id: plan.employee_id,
-            subject_id: plan.subject_id,
           };
-  
-          await axios.put(
-            `http://172.17.19.25:8080/dvp_app/lesson-plans/${plan.lesson_plan_id}/`,
+
+          await axios.patch(
+            `http://172.17.19.25:8080/dvp_app/update-lesson-plan-status/${plan.lesson_plan_id}/`,
             data
           );
         }
-  
-        refreshData()
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
         Swal.fire("Success", "Changes have been submitted.", "success");
       } catch (error) {
         console.log(error);
@@ -182,23 +140,32 @@ const ApprovalStatus = () => {
       }
     }
   };
-  
-  
+
+  const handleBackPage = () => {
+    navigate(-1);
+  };
 
   return (
     <div style={{ display: "flex" }} className="production">
       <SideBar />
       <div className="content">
+     
         <div className="notification-wrapper">
           <h4>Action Needed</h4>
           {lessonPlanName &&
             lessonPlanName.map((item) => (
-              <div key={item.subject_id}  className={`notification ${
-                showSelectedSubjectId === item?.subject_id
-                  ? "selectedClass"
-                  : null
-              }`}>
-                <div>Lesson Plan for {item?.subject_name}</div>
+              <div
+                key={item.subject_id}
+                className={`notification ${
+                  showSelectedSubjectId === item?.subject_id
+                    ? "selectedClass"
+                    : null
+                }`}
+              >
+                <div>
+                  {" "}
+                  {item?.subject_name} {"   "} ({item?.subject_code})
+                </div>
                 <div>
                   <div
                     style={{ cursor: "pointer" }}
@@ -210,7 +177,14 @@ const ApprovalStatus = () => {
               </div>
             ))}
         </div>
+      
         <div className="lesson-table-wrapper">
+        <div
+          style={{ cursor: "pointer", fontWeight: "bold", marginBottom:"20px" }}
+          onClick={handleBackPage}
+        >
+          Back
+        </div>
           <h4>Pending Lesson Plan Request</h4>
           {selectedSubjectLessonPlans.length > 0 && (
             <div className="lesson-table-container">
@@ -298,7 +272,7 @@ const ApprovalStatus = () => {
               </table>
               {Object.keys(approvalStatus).length > 0 && (
                 <div className="actions">
-                  <button onClick={handleStatusChange}>Send</button>
+                  <button onClick={handleStatusChange}>Submit</button>
                 </div>
               )}
             </div>
