@@ -434,7 +434,7 @@ const Profile = () => {
                           src={script}
                         />
                         <h6 style={{ letterSpacing: "1px" }}>
-                          Script Approval Request
+                          Document Approval Request
                         </h6>
                       </span>
                     </div>
@@ -497,12 +497,12 @@ const Profile = () => {
             <>
               <div className="calender">
                 {" "}
-                <Calender />
+                {/* <Calender /> */}
               </div>
             </>
           ) : null}
 
-          <section class="main-course">
+          {/* <section class="main-course">
             <h4>Studio</h4>
             <div class="course-box">
               <div class="course">
@@ -526,7 +526,7 @@ const Profile = () => {
                 </div>
               </div>
             </div>
-          </section>
+          </section> */}
         </section>
         <div className="flex-container-wrapper projcard-container">
           <div className="projcard projcard-red">

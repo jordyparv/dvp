@@ -168,7 +168,7 @@ const ScriptStatus = () => {
         >
           Back
         </div>
-          <h4>Pending Script Approval Request</h4>
+          <h4>Pending Document Approval Request</h4>
           {selectedScript.length > 0 && (
             <div className="lesson-table-container">
               <h4>Lesson Plans</h4>
@@ -183,7 +183,7 @@ const ScriptStatus = () => {
                     <th className="small-font">Approve</th>
                     <th className="small-font">Reject</th>
                     <th className="small-font">Remark</th>
-                    <th className="small-font">Send</th>
+                    <th className="small-font">Submit</th>
                   </tr>
                 </thead>
                 <tbody>

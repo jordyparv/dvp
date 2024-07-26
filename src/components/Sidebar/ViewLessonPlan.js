@@ -20,11 +20,13 @@ import { MdEmojiEmotions } from "react-icons/md";
 import { getLesson } from "../../protectedRouting/Utils/apiUtils";
 import script from "../../assets/images/script.png";
 import pastescript from "../../assets/images/pastescript.png";
+import ppt from "../../assets/images/ppt.png";
 import Swal from "sweetalert2";
 import TextArea from "antd/es/input/TextArea";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // import styles
 import { useNavigate } from "react-router-dom";
+import Dragger from "antd/es/upload/Dragger";
 
 const stripHtmlTags = (html) => {
   const doc = new DOMParser().parseFromString(html, "text/html");
@@ -51,6 +53,9 @@ const ViewLessonPlan = () => {
   const [scriptModal, setScriptModal] = useState(false);
 
   const [scriptDataStatus, setScriptDataStatus] = useState("");
+
+  const [showPptModal, setShowPptModal] = useState(false);
+  const [pptFile, setPptFile] = useState(null);
 
   const getuserId = JSON.parse(localStorage.getItem("prod_cred"));
   const userId = getuserId?.user_id;
@@ -308,7 +313,6 @@ const ViewLessonPlan = () => {
     e.preventDefault();
     try {
       setShowModal(false);
-      // const plainTextContent = stripHtmlTags(scriptContent);
       const plainTextContent = scriptContent;
       const subtopicData = showLessonDrawer.find(
         (item) => item.lesson_plan_id === currentLessonPlanId
@@ -357,6 +361,7 @@ const ViewLessonPlan = () => {
     setShowModal(false);
     setScriptContent("");
     setScriptModal(false);
+    setShowPptModal(false);
   };
 
   //see script
@@ -419,6 +424,64 @@ const ViewLessonPlan = () => {
   const handleBackPage = () => {
     navigate(-1);
   };
+
+  const showModalPpt = (lessonPlanId) => {
+    setCurrentLessonPlanId(lessonPlanId);
+    setShowPptModal(true);
+  };
+
+  const handlePptChange = (info) => {
+    const file = info.file;
+    const isPpt =
+      file.type === "application/vnd.ms-powerpoint" ||
+      file.type ===
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+    if (!isPpt) {
+      Modal.error({
+        title: "Invalid File Type",
+        content: "Please upload a PPT file.",
+      });
+      return;
+    }
+    setPptFile(file);
+  };
+
+  const handlePptUpload = async () => {
+    if (!pptFile) {
+      message.error("Please select a PPT file.");
+      return;
+    }
+
+    const subtopicData = showLessonDrawer.find(
+      (item) => item.lesson_plan_id === currentLessonPlanId
+    );
+
+    const formData = new FormData();
+    formData.append("lesson_plan_id", subtopicData.lesson_plan_id);
+    formData.append("session_code", subtopicData.session_code);
+    formData.append("pc_id", subtopicData?.pc_details?.pc_id);
+    formData.append("ppt_file", pptFile);
+
+    try {
+      const response = await axios.post(
+        "http://172.17.19.25:8080/dvp_app/subtopic_uploads/",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      message.success("PPT file uploaded successfully!");
+      console.log(response, "PPPPPPTTTTTT");
+      setPptFile(null);
+      setShowPptModal(false);
+    } catch (error) {
+      message.error("Failed to upload PPT file.");
+    }
+  };
+
+  const showMyPPT = () => {};
 
   return (
     <div style={{ display: "flex" }} className="production">
@@ -519,7 +582,7 @@ const ViewLessonPlan = () => {
 
         <Drawer
           title="Upload Script"
-          width={720}
+          width={1000}
           onClose={onClose}
           open={open}
           styles={{
@@ -539,6 +602,7 @@ const ViewLessonPlan = () => {
                   <th scope="col">Sub Topic</th>
                   <th scope="col">Approved By</th>
                   <th scope="col">Upload Script</th>
+                  <th scope="col">Upload PPT</th>
                   <th scope="col">Status</th>
                   <th scope="col">Remark</th>
                 </tr>
@@ -557,7 +621,7 @@ const ViewLessonPlan = () => {
                           item?.pc_details?.emp_code}
                       </td>
 
-                      <td className="text-center">
+                      <td style={{ width: "100px" }} className={item?.script === null ? "redBackground" : null}>
                         {item?.approved === "Approved" ? (
                           <>
                             {" "}
@@ -598,6 +662,53 @@ const ViewLessonPlan = () => {
                           }}
                         />
                       </td>
+                      <td style={{ width: "100px" }} className="text-center">
+                        {item?.approved === "Approved" ? (
+                          <>
+                            {" "}
+                            <Popover
+                              title={`Upload PPT for subtopic ${item?.subtopic}`}
+                            >
+                              <img
+                                onClick={() => showModalPpt(showError)}
+                                style={{ width: "25px", cursor: "pointer" }}
+                                src={ppt}
+                              />
+                            </Popover>
+                            <EyeOutlined
+                              onClick={() => showMyPPT(item?.lesson_plan_id)}
+                              style={{
+                                width: "20px",
+                                marginLeft: "10px",
+                                cursor: "pointer",
+                              }}
+                            />
+                          </>
+                        ) : (
+                          <>
+                            {" "}
+                            <Popover
+                              title={`Upload PPT for subtopic ${item?.subtopic}`}
+                            >
+                              <img
+                                onClick={() =>
+                                  showModalPpt(item?.lesson_plan_id)
+                                }
+                                style={{ width: "25px", cursor: "pointer" }}
+                                src={ppt}
+                              />
+                            </Popover>
+                            <EyeOutlined
+                              onClick={() => showMyPPT(item?.lesson_plan_id)}
+                              style={{
+                                width: "20px",
+                                marginLeft: "10px",
+                                cursor: "pointer",
+                              }}
+                            />
+                          </>
+                        )}
+                      </td>
                       <td>{item?.approved}</td>
                       {/* <td>{item?.approved === "approved" ? "Approved" : item?.approved === "rejected" ? "Rejected" : "Pending"}</td> */}
                       <td>
@@ -630,7 +741,12 @@ const ViewLessonPlan = () => {
             placeholder="Write your script here..."
           />
         </Modal>
-        <Modal title="View Script" onCancel={handleCancel} open={scriptModal} onOk={handleCancel}>
+        <Modal
+          title="View Script"
+          onCancel={handleCancel}
+          open={scriptModal}
+          onOk={handleCancel}
+        >
           <div>
             {scriptData?.data?.script ? (
               <div
@@ -860,6 +976,39 @@ const ViewLessonPlan = () => {
           )
         )}
       </div>
+      <Modal
+        title="Upload PPT"
+        open={showPptModal}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        footer={(_, {}) => (
+          <>
+            <Button onClick={handleCancel}>Cancel</Button>
+            <Button
+              type="primary"
+              onClick={handlePptUpload}
+              disabled={!pptFile}
+            >
+              Upload
+            </Button>
+          </>
+        )}
+      >
+        <Dragger
+          name="file"
+          multiple={false}
+          beforeUpload={() => false}
+          onChange={handlePptChange}
+        >
+          <p className="ant-upload-drag-icon">
+            <i className="fas fa-upload" />
+          </p>
+          <p className="ant-upload-text">
+            Click or drag file to this area to upload
+          </p>
+          <p className="ant-upload-hint">Upload PPT files only</p>
+        </Dragger>
+      </Modal>
     </div>
   );
 };

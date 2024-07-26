@@ -192,6 +192,7 @@ const ApprovalStatus = () => {
               <table className="lesson-table">
                 <thead>
                   <tr>
+                  <th className="small-font">Received From</th>
                     <th className="small-font">Module</th>
                     <th className="small-font">Module Learning Objective</th>
                     <th className="small-font">Topic</th>
@@ -213,6 +214,7 @@ const ApprovalStatus = () => {
                 <tbody>
                   {selectedSubjectLessonPlans.map((plan) => (
                     <tr key={plan.lesson_plan_id}>
+                      <td>{plan.employee_name}</td>
                       <td>{plan.module}</td>
                       <td>{plan.module_learning_objective}</td>
                       <td>{plan.topic}</td>
