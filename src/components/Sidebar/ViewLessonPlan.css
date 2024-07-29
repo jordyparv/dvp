@@ -179,11 +179,9 @@
 .ant-modal-content{
   width: fit-content;
 }
-.redBackground{
-  background-color: #da8d95 !important;
-
+.noPpt{
+  background-color: #d19090;
 }
-.greenBackground{
-  background-color: #7ec97e !important;
-
+.yesPpt{
+  background-color: #4cd349;
 }

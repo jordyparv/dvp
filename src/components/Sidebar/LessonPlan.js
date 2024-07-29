@@ -14,7 +14,7 @@ import add from "../../assets/images/add.png";
 import minus from "../../assets/images/minus.png";
 
 const LessonPlan = () => {
-  const [lessonPlanLength, setLessonplanLength] = useState(null);
+
   const [currentSession, setCurrentSession] = useState([]);
   const [employeeId, setEmployeeId] = useState(null);
   const [selectSubject, setSelectSubject] = useState(null);
@@ -134,11 +134,42 @@ const LessonPlan = () => {
     }
   };
 
-  const handlePreviewSubmit = () => {
+  const handlePreviewSubmit = (e) => {
+    e.preventDefault()
     if (!selectSubject) {
       message.warning("Please select a subject before submitting.");
       return;
     }
+
+    for (const module of lessonPlan) {
+      if (!module.module.trim()) {
+        message.warning("Module name cannot be empty.");
+        return;
+      }
+      // if (!module.moduleLearningObjective.trim()) {
+      //   message.warning("Module Learning Objective cannot be empty.");
+      //   return;
+      // }
+  
+      for (const topic of module.topics) {
+        if (!topic.topic.trim()) {
+          message.warning("Topic name cannot be empty.");
+          return;
+        }
+  
+        for (const subtopic of topic.subtopics) {
+          if (!subtopic.subtopic.trim()) {
+            message.warning("Subtopic name cannot be empty.");
+            return;
+          }
+          // if (!subtopic.subtopicLearningObjective.trim()) {
+          //   message.warning("Subtopic Learning Objective cannot be empty.");
+          //   return;
+          // }
+        }
+      }
+    }
+
     const dataToSubmit = {
       employee_id: employeeId,
       subject_id: selectSubject,
@@ -300,12 +331,14 @@ const LessonPlan = () => {
                 placeholder="Module Name"
                 value={module.module}
                 onChange={(event) => handleModuleChange(moduleIndex, event)}
+                required
               />
               <input
                 name="moduleLearningObjective"
                 placeholder="Module Learning Objective"
                 value={module.moduleLearningObjective}
                 onChange={(event) => handleModuleChange(moduleIndex, event)}
+                required
               />
               {module.topics.map((topic, topicIndex) => (
                 <div key={topicIndex} className="topic-section">
@@ -339,6 +372,7 @@ const LessonPlan = () => {
                     onChange={(event) =>
                       handleTopicChange(moduleIndex, topicIndex, event)
                     }
+                    required
                   />
                   {topic.subtopics.map((subtopic, subtopicIndex) => (
                     <div key={subtopicIndex} className="subtopic-section">
@@ -383,6 +417,7 @@ const LessonPlan = () => {
                             event
                           )
                         }
+                        required
                       />
                       <input
                         name="subtopicLearningObjective"
@@ -396,6 +431,7 @@ const LessonPlan = () => {
                             event
                           )
                         }
+                        required
                       />
                     </div>
                   ))}
@@ -407,7 +443,7 @@ const LessonPlan = () => {
             <Button
               onClick={handlePreviewSubmit}
               style={{ background: "#4c8950", color: "white" }}
-              type="button"
+              type="submit"
             >
               Preview & Submit
             </Button>

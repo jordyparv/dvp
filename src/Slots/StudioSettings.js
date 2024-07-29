@@ -27,6 +27,9 @@ const StudioSettings = () => {
   const [editStudio, setEditStudio] = useState(null);
   const [editSlot, setEditSlot] = useState(null);
 
+  const [highlightedSlot, setHighlightedSlot] = useState(null);
+  const [highlightedRow, setHighlightedRow] = useState(null);
+
   const fetchStudioData = async () => {
     try {
       const response = await axios.get(
@@ -111,8 +114,6 @@ const StudioSettings = () => {
     }
   };
 
-
-
   const handleCreateSlot = async () => {
     try {
       const data = {
@@ -133,6 +134,7 @@ const StudioSettings = () => {
           if (response.status === 200) {
             message.success("Slot Updated!");
             setEditSlot(null);
+            setHighlightedSlot(null);
           } else {
             console.log("Error");
           }
@@ -166,6 +168,8 @@ const StudioSettings = () => {
     setEditStudio(record);
     setStudioName(record.studio_name);
     setStudioType(record.studio_type);
+    setHighlightedSlot(record.slot_id);
+    setHighlightedRow(record.studio_id);
   };
 
   const handleEditSlot = (record) => {
@@ -173,6 +177,7 @@ const StudioSettings = () => {
     setSelectedStudioName(record.studio.studio_id);
     setInterval(record.duration);
     setStartTime(record.start_time);
+    setHighlightedRow(record.slot_id);
   };
 
   const showDeleteConfirm = (deleteFn, id, name) => {
@@ -182,8 +187,7 @@ const StudioSettings = () => {
       onOk() {
         deleteFn(id);
       },
-      
-      
+
       onCancel() {
         console.log("Cancel");
       },
@@ -191,8 +195,6 @@ const StudioSettings = () => {
     setTimeout(() => {
       fetchStudioSlots();
     }, 2000);
-    
-   
   };
 
   const handleDeleteStudio = async (studioId) => {
@@ -271,55 +273,6 @@ const StudioSettings = () => {
       ),
     },
   ];
-  // const columnsSlot = [
-  //   {
-  //     title: "Studio Name",
-  //     dataIndex: "studio_name",
-  //     key: "studio_name",
-  //     render: () =>
-  //       slotData && slotData.map((item) => item?.studio?.studio_name),
-
-  //   },
-  //   {
-  //     title: "Studio Type",
-  //     dataIndex: "studio_type",
-  //     key: "studio_type",
-  //     render: () =>
-  //       slotData && slotData.map((item) => item?.studio?.studio_type),
-  //   },
-  //   {
-  //     title: "Duration",
-  //     dataIndex: "duration",
-  //     key: "duration",
-  //     render : (duration) => slotData && slotData.map((item) => item?.duration +" " + "min")
-  //   },
-  //   {
-  //     title: "Start Time",
-  //     dataIndex: "start_time",
-  //     key: "start_time",
-  //   },
-  //   {
-  //     title: "End Time",
-  //     dataIndex: "end_time",
-  //     key: "end_time",
-  //   },
-  //   {
-  //     title: "Action",
-  //     key: "action",
-  //     render: (_, record) => (
-  //       <div>
-  //         <img style={{ cursor: "pointer" }} src={edit} onClick={() => handleEditSlot(record)} alt="edit" />
-  //         <img
-  //           src={delet}
-  //           // onClick={() => handleDeleteSlot(record.slot_id)}
-  //           onClick={() => showDeleteConfirm(handleDeleteSlot, record.slot_id, "slot")}
-  //           style={{ marginLeft: "8px", cursor:"pointer" }}
-  //           alt="deete"
-  //         />
-  //       </div>
-  //     ),
-  //   },
-  // ];
 
   const columnsSlot = [
     {
@@ -356,7 +309,11 @@ const StudioSettings = () => {
       render: (_, record) => (
         <div>
           <img
-            style={{ cursor: "pointer" }}
+            style={{
+              cursor: "pointer",
+              backgroundColor:
+                highlightedSlot === record.slot_id ? "red" : "none",
+            }}
             src={edit}
             onClick={() => handleEditSlot(record)}
             alt="edit"
@@ -415,6 +372,7 @@ const StudioSettings = () => {
           >
             {selectedSetting === "makeStudio" && (
               <>
+                {/* <h2>{editStudio ? "Edit Studio" : "Create Studio"}</h2> */}
                 <form ref={makeStudioFormRef}>
                   <Input
                     placeholder="Studio Name"
@@ -425,7 +383,6 @@ const StudioSettings = () => {
                   />
 
                   <Select
-                    
                     required
                     style={{
                       width: "200px",
@@ -441,7 +398,9 @@ const StudioSettings = () => {
                     <Option value="Practical">Practical</Option>
                   </Select>
 
-                  <Button onClick={handleMakeStudio}>Make Studio</Button>
+                  <Button onClick={handleMakeStudio}>
+                    {editStudio ? "Update Studio" : "Make Studio"}
+                  </Button>
                 </form>
               </>
             )}
@@ -484,6 +443,18 @@ const StudioSettings = () => {
                     onChange={handleInterval}
                   />
 
+                  {/* <TimePicker
+                    placeholder="Start Time"
+                    style={{
+                      width: "200px",
+                      marginLeft: "20px",
+                      marginRight: "12px",
+                    }}
+                    onChange={handleStartTime}
+                    required
+                    format="HH:mm:ss"
+                    value={startTime ? dayjs(startTime, "HH:mm:ss") : null}
+                  /> */}
                   <TimePicker
                     placeholder="Start Time"
                     style={{
@@ -495,8 +466,29 @@ const StudioSettings = () => {
                     required
                     format="HH:mm:ss"
                     value={startTime ? dayjs(startTime, "HH:mm:ss") : null}
+                    disabledHours={() => {
+                      const hours = [];
+                      for (let i = 0; i < 24; i++) {
+                        if (i < 9 || i > 17) {
+                          hours.push(i);
+                        }
+                      }
+                      return hours;
+                    }}
+                    disabledMinutes={(selectedHour) => {
+                      const minutes = [];
+                      if (selectedHour === 9 || selectedHour === 17) {
+                        for (let i = 1; i < 60; i++) {
+                          minutes.push(i);
+                        }
+                      }
+                      return minutes;
+                    }}
                   />
-                  <Button onClick={handleCreateSlot}>Create Slot</Button>
+
+                  <Button onClick={handleCreateSlot}>
+                    {editSlot ? "Update Slot" : "Create Slot"}
+                  </Button>
                 </form>
               </>
             )}
@@ -512,6 +504,9 @@ const StudioSettings = () => {
               pagination={{ pageSize: 5 }}
               bordered
               className="styled-table"
+              rowClassName={(record) =>
+                record.studio_id === highlightedRow ? "highlighted-row" : ""
+              }
             />
           </div>
         )}
@@ -527,6 +522,9 @@ const StudioSettings = () => {
                 pagination={{ pageSize: 5 }}
                 bordered
                 className="styled-table"
+                rowClassName={(record) =>
+                  record.slot_id === highlightedRow ? "highlighted-row" : ""
+                }
               />
             </div>
           </>

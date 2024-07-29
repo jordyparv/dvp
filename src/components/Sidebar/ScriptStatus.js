@@ -6,6 +6,7 @@ import { EyeOutlined } from "@ant-design/icons";
 import { Modal } from "antd"; // Import Modal from Ant Design
 import "./ViewLessonPlan.css";
 import send1 from "../../assets/images/send1.png";
+import download from "../../assets/images/download12.png";
 import { getScriptStatus } from "../../protectedRouting/Utils/apiUtils";
 import { useNavigate } from "react-router-dom";
 
@@ -25,7 +26,7 @@ const ScriptStatus = () => {
   const [scriptRes, setScriptRes] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false); // State to control modal visibility
   const [modalScript, setModalScript] = useState(""); // State to hold the script content for the modal
-
+  const [ viewPpt, setViewPpt ] = useState("");
   const getuserId = JSON.parse(localStorage.getItem("prod_cred"));
   const userId = getuserId?.user_id;
 
@@ -45,6 +46,9 @@ const ScriptStatus = () => {
       const lessonPlans = lessonData?.data;
       const scriptData = await getScriptStatus(employeeId);
       setScriptRes(scriptData);
+      const pptUrl = scriptData?.data?.ppt_file_url;
+      setViewPpt(pptUrl);
+      downloadPPT(pptUrl);
       console.log(scriptData, "Fetched Script Data"); // Log fetched script data
       setLessonPlanName(lessonPlans);
     } catch (error) {
@@ -133,6 +137,17 @@ const ScriptStatus = () => {
     navigate(-1);
   };
 
+
+  const downloadPPT = (pptUrl) => {
+    const link = document.createElement("a");
+    link.href = pptUrl;
+    link.download = pptUrl.split("/").pop(); // Extracts the filename from the URL
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+
   return (
     <div style={{ display: "flex" }} className="production">
       <SideBar />
@@ -180,6 +195,7 @@ const ScriptStatus = () => {
                     <th className="small-font">Received From</th>
                     <th className="small-font">Sub Topics</th>
                     <th className="small-font">Script</th>
+                    <th className="small-font">PPt</th>
                     <th className="small-font">Approve</th>
                     <th className="small-font">Reject</th>
                     <th className="small-font">Remark</th>
@@ -193,11 +209,12 @@ const ScriptStatus = () => {
                       <td>{script.subject_code}</td>
                       <td>{script.employee_name}</td>
                       <td>{script.subtopic}</td>
-                      <td>
+                      <td className={script?.script === null ? "noPpt" : "yesPpt"}>
                         <a onClick={() => showModal(script.script)}>
                           <EyeOutlined style={{ cursor: "pointer" }} />
                         </a>
                       </td>
+                      <td  className={script?.ppt_file_url === null ? "noPpt" : "yesPpt"}>{console.log(script?.ppt_file_url, "PPPPPTTTTT")} <img onClick={() => downloadPPT(script?.ppt_file_url)} src={download} alt="down" /></td>
                       <td>
                         <input
                           type="radio"

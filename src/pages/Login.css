@@ -175,3 +175,8 @@ input[type="password"] {
 ::-webkit-scrollbar-track {
   border-radius: 10px;
 }
+.password-toggle{
+  margin-top: -23px;
+  padding: 0;
+  margin-left: -30px;
+}

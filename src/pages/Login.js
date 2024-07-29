@@ -6,11 +6,13 @@ import { useNavigate } from "react-router-dom";
 import { message } from "antd";
 import { getVideos } from "../api/pixelsAuth";
 import Spinner from "../components/Sidebar/Spinner";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const [videoUrl, setVideoUrl] = useState("");
 
@@ -67,13 +69,13 @@ const Login = () => {
       <header className="showcase">
         <div className="showcase-content">
           <div className="showcase-top">
-            <h1 style={{ color: "white" }}>LOGIN</h1>
+            <h3 style={{ color: "white" }}>LOGIN</h3>
           </div>
           {loading !== true ? (
             <>
               <div className="formm">
                 <form onSubmit={handleSubmit}>
-                  <h2 style={{ color: "white" }}>Welcome user!</h2>
+                  <h4 style={{ color: "white" }}>Welcome user!</h4>
                   <div className="info">
                     <input
                       className="email"
@@ -84,14 +86,25 @@ const Login = () => {
                       onChange={(e) => setEmail(e.target.value)}
                     />{" "}
                     <br />
+                    <div style={{display:"flex", justifyContent:"center", alignItems:"center"}}>
                     <input
                       className="email"
-                      type="password"
+                      type={passwordVisible ? "text" : "password"}
                       placeholder="Password"
                       id="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                     />
+                     <button 
+                        type="button"
+                        className="password-toggle"
+                        onClick={() => setPasswordVisible(!passwordVisible)}
+                      >
+                        {passwordVisible ? <AiFillEyeInvisible /> : <AiFillEye />}
+                      </button>
+                    </div>
+                    
+                    
                   </div>
                   <div className="btn">
                     <button className="btn-primary" type="submit">
@@ -102,6 +115,13 @@ const Login = () => {
                     <div>
                       <input value="true" type="checkbox" />
                       <label style={{ color: "white" }}>Remember me</label>
+                    </div>
+                  </div>
+
+                  <div style={{float:"right", marginTop:"-22px"}} className="help">
+                    <div >
+                     
+                      <label  style={{ color: "white", cursor:"pointer" }}>Forget Password ?</label>
                     </div>
                   </div>
                 </form>

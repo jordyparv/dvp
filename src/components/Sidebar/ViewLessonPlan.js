@@ -20,6 +20,7 @@ import { MdEmojiEmotions } from "react-icons/md";
 import { getLesson } from "../../protectedRouting/Utils/apiUtils";
 import script from "../../assets/images/script.png";
 import pastescript from "../../assets/images/pastescript.png";
+import download from "../../assets/images/download12.png";
 import ppt from "../../assets/images/ppt.png";
 import Swal from "sweetalert2";
 import TextArea from "antd/es/input/TextArea";
@@ -56,7 +57,7 @@ const ViewLessonPlan = () => {
 
   const [showPptModal, setShowPptModal] = useState(false);
   const [pptFile, setPptFile] = useState(null);
-
+  const [ viewPpt, setViewPpt ] = useState("");
   const getuserId = JSON.parse(localStorage.getItem("prod_cred"));
   const userId = getuserId?.user_id;
   const navigate = useNavigate();
@@ -481,7 +482,27 @@ const ViewLessonPlan = () => {
     }
   };
 
-  const showMyPPT = () => {};
+  const showMyPPT = async(lessonPlanId) => {
+    const fetchPPt = await axios.get(`http://172.17.19.25:8080/dvp_app/lessonplan/${lessonPlanId}/ppt-url/`)
+    console.log(fetchPPt?.data?.ppt_file_url, "PPT")
+    const pptUrl = fetchPPt?.data?.ppt_file_url;
+    setViewPpt(pptUrl);
+    downloadPPT(pptUrl);
+    
+  };
+
+
+  const downloadPPT = (url) => {
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', ''); // or specify a filename
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+  
+ 
+  
 
   return (
     <div style={{ display: "flex" }} className="production">
@@ -675,14 +696,8 @@ const ViewLessonPlan = () => {
                                 src={ppt}
                               />
                             </Popover>
-                            <EyeOutlined
-                              onClick={() => showMyPPT(item?.lesson_plan_id)}
-                              style={{
-                                width: "20px",
-                                marginLeft: "10px",
-                                cursor: "pointer",
-                              }}
-                            />
+                            
+                           <img  style={{ width: "25px", cursor: "pointer" }} onClick={() => showMyPPT(item?.lesson_plan_id)} src={download} alt="down" />
                           </>
                         ) : (
                           <>
@@ -698,14 +713,18 @@ const ViewLessonPlan = () => {
                                 src={ppt}
                               />
                             </Popover>
-                            <EyeOutlined
+                            {/* <EyeOutlined
                               onClick={() => showMyPPT(item?.lesson_plan_id)}
                               style={{
                                 width: "20px",
                                 marginLeft: "10px",
                                 cursor: "pointer",
                               }}
-                            />
+                            /> */}
+                            <Popover title={`Download PPT for ${item?.subtopic}`}>
+                            <img  style={{ width: "25px", cursor: "pointer", marginLeft:"10px" }} onClick={() => showMyPPT(item?.lesson_plan_id)} src={download} alt="down" />
+
+                            </Popover>
                           </>
                         )}
                       </td>
@@ -718,6 +737,21 @@ const ViewLessonPlan = () => {
                   ))}
               </tbody>
             </table>
+            {/* {viewPpt && (
+        <div>
+          <a href={viewPpt} download>
+            <button>Download PPT</button>
+          </a>
+          <iframe
+            src={`https://docs.google.com/viewer?url=${encodeURIComponent(viewPpt)}&embedded=true`}
+            width="100%"
+            height="600"
+            frameBorder="0"
+            style={{ border: 'none' }}
+            allowFullScreen
+          ></iframe>
+        </div>
+      )} */}
           </div>
         </Drawer>
 
