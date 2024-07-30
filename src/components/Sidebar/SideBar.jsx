@@ -1,10 +1,10 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaBars, FaHome, FaLock, FaMoneyBill, FaUser } from "react-icons/fa";
-import { RiListSettingsFill } from "react-icons/ri";
+import { RiFindReplaceLine, RiListSettingsFill } from "react-icons/ri";
 import { BiCog, BiLogOut, BiSearch } from "react-icons/bi";
 import { AiTwotoneFileExclamation } from "react-icons/ai";
 import { SiCoursera } from "react-icons/si";
-import { BsCartCheck } from "react-icons/bs";
+import { BsCartCheck, BsFillCameraReelsFill } from "react-icons/bs";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import SidebarMenu from "./SidebarMenu";
@@ -68,18 +68,7 @@ const routes = [
       },
     ],
   },
-  // {
-  //   path: "/studio-settings",
-  //   name: "Studio Settings",
-  //   icon: <BiCog />,
-  //   subRoutes: [
-  //     {
-  //       path: "/studio-settings",
-  //       name: "Studio Configuration",
-  //       icon: <RiListSettingsFill />,
-  //     },
-  //   ],
-  // },
+
   {
     path: "/slot-booking",
     name: "Slot Booking",
@@ -91,11 +80,11 @@ const routes = [
         icon: <SiCoursera />,
       },
 
-      {
-        path: "/view-slots",
-        name: "View Slots",
-        icon: <FaMoneyBill />,
-      },
+      // {
+      //   path: "/view-slots",
+      //   name: "View Slots",
+      //   icon: <FaMoneyBill />,
+      // },
     ],
   },
   {
@@ -139,29 +128,20 @@ const routes = [
       },
     ],
   },
-  // {
-  //   path: "/production-settings",
-  //   name: "Production Settings",
-  //   icon: <BiCog />,
-  //   exact: true,
-  //   subRoutes: [
-  //     {
-  //       path: "/Studio",
-  //       name: "Studio",
-  //       icon: <FaUser />,
-  //     },
-  //     {
-  //       path: "/settings/2fa",
-  //       name: "Camera Man",
-  //       icon: <FaLock />,
-  //     },
-  //     {
-  //       path: "/settings/billing",
-  //       name: "Pendings",
-  //       icon: <FaMoneyBill />,
-  //     },
-  //   ],
-  // },
+  {
+    path: "/camera-studio-view",
+    name: "Camera Studio View",
+    icon: <BsFillCameraReelsFill />,
+    subRoutes: [
+ 
+
+      {
+        path: "/view-slots",
+        name: "View Slots",
+        icon: <RiFindReplaceLine />,
+      },
+    ],
+  },
   {
     path: "/",
     name: "Logout",
@@ -261,7 +241,7 @@ const SideBar = ({ children }) => {
                   exit="hidden"
                   className="logo"
                 >
-                  Production Monitor
+                  Production CMS
                 </motion.h1>
               )}
             </AnimatePresence>

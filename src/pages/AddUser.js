@@ -27,7 +27,7 @@ const AddUser = () => {
   const [userPassword, setUserPassword] = useState("");
 
   const [userGenderOption, setUserGenderOption] = useState("");
-  const [userGenderSelected, setUserGenderSelected] = useState("");
+  const [userGenderSelected, setUserGenderSelected] = useState([]);
 
   const [userRoleOption, setUserRoleOption] = useState("");
   const [roleSelected, setRoleSelected] = useState([]);

@@ -35,6 +35,7 @@ import pending from "../assets/images/pending.gif";
 import lesson from "../assets/images/lesson.png";
 import go from "../assets/images/go.png";
 import script from "../assets/images/script.png";
+
 const { Option } = Select;
 
 const Profile = () => {
@@ -51,6 +52,7 @@ const Profile = () => {
   const [lessonStatus, setLessonStatus] = useState([]);
 
   const [currentSession, setCurrentSession] = useState(null);
+
 
   const apiRoleDataRead = useSelector(
     (state) => state?.apiSettings?.roleApi?.data
@@ -90,6 +92,8 @@ const Profile = () => {
   const getuserId = JSON.parse(localStorage.getItem("prod_cred"));
   const userId = getuserId?.user_id;
   console.log(userId, "USER ID");
+
+
 
   const getLesson = async (employeeId) => {
     try {
@@ -341,16 +345,6 @@ const Profile = () => {
               {" "}
               <div className="noti">
                 <h4>Notification</h4>
-                <div className="notification">
-                  <div> Studio booking</div>
-                  {/* <div>Sent for approval </div> */}
-                  <div>
-                    {" "}
-                    <button className="approve">Approve</button>
-                    {/* <button className="view">Re</button> */}
-                    <button className="reject">Reject</button>
-                  </div>
-                </div>
               </div>
             </>
           ) : profile?.role_names[0] === "Program Coordinator" ? (
@@ -385,29 +379,41 @@ const Profile = () => {
                           lessonStatus?.map((item) => (
                             <>
                               {" "}
-                              <li onClick={handleRedirectapprovalStatus} style={{cursor:"pointer"}}>
+                              <li
+                                onClick={handleRedirectapprovalStatus}
+                                style={{ cursor: "pointer" }}
+                              >
                                 <div>
                                   <span
                                     style={{
                                       fontWeight: "bold",
                                       marginRight: "5px",
-                                      fontSize:"14px"
+                                      fontSize: "14px",
                                     }}
                                   >
                                     {item?.subject_name.slice(0, 22)}
                                     {"..."} ({item?.subject_code})
                                   </span>{" "}
-                                  <span style={{ marginRight: "5px", fontSize:"14px" }}>
+                                  <span
+                                    style={{
+                                      marginRight: "5px",
+                                      fontSize: "14px",
+                                    }}
+                                  >
                                     from
                                   </span>
-                                  <span style={{ fontWeight: "bold", fontSize:"14px" }}>
+                                  <span
+                                    style={{
+                                      fontWeight: "bold",
+                                      fontSize: "14px",
+                                    }}
+                                  >
                                     {item?.lesson_plans[0]?.employee_name?.slice(
                                       0,
                                       20
                                     )}
                                     {"..."}
                                     <img
-                                      
                                       style={{
                                         width: "20px",
                                         marginLeft: "5px",
@@ -453,30 +459,41 @@ const Profile = () => {
                           scriptStatus?.map((item) => (
                             <>
                               {" "}
-                              <li onClick={handleRedirectScriptStatus} style={{cursor:"pointer"}}>
+                              <li
+                                onClick={handleRedirectScriptStatus}
+                                style={{ cursor: "pointer" }}
+                              >
                                 <div>
                                   <span
                                     style={{
                                       fontWeight: "bold",
                                       marginRight: "5px",
-                                      fontSize:"14px"
+                                      fontSize: "14px",
                                     }}
                                   >
                                     {item?.subject_name.slice(0, 22)}
                                     {"..."} ({item?.subject_code})
                                   </span>{" "}
-                                  <span style={{ marginRight: "5px", fontSize:"14px" }}>
+                                  <span
+                                    style={{
+                                      marginRight: "5px",
+                                      fontSize: "14px",
+                                    }}
+                                  >
                                     from
                                   </span>
-                                  <span style={{ fontWeight: "bold", fontSize:"14px" }}>
+                                  <span
+                                    style={{
+                                      fontWeight: "bold",
+                                      fontSize: "14px",
+                                    }}
+                                  >
                                     {item?.employee_name.slice(0, 20)}
                                     {"..."}
                                     <img
-                                      
                                       style={{
                                         width: "20px",
                                         marginLeft: "5px",
-                                        
                                       }}
                                       src={go}
                                     />
@@ -495,10 +512,7 @@ const Profile = () => {
           ) : null}
           {profile?.role_names[0] !== "Admin" ? (
             <>
-              <div className="calender">
-                {" "}
-                {/* <Calender /> */}
-              </div>
+              <div className="calender"> {/* <Calender /> */}</div>
             </>
           ) : null}
 

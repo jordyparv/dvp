@@ -9,11 +9,13 @@ import {
   Table,
   Modal,
   Form,
+  DatePicker,
 } from "antd";
 import SideBar from "../components/Sidebar/SideBar";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { Option } from "antd/es/mentions";
+import moment from "moment";
 
 const UserRegistration = () => {
   const [open, setOpen] = useState(false);
@@ -44,31 +46,27 @@ const UserRegistration = () => {
 
   const [users, setUsers] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
-  const [editingUser, setEditingUser] = useState(null);
+  const [editingUser, setEditingUser] = useState([]);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deletingUserId, setDeletingUserId] = useState(null);
+
   const [form] = Form.useForm();
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  const fetchUsers = async () => {
-    try {
-      const response = await axios.get("/api/users");
-      setUsers(response.data);
-    } catch (error) {
-      console.error("Failed to fetch users:", error);
-    }
-  };
 
   const handleEdit = (record) => {
     setIsEditing(true);
     setEditingUser(record);
+    setEditingUser(record);
     form.setFieldsValue({
-      name: record.name,
-      email: record.email,
-      password: record.password,
+      user_id: record.user_id,
+      emp_type_id: record.emp_type_id,
+      emp_code: record.emp_code,
+      desig_id: record.desig_id,
+      title_id: record.title_id,
+      first_name: record.first_name,
+      middle_name: record.middle_name,
+      last_name: record.last_name,
+      date_of_birth: record.dob,
+      date_of_joining: record.doj,
     });
   };
 
@@ -80,9 +78,9 @@ const UserRegistration = () => {
   const confirmDelete = async () => {
     try {
       await axios.delete(`
-http://172.17.19.25:8080/dvp_app/employee_registration/${deletingUserId}/`);
+          http://172.17.19.25:8080/dvp_app/employee_registration/${deletingUserId}/`);
       message.success("User deleted successfully");
-      fetchUsers();
+      getEmployeeData();
     } catch (error) {
       console.error("Failed to delete user:", error);
       message.error("Failed to delete user");
@@ -97,23 +95,43 @@ http://172.17.19.25:8080/dvp_app/employee_registration/${deletingUserId}/`);
     setDeletingUserId(null);
   };
 
+  // const saveEdit = async () => {
+  //   const formData = {
+  //     user_id: parseFloat(selectedUserId),
+  //     emp_type_id: parseInt(empTypeSelecte),
+  //     emp_code: empCode,
+  //     desig_id: parseInt(selectDesigSelected),
+  //     title_id: parseInt(titleSelected),
+  //     first_name: fName,
+  //     middle_name: mName || "",
+  //     last_name: lName || "",
+  //     date_of_birth: dob,
+  //     date_of_joining: doj,
+  //   };
+  //   try {
+  //     await axios.patch(
+  //       `http://172.17.19.25:8080/dvp_app/employee_registration/${editingUser.id}`,
+  //       form.getFieldsValue()
+  //     );
+  //     message.success("User updated successfully");
+  //     fetchUsers();
+  //     setIsEditing(false);
+  //     setEditingUser(null);
+  //   } catch (error) {
+  //     console.error("Failed to update user:", error);
+  //     message.error("Failed to update user");
+  //   }
+  // };
+
   const saveEdit = async () => {
-    const formData = {
-      user_id: parseFloat(selectedUserId),
-      emp_type_id: parseInt(empTypeSelecte),
-      emp_code: empCode,
-      desig_id: parseInt(selectDesigSelected),
-      title_id: parseInt(titleSelected),
-      first_name: fName,
-      middle_name: mName || "",
-      last_name: lName || "",
-      date_of_birth: dob,
-      date_of_joining: doj,
-    };
     try {
-      await axios.patch(`/api/users/${editingUser.id}`, form.getFieldsValue());
+      const values = await form.validateFields(); // Validate form fields
+      await axios.put(
+        `http://172.17.19.25:8080/dvp_app/employee_registration/${editingUser.employee_id}/`,
+        values
+      );
       message.success("User updated successfully");
-      fetchUsers();
+      getEmployeeData()
       setIsEditing(false);
       setEditingUser(null);
     } catch (error) {
@@ -131,9 +149,8 @@ http://172.17.19.25:8080/dvp_app/employee_registration/${deletingUserId}/`);
     const getUserData = await axios(
       `http://172.17.19.25:8080/dvp_app/select_user/`
     );
-    console.log(getUserData, "UUUUUUUUUUUUUUUUUUUUU")
+    console.log(getUserData, "UUUUUUUUUUUUUUUUUUUUU");
     setSelectUserOption(getUserData);
-
   };
 
   const getDesignation = async () => {
@@ -344,19 +361,12 @@ http://172.17.19.25:8080/dvp_app/employee_registration/${deletingUserId}/`);
                         ))}
                       </Select>
                     </label>
-                    <label style={{display:"none"}}>
+                    <label style={{ display: "none" }}>
                       <p>
                         <span>User ID </span>
                         <span style={{ color: "red" }}>*</span>
                       </p>
-                      <Input
-                        disabled
-                        type="text"
-                        
-                        value={selectedUserId}
-                      
-                  
-                      />
+                      <Input disabled type="text" value={selectedUserId} />
                     </label>
                     <label>
                       <p>
@@ -511,47 +521,112 @@ http://172.17.19.25:8080/dvp_app/employee_registration/${deletingUserId}/`);
                   </button>
                 </form>
                 <Modal
-                  title="Edit User"
+                  title="Edit Employee Registration"
                   visible={isEditing}
                   onCancel={cancelEdit}
                   onOk={saveEdit}
                 >
-                  <form className="form-edit" style={{ padding: "10px" }}>
-                    <label>Enter Employee Code</label>
-                    <Input
-                      value={empCode}
-                      onChange={(e) => setEmpCode(e.target.value)}
-                      placeholder="User Name"
-                      disabled
-                    />
+                  <Form form={form} layout="vertical">
+                    <Form.Item
+                      style={{ display: "none" }}
+                      label="User ID"
+                      name="user_id"
+                    >
+                      <Input />
+                    </Form.Item>
+                    <Form.Item label="Employee Code" name="emp_code">
+                      <Input />
+                    </Form.Item>
+                    <Form.Item
+                      name="emp_type_id"
+                      label="Employee Type"
+                      rules={[{ required: true }]}
+                    >
+                      <Select
+                        value={empTypeSelecte}
+                        onChange={handleEmpType}
+                        name="userType"
+                        required
+                      >
+                        {empTypeOption?.data?.map((item) => (
+                          <option
+                            key={item?.emp_type_id}
+                            value={item?.emp_type_id}
+                          >
+                            {item?.emp_type_name}
+                          </option>
+                        ))}
+                      </Select>
+                    </Form.Item>
 
-                    <label>Enter User Name</label>
-                    <Input placeholder="User Name" />
-                    <label>Enter Email</label>
-                    <Input placeholder="User Email" />
-                    {/* <label>Enter New Password</label>
-                    <Input
-                      value={userPassword}
-                      onChange={(e) => setUserPassword(e.target.value)}
-                      placeholder="User Password"
-                      type="password"
-                    /> */}
-                    <label>Select Gender</label>
-                    <Select placeholder="Select Gender"></Select>
-                    <label>Select Role</label>
-                    <Select placeholder="Select Role"></Select>
-                    <label>Select Department</label>
-                    <Select placeholder="Select Department"></Select>
-                    <label>Mobile No:-</label>
-                    <Input placeholder="User Mobile" />
+                    <Form.Item
+                      name="title_id"
+                      label="Title"
+                      rules={[{ required: true }]}
+                    >
+                      <Select
+                        value={titleSelected}
+                        onChange={handleTitle}
+                        name="desigId"
+                        required
+                      >
+                        {titleOption?.data?.map((item) => (
+                          <option key={item?.title_id} value={item?.title_id}>
+                            {item?.title_name}
+                          </option>
+                        ))}
+                      </Select>
+                    </Form.Item>
 
-                    <label>Select Status</label>
-                    <Select placeholder="Select Status">
-                      <Option>Select Status</Option>
-                      <Option value="active">Active </Option>
-                      <Option value="inactive">Inactive</Option>
-                    </Select>
-                  </form>
+                    <Form.Item
+                      name="desig_id"
+                      label="Designation"
+                      rules={[{ required: true }]}
+                    >
+                      <Select
+                        value={selectDesigSelected}
+                        onChange={handleDesigna}
+                        name="desigId"
+                        required
+                      >
+                        {selectDesigOption?.data?.map((item) => (
+                          <option key={item?.desig_id} value={item?.desig_id}>
+                            {item?.desig_name}
+                          </option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+
+                    <Form.Item label="First Name" name="first_name">
+                      <Input />
+                    </Form.Item>
+                    <Form.Item label="Middle Name" name="middle_name">
+                      <Input />
+                    </Form.Item>
+                    <Form.Item label="Last Name" name="last_name">
+                      <Input />
+                    </Form.Item>
+                    <Form.Item label="Date of Birth" name="date_of_birth">
+                      <Input
+                        type="date"
+                        name="date_of_joining"
+                        placeholder="Date of Birth"
+                        value={dob}
+                        onChange={(e) => setDob(e.target.value)}
+                        required
+                      />
+                    </Form.Item>
+                    <Form.Item label="Date of Joining" name="date_of_joining">
+                      <Input
+                        type="date"
+                        name="date_of_birth"
+                        placeholder="Date of Joining"
+                        value={doj}
+                        onChange={(e) => setDoj(e.target.value)}
+                        required
+                      />
+                    </Form.Item>
+                  </Form>
                 </Modal>
 
                 <Modal

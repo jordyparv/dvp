@@ -270,7 +270,7 @@ const BookedSlots = () => {
       });
       setIsModalVisible(false);
       setInterval(() => {
-        window.location.reload()
+        window.location.reload();
       }, 2000);
     } catch (error) {
       console.error("Booking Error:", error);
@@ -451,8 +451,14 @@ const BookedSlots = () => {
 
                         // Determine CSS class and modal opening logic based on booking status
                         const cardClass =
-                          booking && booking.is_booked === "Booked"
+                          booking && booking?.is_booked === "Booked"
                             ? "slot-card booked"
+                            : booking?.is_booked === "Completed"
+                            ? "slot-card completedClass"
+                            : booking?.is_booked === "Not Completed"
+                            ? "slot-card notCompleted"
+                            : booking?.is_booked === "Cancelled"
+                            ? "slot-card cancelledClass"
                             : "slot-card";
 
                         return (
@@ -472,11 +478,7 @@ const BookedSlots = () => {
                                       <div>SubTopic: {plan.subtopic}</div>
                                       <div>
                                         <EyeOutlined
-                                          onClick={() =>
-                                            showModal(
-                                              plan.script
-                                            )
-                                          }
+                                          onClick={() => showModal(plan.script)}
                                           style={{ marginRight: 8 }}
                                         />
                                         <FilePdfOutlined
@@ -555,7 +557,7 @@ const BookedSlots = () => {
           }}
         >
           <>
-            {user_info && user_info === "Teacher" ? (
+            {(user_info && user_info === "Teacher" || user_info === "Program Coordinator") ? (
               <></>
             ) : (
               <>
@@ -646,7 +648,7 @@ const BookedSlots = () => {
                 return subtopic ? subtopic.subtopic : null;
               })}
               onChange={handleSubtopicChange}
-              disabled={!selectedSubject} // Disable until a subject is selected
+              disabled={!selectedSubject} 
             />
           </Form.Item>
           <Form.Item>
