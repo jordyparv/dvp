@@ -78,7 +78,7 @@ const UserRegistration = () => {
   const confirmDelete = async () => {
     try {
       await axios.delete(`
-          http://172.17.19.25:8080/dvp_app/employee_registration/${deletingUserId}/`);
+          http://43.204.119.135/api/dvp_app/employee_registration/${deletingUserId}/`);
       message.success("User deleted successfully");
       getEmployeeData();
     } catch (error) {
@@ -110,7 +110,7 @@ const UserRegistration = () => {
   //   };
   //   try {
   //     await axios.patch(
-  //       `http://172.17.19.25:8080/dvp_app/employee_registration/${editingUser.id}`,
+  //       `http://43.204.119.135/api/dvp_app/employee_registration/${editingUser.id}`,
   //       form.getFieldsValue()
   //     );
   //     message.success("User updated successfully");
@@ -127,7 +127,7 @@ const UserRegistration = () => {
     try {
       const values = await form.validateFields(); // Validate form fields
       await axios.put(
-        `http://172.17.19.25:8080/dvp_app/employee_registration/${editingUser.employee_id}/`,
+        `http://43.204.119.135/api/dvp_app/employee_registration/${editingUser.employee_id}/`,
         values
       );
       message.success("User updated successfully");
@@ -147,7 +147,7 @@ const UserRegistration = () => {
 
   const getUser = async () => {
     const getUserData = await axios(
-      `http://172.17.19.25:8080/dvp_app/select_user/`
+      `http://43.204.119.135/api/dvp_app/select_user/`
     );
     console.log(getUserData, "UUUUUUUUUUUUUUUUUUUUU");
     setSelectUserOption(getUserData);
@@ -155,19 +155,19 @@ const UserRegistration = () => {
 
   const getDesignation = async () => {
     const getDesigData = await axios(
-      `http://172.17.19.25:8080/dvp_app/designation/`
+      `http://43.204.119.135/api/dvp_app/designation/`
     );
     setSelectDesigOption(getDesigData);
   };
 
   const getTitle = async () => {
-    const getTitleData = await axios(`http://172.17.19.25:8080/dvp_app/title/`);
+    const getTitleData = await axios(`http://43.204.119.135/api/dvp_app/title/`);
     setTitleOption(getTitleData);
   };
 
   const getEmpType = async () => {
     const getEmpTypeData = await axios(
-      `http://172.17.19.25:8080/dvp_app/employee_type/`
+      `http://43.204.119.135/api/dvp_app/employee_type/`
     );
     setEmpTypeOption(getEmpTypeData);
   };
@@ -201,7 +201,7 @@ const UserRegistration = () => {
 
   const getEmployeeData = async () => {
     const req = await axios.get(
-      `http://172.17.19.25:8080/dvp_app/employee_registration/`
+      `http://43.204.119.135/api/dvp_app/employee_registration/`
     );
     setEmpData(req.data);
   };
@@ -223,7 +223,7 @@ const UserRegistration = () => {
 
       let config = {
         method: "POST",
-        url: `http://172.17.19.25:8080/dvp_app/employee_registration/`,
+        url: `http://43.204.119.135/api/dvp_app/employee_registration/`,
         data,
       };
 
@@ -480,7 +480,7 @@ const UserRegistration = () => {
                         placeholder="Last Name"
                         value={lName}
                         onChange={(e) => setLName(e.target.value)}
-                        // required
+                      // required
                       />
                     </label>
                   </div>

@@ -49,7 +49,7 @@ const Settings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.19.25:8080/dvp_app/roles/`,
+        url: `http://43.204.119.135/api/dvp_app/roles/`,
         data,
       };
 
@@ -78,7 +78,7 @@ const Settings = () => {
         status: permissionStatus,
       };
       let config = {
-        url: `http://172.17.19.25:8080/dvp_app/roles_permissions/`,
+        url: `http://43.204.119.135/api/dvp_app/roles_permissions/`,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -113,7 +113,7 @@ const Settings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.19.25:8080/dvp_app/departments/`,
+        url: `http://43.204.119.135/api/dvp_app/departments/`,
         data,
       };
 
@@ -143,7 +143,7 @@ const Settings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.19.25:8080/dvp_app/title/`,
+        url: `http://43.204.119.135/api/dvp_app/title/`,
         data,
       };
 
@@ -173,7 +173,7 @@ const Settings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.19.25:8080/dvp_app/designation/`,
+        url: `http://43.204.119.135/api/dvp_app/designation/`,
         data,
       };
 
@@ -203,7 +203,7 @@ const Settings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.19.25:8080/dvp_app/employee_type/`,
+        url: `http://43.204.119.135/api/dvp_app/employee_type/`,
         data,
       };
 
@@ -233,7 +233,7 @@ const Settings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.19.25:8080/dvp_app/genders/`,
+        url: `http://43.204.119.135/api/dvp_app/genders/`,
         data,
       };
 
@@ -260,7 +260,7 @@ const Settings = () => {
 
   const getRole = async () => {
     const getRoleTable = await axios(
-      `http://172.17.19.25:8080/dvp_app/roles/`
+      `http://43.204.119.135/api/dvp_app/roles/`
     );
     setRoleData(getRoleTable);
     console.log(getRoleTable, "_____ROLE______");
@@ -268,7 +268,7 @@ const Settings = () => {
 
   const getPermissions = async () => {
     const getPermissionTable = await axios(
-      `http://172.17.19.25:8080/dvp_app/roles_permissions/`
+      `http://43.204.119.135/api/dvp_app/roles_permissions/`
     );
     console.log(getPermissionTable, "_________Permission__________")
     setPermissionsOption(getPermissionTable?.data);
@@ -277,31 +277,31 @@ const Settings = () => {
   };
   const getDepart = async () => {
     const getDepartTable = await axios(
-      `http://172.17.19.25:8080/dvp_app/departments/`
+      `http://43.204.119.135/api/dvp_app/departments/`
     );
     setDepartData(getDepartTable);
   };
   const getTitle = async () => {
     const getTitleTable = await axios(
-      `http://172.17.19.25:8080/dvp_app/title/`
+      `http://43.204.119.135/api/dvp_app/title/`
     );
     setTitleData(getTitleTable);
   };
   const getDesig = async () => {
     const getDesigTable = await axios(
-      `http://172.17.19.25:8080/dvp_app/designation/`
+      `http://43.204.119.135/api/dvp_app/designation/`
     );
     setDesigData(getDesigTable);
   };
   const getEmpType = async () => {
     const getEmpTable = await axios(
-      `http://172.17.19.25:8080/dvp_app/employee_type/`
+      `http://43.204.119.135/api/dvp_app/employee_type/`
     );
     setEmpData(getEmpTable);
   };
   const getGender = async () => {
     const getGenderTable = await axios(
-      `http://172.17.19.25:8080/dvp_app/genders/`
+      `http://43.204.119.135/api/dvp_app/genders/`
     );
     setGenData(getGenderTable);
   };
@@ -355,24 +355,20 @@ const Settings = () => {
     const { value: formValues } = await Swal.fire({
       title: "Edit Role",
       html: `
-        <input id="swal-input1" class="swal2-input" placeholder="Role Name" value="${
-          ro.role_name
+        <input id="swal-input1" class="swal2-input" placeholder="Role Name" value="${ro.role_name
         }">
         
         <select id="swal-input2" class="swal2-input">
-          <option value="active" ${
-            ro.status === "active" ? "selected" : ""
-          }>Active</option>
-          <option value="inactive" ${
-            ro.status === "inactive" ? "selected" : ""
-          }>Inactive</option>
+          <option value="active" ${ro.status === "active" ? "selected" : ""
+        }>Active</option>
+          <option value="inactive" ${ro.status === "inactive" ? "selected" : ""
+        }>Inactive</option>
         </select>
         
         <select id="swal-input3" class="swal2-input">
           ${permissions && permissions.map(permission => `
-            <option value="${permission}" ${
-              ro.permission_name === permission ? "selected" : ""
-            }>${permission}</option>
+            <option value="${permission}" ${ro.permission_name === permission ? "selected" : ""
+          }>${permission}</option>
           `).join('')}
         </select>
       `,
@@ -385,15 +381,15 @@ const Settings = () => {
         };
       },
     });
-  
+
     if (formValues) {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.19.25:8080/dvp_app/roles/${ro.role_id}/`,
+          url: `http://43.204.119.135/api/dvp_app/roles/${ro.role_id}/`,
           data: formValues,
         };
-  
+
         const response = await axios(config);
         Swal.fire({
           icon: "success",
@@ -412,7 +408,7 @@ const Settings = () => {
       }
     }
   };
-  
+
 
   // const handleEditRole = async (ro, permissions) => {
   //   const { value: formValues } = await Swal.fire({
@@ -422,8 +418,8 @@ const Settings = () => {
   //         ro.role_name
   //       }">
 
-        
-        
+
+
   //       <select id="swal-input2" class="swal2-input">
   //         <option value="active" ${
   //           ro.status === "active" ? "selected" : ""
@@ -455,7 +451,7 @@ const Settings = () => {
   //     try {
   //       const config = {
   //         method: "PUT",
-  //         url: `http://172.17.19.25:8080/dvp_app/roles/${ro.role_id}/`,
+  //         url: `http://43.204.119.135/api/dvp_app/roles/${ro.role_id}/`,
   //         data: formValues,
   //       };
 
@@ -482,16 +478,13 @@ const Settings = () => {
     const { value: formValues } = await Swal.fire({
       title: "Edit Department",
       html: `
-        <input id="swal-input1" class="swal2-input" placeholder="Role Name" value="${
-          de.dept_name
+        <input id="swal-input1" class="swal2-input" placeholder="Role Name" value="${de.dept_name
         }">
         <select id="swal-input2" class="swal2-input">
-          <option value="active" ${
-            de.dept_status === "active" ? "selected" : ""
-          }>Active</option>
-          <option value="inactive" ${
-            de.dept_status === "inactive" ? "selected" : ""
-          }>Inactive</option>
+          <option value="active" ${de.dept_status === "active" ? "selected" : ""
+        }>Active</option>
+          <option value="inactive" ${de.dept_status === "inactive" ? "selected" : ""
+        }>Inactive</option>
         </select>
       `,
       focusConfirm: false,
@@ -507,7 +500,7 @@ const Settings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.19.25:8080/dvp_app/departments/${de.dept_id}/`,
+          url: `http://43.204.119.135/api/dvp_app/departments/${de.dept_id}/`,
           data: formValues,
         };
 
@@ -534,16 +527,13 @@ const Settings = () => {
     const { value: formValues } = await Swal.fire({
       title: "Edit Title",
       html: `
-        <input id="swal-input1" class="swal2-input" placeholder="Role Name" value="${
-          ti.title_name
+        <input id="swal-input1" class="swal2-input" placeholder="Role Name" value="${ti.title_name
         }">
         <select id="swal-input2" class="swal2-input">
-          <option value="active" ${
-            ti.title_status === "active" ? "selected" : ""
-          }>Active</option>
-          <option value="inactive" ${
-            ti.title_status === "inactive" ? "selected" : ""
-          }>Inactive</option>
+          <option value="active" ${ti.title_status === "active" ? "selected" : ""
+        }>Active</option>
+          <option value="inactive" ${ti.title_status === "inactive" ? "selected" : ""
+        }>Inactive</option>
         </select>
       `,
       focusConfirm: false,
@@ -559,7 +549,7 @@ const Settings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.19.25:8080/dvp_app/title/${ti.title_id}/`,
+          url: `http://43.204.119.135/api/dvp_app/title/${ti.title_id}/`,
           data: formValues,
         };
 
@@ -585,16 +575,13 @@ const Settings = () => {
     const { value: formValues } = await Swal.fire({
       title: "Edit Designation",
       html: `
-        <input id="swal-input1" class="swal2-input" placeholder="Role Name" value="${
-          ti.desig_name
+        <input id="swal-input1" class="swal2-input" placeholder="Role Name" value="${ti.desig_name
         }">
         <select id="swal-input2" class="swal2-input">
-          <option value="active" ${
-            ti.desig_status === "active" ? "selected" : ""
-          }>Active</option>
-          <option value="inactive" ${
-            ti.desig_status === "inactive" ? "selected" : ""
-          }>Inactive</option>
+          <option value="active" ${ti.desig_status === "active" ? "selected" : ""
+        }>Active</option>
+          <option value="inactive" ${ti.desig_status === "inactive" ? "selected" : ""
+        }>Inactive</option>
         </select>
       `,
       focusConfirm: false,
@@ -610,7 +597,7 @@ const Settings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.19.25:8080/dvp_app/designation/${ti.desig_id}/`,
+          url: `http://43.204.119.135/api/dvp_app/designation/${ti.desig_id}/`,
           data: formValues,
         };
 
@@ -637,16 +624,13 @@ const Settings = () => {
     const { value: formValues } = await Swal.fire({
       title: "Edit Employee",
       html: `
-        <input id="swal-input1" class="swal2-input" placeholder="Role Name" value="${
-          ti.emp_type_name
+        <input id="swal-input1" class="swal2-input" placeholder="Role Name" value="${ti.emp_type_name
         }">
         <select id="swal-input2" class="swal2-input">
-          <option value="active" ${
-            ti.emp_type_status === "active" ? "selected" : ""
-          }>Active</option>
-          <option value="inactive" ${
-            ti.emp_type_status === "inactive" ? "selected" : ""
-          }>Inactive</option>
+          <option value="active" ${ti.emp_type_status === "active" ? "selected" : ""
+        }>Active</option>
+          <option value="inactive" ${ti.emp_type_status === "inactive" ? "selected" : ""
+        }>Inactive</option>
         </select>
       `,
       focusConfirm: false,
@@ -662,7 +646,7 @@ const Settings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.19.25:8080/dvp_app/employee_type/${ti.emp_type_id}/`,
+          url: `http://43.204.119.135/api/dvp_app/employee_type/${ti.emp_type_id}/`,
           data: formValues,
         };
 
@@ -688,16 +672,13 @@ const Settings = () => {
     const { value: formValues } = await Swal.fire({
       title: "Edit Gender",
       html: `
-        <input id="swal-input1" class="swal2-input" placeholder="Role Name" value="${
-          ti.gender_name
+        <input id="swal-input1" class="swal2-input" placeholder="Role Name" value="${ti.gender_name
         }">
         <select id="swal-input2" class="swal2-input">
-          <option value="active" ${
-            ti.gender_status === "active" ? "selected" : ""
-          }>Active</option>
-          <option value="inactive" ${
-            ti.gender_status === "inactive" ? "selected" : ""
-          }>Inactive</option>
+          <option value="active" ${ti.gender_status === "active" ? "selected" : ""
+        }>Active</option>
+          <option value="inactive" ${ti.gender_status === "inactive" ? "selected" : ""
+        }>Inactive</option>
         </select>
       `,
       focusConfirm: false,
@@ -713,7 +694,7 @@ const Settings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.19.25:8080/dvp_app/genders/${ti.gender_id}/`,
+          url: `http://43.204.119.135/api/dvp_app/genders/${ti.gender_id}/`,
           data: formValues,
         };
 
@@ -749,7 +730,7 @@ const Settings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.19.25:8080/dvp_app/roles/${role.role_id}`,
+          url: `http://43.204.119.135/api/dvp_app/roles/${role.role_id}`,
         };
 
         await axios(config);
@@ -784,7 +765,7 @@ const Settings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.19.25:8080/dvp_app/departments/${dept.dept_id}`,
+          url: `http://43.204.119.135/api/dvp_app/departments/${dept.dept_id}`,
         };
 
         await axios(config);
@@ -819,7 +800,7 @@ const Settings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.19.25:8080/dvp_app/title/${title.title_id}`,
+          url: `http://43.204.119.135/api/dvp_app/title/${title.title_id}`,
         };
 
         await axios(config);
@@ -854,7 +835,7 @@ const Settings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.19.25:8080/dvp_app/designation/${desig.desig_id}`,
+          url: `http://43.204.119.135/api/dvp_app/designation/${desig.desig_id}`,
         };
 
         await axios(config);
@@ -889,7 +870,7 @@ const Settings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.19.25:8080/dvp_app/employee_type/${emp.emp_type_id}`,
+          url: `http://43.204.119.135/api/dvp_app/employee_type/${emp.emp_type_id}`,
         };
 
         await axios(config);
@@ -924,7 +905,7 @@ const Settings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.19.25:8080/dvp_app/genders/${gen.gender_id}`,
+          url: `http://43.204.119.135/api/dvp_app/genders/${gen.gender_id}`,
         };
 
         await axios(config);
@@ -959,7 +940,7 @@ const Settings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.19.25:8080/dvp_app/roles_permissions/${per.permission_id}`,
+          url: `http://43.204.119.135/api/dvp_app/roles_permissions/${per.permission_id}`,
         };
 
         await axios(config);
@@ -985,17 +966,14 @@ const Settings = () => {
     const { value: formValues } = await Swal.fire({
       title: "Edit Permissions",
       html: `
-      <input id="swal-input1" class="swal2-input" placeholder="Permission Name" value="${
-        per.permission_name
-      }">
+      <input id="swal-input1" class="swal2-input" placeholder="Permission Name" value="${per.permission_name
+        }">
 
        <select id="swal-input2" class="swal2-input">
-          <option value="active" ${
-            per.status === "active" ? "selected" : ""
-          }>Active</option>
-          <option value="inactive" ${
-            per.status === "inactive" ? "selected" : ""
-          }>Inactive</option>
+          <option value="active" ${per.status === "active" ? "selected" : ""
+        }>Active</option>
+          <option value="inactive" ${per.status === "inactive" ? "selected" : ""
+        }>Inactive</option>
         </select>
  
       
@@ -1014,7 +992,7 @@ const Settings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.19.25:8080/dvp_app/roles_permissions/${per.permission_id}/`,
+          url: `http://43.204.119.135/api/dvp_app/roles_permissions/${per.permission_id}/`,
           data: formValues,
         };
 
@@ -1042,7 +1020,7 @@ const Settings = () => {
   //     title: "Edit Role",
   //     html: `
   //       <input id="swal-input1" class="swal2-input" placeholder="Role Name" value="${role.role_name}">
-  
+
   //       <select id="swal-input3" class="swal3-input">
   //         ${role.permission_names.map((permissionName) => (
   //           <option key={permissionName?.role_id} value={permissionName?.permission_id}>
@@ -1050,7 +1028,7 @@ const Settings = () => {
   //           </option>
   //         ))}
   //       </select>
-  
+
   //       <select id="swal-input2" class="swal2-input">
   //         <option value="active" ${role.status === "active" ? "selected" : ""}>Active</option>
   //         <option value="inactive" ${role.status === "inactive" ? "selected" : ""}>Inactive</option>
@@ -1064,15 +1042,15 @@ const Settings = () => {
   //       };
   //     },
   //   });
-  
+
   //   if (formValues) {
   //     try {
   //       const config = {
   //         method: "PUT",
-  //         url: `http://172.17.19.25:8080/dvp_app/roles_permissions/${role.permission_id}/`,
+  //         url: `http://43.204.119.135/api/dvp_app/roles_permissions/${role.permission_id}/`,
   //         data: formValues,
   //       };
-  
+
   //       const response = await axios(config);
   //       Swal.fire({
   //         icon: "success",
@@ -1099,7 +1077,7 @@ const Settings = () => {
   //   try {
   //     // Fetch the program data from the API
   //     const permissionResponse = await axios.get(
-  //       "http://172.17.19.25:8080/dvp_app/roles_permissions/"
+  //       "http://43.204.119.135/api/dvp_app/roles_permissions/"
   //     );
   //     permissions = permissionResponse.data;
   //     console.log(permissionResponse.data, "(+++++++++++++++++++)");
@@ -1124,19 +1102,19 @@ const Settings = () => {
   //     .join("");
 
   //   // Create options for the semester_id dropdown
-  
+
   //   const { value: formValues } = await Swal.fire({
   //     title: "Edit Role",
   //     html: `
   //       <input id="swal-input1" class="swal2-input" placeholder="Role Name" value="${
   //         ti.role_name
   //       }">
-       
-      
+
+
   //       <select id="swal-input4" class="swal2-input" multiple>
   //         ${permissionOptions}
   //       </select>
-      
+
   //     `,
   //     focusConfirm: false,
   //     preConfirm: () => {
@@ -1154,7 +1132,7 @@ const Settings = () => {
   //     try {
   //       const config = {
   //         method: "PUT",
-  //         url: `http://172.17.19.25:8080/dvp_app/subjects/`,
+  //         url: `http://43.204.119.135/api/dvp_app/subjects/`,
   //         data: formValues,
   //       };
 
@@ -1165,7 +1143,7 @@ const Settings = () => {
   //         showConfirmButton: false,
   //         timer: 3000,
   //       });
-        
+
   //     } catch (error) {
   //       Swal.fire({
   //         icon: "error",
@@ -1176,15 +1154,15 @@ const Settings = () => {
   //     }
   //   }
   // };
-  
+
 
   const handleEditRoles = async (ti) => {
     let permissions = [];
-  
+
     try {
       // Fetch the program data from the API
       const permissionResponse = await axios.get(
-        "http://172.17.19.25:8080/dvp_app/roles_permissions/"
+        "http://43.204.119.135/api/dvp_app/roles_permissions/"
       );
       permissions = permissionResponse.data;
       console.log(permissionResponse.data, "(+++++++++++++++++++)");
@@ -1197,22 +1175,20 @@ const Settings = () => {
       console.error("Error fetching data:", error);
       return;
     }
-  
+
     // Create options for the program_name dropdown
     const permissionOptions = permissions
       .map(
         (permission) =>
-          `<option value="${permission.permission_id}" ${
-            ti.permission_name === permission.permission_name ? "selected" : ""
+          `<option value="${permission.permission_id}" ${ti.permission_name === permission.permission_name ? "selected" : ""
           }>${permission.permission_name}</option>`
       )
       .join("");
-  
+
     const { value: formValues } = await Swal.fire({
       title: "Edit Role",
       html: `
-        <input id="swal-input1" class="swal2-input" placeholder="Role Name" value="${
-          ti.role_name
+        <input id="swal-input1" class="swal2-input" placeholder="Role Name" value="${ti.role_name
         }">
        
         <select id="swal-input4" class="swal2-input" >
@@ -1229,22 +1205,22 @@ const Settings = () => {
         };
       },
     });
-  
+
     if (formValues) {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.19.25:8080/dvp_app/subjects/`,
+          url: `http://43.204.119.135/api/dvp_app/subjects/`,
           data: formValues,
         };
-  
+
         const response = await axios(config);
         Swal.fire({
           icon: "success",
           showConfirmButton: false,
           timer: 3000,
         });
-        
+
       } catch (error) {
         Swal.fire({
           icon: "error",
@@ -1255,7 +1231,7 @@ const Settings = () => {
       }
     }
   };
-  
+
 
   return (
     <div style={{ display: "flex" }}>

@@ -27,13 +27,13 @@ const ApprovalStatus = () => {
   const getEmpId = async () => {
     try {
       const response = await axios(
-        `http://172.17.19.25:8080/dvp_app/select_subject/?user_id=${userId}`
+        `http://43.204.119.135/api/dvp_app/select_subject/?user_id=${userId}`
       );
       const employeeId = response?.data?.employee_id;
       setEmpIds(employeeId);
 
       const lessonData = await axios.get(
-        `http://172.17.19.25:8080/dvp_app/search-lesson-plan-approval/?employee_id=${employeeId}`
+        `http://43.204.119.135/api/dvp_app/search/-lesson-plan-approval/?employee_id=${employeeId}`
       );
       const lessonPlans = lessonData?.data;
       setLessonPlanName(lessonPlans);
@@ -57,7 +57,7 @@ const ApprovalStatus = () => {
 
   const refreshData = async (employeeId) => {
     const response = await axios.get(
-      `http://172.17.19.25:8080/dvp_app/search-lesson-plan-approval/?employee_id=${employeeId}`
+      `http://43.204.119.135/api/dvp_app/search/-lesson-plan-approval/?employee_id=${employeeId}`
     );
     console.log(response, "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
   };
@@ -125,7 +125,7 @@ const ApprovalStatus = () => {
           };
 
           await axios.patch(
-            `http://172.17.19.25:8080/dvp_app/update-lesson-plan-status/${plan.lesson_plan_id}/`,
+            `http://43.204.119.135/api/dvp_app/update-lesson-plan-status/${plan.lesson_plan_id}/`,
             data
           );
         }
@@ -149,18 +149,17 @@ const ApprovalStatus = () => {
     <div style={{ display: "flex" }} className="production">
       <SideBar />
       <div className="content">
-     
+
         <div className="notification-wrapper">
           <h4>Action Needed</h4>
           {lessonPlanName &&
             lessonPlanName.map((item) => (
               <div
                 key={item.subject_id}
-                className={`notification ${
-                  showSelectedSubjectId === item?.subject_id
-                    ? "selectedClass"
-                    : null
-                }`}
+                className={`notification ${showSelectedSubjectId === item?.subject_id
+                  ? "selectedClass"
+                  : null
+                  }`}
               >
                 <div>
                   {" "}
@@ -177,14 +176,14 @@ const ApprovalStatus = () => {
               </div>
             ))}
         </div>
-      
+
         <div className="lesson-table-wrapper">
-        <div
-          style={{ cursor: "pointer", fontWeight: "bold", marginBottom:"20px" }}
-          onClick={handleBackPage}
-        >
-          Back
-        </div>
+          <div
+            style={{ cursor: "pointer", fontWeight: "bold", marginBottom: "20px" }}
+            onClick={handleBackPage}
+          >
+            Back
+          </div>
           <h4>Pending Lesson Plan Request</h4>
           {selectedSubjectLessonPlans.length > 0 && (
             <div className="lesson-table-container">
@@ -192,7 +191,7 @@ const ApprovalStatus = () => {
               <table className="lesson-table">
                 <thead>
                   <tr>
-                  <th className="small-font">Received From</th>
+                    <th className="small-font">Received From</th>
                     <th className="small-font">Module</th>
                     <th className="small-font">Module Learning Objective</th>
                     <th className="small-font">Topic</th>

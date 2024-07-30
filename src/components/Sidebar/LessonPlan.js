@@ -150,13 +150,13 @@ const LessonPlan = () => {
       //   message.warning("Module Learning Objective cannot be empty.");
       //   return;
       // }
-  
+
       for (const topic of module.topics) {
         if (!topic.topic.trim()) {
           message.warning("Topic name cannot be empty.");
           return;
         }
-  
+
         for (const subtopic of topic.subtopics) {
           if (!subtopic.subtopic.trim()) {
             message.warning("Subtopic name cannot be empty.");
@@ -182,7 +182,7 @@ const LessonPlan = () => {
   const handleFinalSubmit = async (e) => {
     try {
       const response = await axios.post(
-        "http://172.17.19.25:8080/dvp_app/lesson-plans/",
+        "http://43.204.119.135/api/dvp_app/lesson-plans/",
         submittedData
       );
       console.log(response.data, "Submitted");
@@ -214,7 +214,7 @@ const LessonPlan = () => {
   const getSubject = async () => {
     try {
       const response = await axios(
-        `http://172.17.19.25:8080/dvp_app/select_subject/?user_id=${userId}`
+        `http://43.204.119.135/api/dvp_app/select_subject/?user_id=${userId}`
       );
       console.log(response?.data, "SUBJECTS");
       const getEmpId = response?.data?.employee_id;
@@ -228,7 +228,7 @@ const LessonPlan = () => {
   const getSession = async () => {
     try {
       const response = await axios(
-        `http://172.17.19.25:8080/dvp_app/current_session/`
+        `http://43.204.119.135/api/dvp_app/current_session/`
       );
       console.log(response?.data, "Session");
       setCurrentSession(response?.data);
@@ -299,7 +299,7 @@ const LessonPlan = () => {
             <h5>Step 2</h5> <hr /> <h6>Add Module</h6>
           </span>
         </div>
-        <form style={{width:"70vw"}}>
+        <form style={{ width: "70vw" }}>
           {lessonPlan.map((module, moduleIndex) => (
             <div
               style={{ padding: "20px", display: "block" }}

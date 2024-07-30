@@ -73,7 +73,7 @@ const ViewSlots = () => {
   const fetchBookingsData = async (date) => {
     try {
       const response = await axios.get(
-        `http://172.17.19.25:8080/dvp_app/show-bookings/${date}/`
+        `http://43.204.119.135/api/dvp_app/show-bookings/${date}/`
       );
       setBookingsData(response?.data);
       const bookedItems = response?.data?.filter(
@@ -98,7 +98,7 @@ const ViewSlots = () => {
 
   const getStudio = async () => {
     const response = await axios.get(
-      "http://172.17.19.25:8080/dvp_app/all_studio_slots"
+      "http://43.204.119.135/api/dvp_app/all_studio_slots"
     );
     setStudioData(response?.data);
     console.log(response, "STUDIO");
@@ -107,7 +107,7 @@ const ViewSlots = () => {
   const getCourseAllotment = async () => {
     try {
       const response = await axios.get(
-        "http://172.17.19.25:8080/dvp_app/course_allotment/"
+        "http://43.204.119.135/api/dvp_app/course_allotment/"
       );
       setEmployeeOption(
         response?.data.map((item) => (
@@ -133,7 +133,7 @@ const ViewSlots = () => {
   const getApprovedData = async () => {
     try {
       const response = await axios.get(
-        "http://172.17.19.25:8080/dvp_app/course_available_slot_book/"
+        "http://43.204.119.135/api/dvp_app/course_available_slot_book/"
       );
       setApprovedData(response?.data);
       const employees = response?.data.map((emp) => ({
@@ -230,7 +230,7 @@ const ViewSlots = () => {
 
     try {
       const response = await axios.patch(
-        `http://172.17.19.25:8080/dvp_app/slots/${selectedSlot.slotbook_id}/update-status/`,
+        `http://43.204.119.135/api/dvp_app/slots/${selectedSlot.slotbook_id}/update-status/`,
         payload
       );
       console.log("Status updated successfully:", response.data);
@@ -316,7 +316,7 @@ const ViewSlots = () => {
                   <span className="circle2"></span>
                   <span>Not Completed</span>
                 </div>
-          
+
                 <div className="card-name2">
                   <span className="circle4"></span>
                   <span>Cancelled</span>
@@ -373,19 +373,18 @@ const ViewSlots = () => {
                           booking && booking?.is_booked === "Booked"
                             ? "slot-card booked"
                             : booking?.is_booked === "Completed"
-                            ? "slot-card completedClass"
-                            : booking?.is_booked === "Not Completed"
-                            ? "slot-card notCompleted"
-                            : booking?.is_booked === "Cancelled" ? "slot-card cancelledClass" : "slot-card"
+                              ? "slot-card completedClass"
+                              : booking?.is_booked === "Not Completed"
+                                ? "slot-card notCompleted"
+                                : booking?.is_booked === "Cancelled" ? "slot-card cancelledClass" : "slot-card"
 
                         return (
                           <Popover
                             // title={booking ? booking.booked_by?.first_name + " " + booking.booked_by?.employee_code : "No Details"}
-                            title={`Booked By ${
-                              booking && booking.booked_by?.first_name
-                                ? booking.booked_by?.first_name
-                                : ""
-                            } `}
+                            title={`Booked By ${booking && booking.booked_by?.first_name
+                              ? booking.booked_by?.first_name
+                              : ""
+                              } `}
                             content={
                               booking?.lesson_plans.length > 0 ? (
                                 <div>
@@ -417,37 +416,34 @@ const ViewSlots = () => {
                           >
                             <div
                               key={studio.slot_id}
-                              className={`${cardClass} ${
-                                cardActive === studio ? "clickedSlot" : ""
-                              }`}
+                              className={`${cardClass} ${cardActive === studio ? "clickedSlot" : ""
+                                }`}
                               onClick={(e) => handleSlotClick(studio, e)}
                             >
                               <div
-                                className={`slot-time ${
-                                  cardActive === studio ? "slotTime" : ""
-                                }`}
+                                className={`slot-time ${cardActive === studio ? "slotTime" : ""
+                                  }`}
                               >
                                 {studio?.start_time} - {studio?.end_time}
                               </div>
                               <div
-                                className={`slot-status ${
-                                  cardActive === studio ? "slotStatus" : ""
-                                }`}
+                                className={`slot-status ${cardActive === studio ? "slotStatus" : ""
+                                  }`}
                               >
                                 {booking ? booking.is_booked : "Not Booked"}
                               </div>
                               <div className="faculty">
                                 {booking
                                   ? booking?.lesson_plans
-                                      ?.map(
-                                        (item) =>
-                                          item?.lesson_plan_employee
-                                            ?.first_name +
-                                          " " +
-                                          item?.lesson_plan_employee
-                                            ?.employee_code
-                                      )
-                                      .join(", ") // Join multiple faculty names with a comma
+                                    ?.map(
+                                      (item) =>
+                                        item?.lesson_plan_employee
+                                          ?.first_name +
+                                        " " +
+                                        item?.lesson_plan_employee
+                                          ?.employee_code
+                                    )
+                                    .join(", ") // Join multiple faculty names with a comma
                                   : "No Details"}
                               </div>
                             </div>
@@ -474,10 +470,10 @@ const ViewSlots = () => {
           }}
         >
           {selectedSlot &&
-          hasBooking.some(
-            (booking) => booking.slot_id === selectedSlot.slot_id
-          ) &&
-          user_info === "Camera Person" ? (
+            hasBooking.some(
+              (booking) => booking.slot_id === selectedSlot.slot_id
+            ) &&
+            user_info === "Camera Person" ? (
             <>
               <div className="small-dynamic-button">
                 <div onClick={handleBookSlotClick} className="set">

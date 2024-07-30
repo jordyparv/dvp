@@ -71,7 +71,7 @@ const CourseSettings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.19.25:8080/dvp_app/sessions/`,
+        url: `http://43.204.119.135/api/dvp_app/sessions/`,
         data,
       };
 
@@ -96,7 +96,7 @@ const CourseSettings = () => {
 
   const getSessionData = async () => {
     const response = await axios.get(
-      "http://172.17.19.25:8080/dvp_app/sessions/"
+      "http://43.204.119.135/api/dvp_app/sessions/"
     );
     console.log(response);
     setSessionData(response);
@@ -110,7 +110,7 @@ const CourseSettings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.19.25:8080/dvp_app/program_levels/`,
+        url: `http://43.204.119.135/api/dvp_app/program_levels/`,
         data,
       };
 
@@ -136,7 +136,7 @@ const CourseSettings = () => {
   const getProgramLevel = async () => {
     try {
       const getPLData = await axios.get(
-        "http://172.17.19.25:8080/dvp_app/program_levels/"
+        "http://43.204.119.135/api/dvp_app/program_levels/"
       );
       setPLDATA(getPLData);
       setProgramLevelOption(getPLData?.data);
@@ -154,7 +154,7 @@ const CourseSettings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.19.25:8080/dvp_app/semesters/`,
+        url: `http://43.204.119.135/api/dvp_app/semesters/`,
         data,
       };
 
@@ -182,7 +182,7 @@ const CourseSettings = () => {
   const getSemester = async (progLevelId) => {
     try {
       const getSemesterData = await axios.get(
-        `/dvp_app/semester/search?prog_level_ids=${progLevelId}`
+        `http://43.204.119.135/api/dvp_app/semester/search/?prog_level_ids=${progLevelId}`
       );
       // setSemesterData(getSemesterData);
       setSemesterOption(getSemesterData?.data);
@@ -194,7 +194,7 @@ const CourseSettings = () => {
 
   const getSemesterTable = async () => {
     try {
-      const getSemesterData = await axios.get(`/dvp_app/semesters/`);
+      const getSemesterData = await axios.get(`http://43.204.119.135/api/dvp_app/semesters/`);
       setSemesterData(getSemesterData);
 
       // setSemesterOption(getSemesterData?.data);
@@ -214,7 +214,7 @@ const CourseSettings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.19.25:8080/dvp_app/programs/`,
+        url: `http://43.204.119.135/api/dvp_app/programs/`,
         data,
       };
 
@@ -241,7 +241,7 @@ const CourseSettings = () => {
   const getProgram = async () => {
     try {
       const getProgramData = await axios.get(
-        "http://172.17.19.25:8080/dvp_app/programs/"
+        "http://43.204.119.135/api/dvp_app/programs/"
       );
       setProgramData(getProgramData);
       setProgramOption(getProgramData?.data);
@@ -262,7 +262,7 @@ const CourseSettings = () => {
       };
       const config = {
         method: "POST",
-        url: `http://172.17.19.25:8080/dvp_app/subjects/`,
+        url: `http://43.204.119.135/api/dvp_app/subjects/`,
         data,
       };
 
@@ -288,7 +288,7 @@ const CourseSettings = () => {
   const getSubjects = async () => {
     try {
       const getSubjectData = await axios.get(
-        "http://172.17.19.25:8080/dvp_app/subjects/"
+        "http://43.204.119.135/api/dvp_app/subjects/"
       );
       setSubjectData(getSubjectData);
       console.log(getSubjectData, "getSubjectData ");
@@ -389,88 +389,62 @@ const CourseSettings = () => {
     const { value: formValues } = await Swal.fire({
       title: "Edit Session",
       html: `
-      <input id="swal-input1" class="swal2-input" placeholder="Start Year" value="${
-        ti.start_year
-      }">
-      <input id="swal-input2" class="swal2-input" placeholder="End Year" value="${
-        ti.end_year
-      }">
+      <input id="swal-input1" class="swal2-input" placeholder="Start Year" value="${ti.start_year
+        }">
+      <input id="swal-input2" class="swal2-input" placeholder="End Year" value="${ti.end_year
+        }">
       
       <select id="swal-input3" class="swal2-input">
-        <option value="Jan" ${
-          ti.start_month === "Jan" ? "selected" : ""
+        <option value="Jan" ${ti.start_month === "Jan" ? "selected" : ""
         }>Jan</option>
-        <option value="Feb" ${
-          ti.start_month === "Feb" ? "selected" : ""
+        <option value="Feb" ${ti.start_month === "Feb" ? "selected" : ""
         }>February</option>
-        <option value="Mar" ${
-          ti.start_month === "Mar" ? "selected" : ""
+        <option value="Mar" ${ti.start_month === "Mar" ? "selected" : ""
         }>March</option>
-        <option value="Apr" ${
-          ti.start_month === "Apr" ? "selected" : ""
+        <option value="Apr" ${ti.start_month === "Apr" ? "selected" : ""
         }>April</option>
-        <option value="May" ${
-          ti.start_month === "May" ? "selected" : ""
+        <option value="May" ${ti.start_month === "May" ? "selected" : ""
         }>May</option>
-        <option value="Jun" ${
-          ti.start_month === "Jun" ? "selected" : ""
+        <option value="Jun" ${ti.start_month === "Jun" ? "selected" : ""
         }>June</option>
-        <option value="Jul" ${
-          ti.start_month === "Jul" ? "selected" : ""
+        <option value="Jul" ${ti.start_month === "Jul" ? "selected" : ""
         }>July</option>
-        <option value="Aug" ${
-          ti.start_month === "Aug" ? "selected" : ""
+        <option value="Aug" ${ti.start_month === "Aug" ? "selected" : ""
         }>August</option>
-        <option value="Sep" ${
-          ti.start_month === "Sep" ? "selected" : ""
+        <option value="Sep" ${ti.start_month === "Sep" ? "selected" : ""
         }>September</option>
-        <option value="Oct" ${
-          ti.start_month === "Oct" ? "selected" : ""
+        <option value="Oct" ${ti.start_month === "Oct" ? "selected" : ""
         }>October</option>
-        <option value="Nov" ${
-          ti.start_month === "Nov" ? "selected" : ""
+        <option value="Nov" ${ti.start_month === "Nov" ? "selected" : ""
         }>November</option>
-        <option value="Dec" ${
-          ti.start_month === "Dec" ? "selected" : ""
+        <option value="Dec" ${ti.start_month === "Dec" ? "selected" : ""
         }>December</option>
       </select>
       
       <select id="swal-input4" class="swal2-input">
-        <option value="Jan" ${
-          ti.end_month === "Jan" ? "selected" : ""
+        <option value="Jan" ${ti.end_month === "Jan" ? "selected" : ""
         }>Jan</option>
-        <option value="Feb" ${
-          ti.end_month === "Feb" ? "selected" : ""
+        <option value="Feb" ${ti.end_month === "Feb" ? "selected" : ""
         }>February</option>
-        <option value="Mar" ${
-          ti.end_month === "Mar" ? "selected" : ""
+        <option value="Mar" ${ti.end_month === "Mar" ? "selected" : ""
         }>March</option>
-        <option value="Apr" ${
-          ti.end_month === "Apr" ? "selected" : ""
+        <option value="Apr" ${ti.end_month === "Apr" ? "selected" : ""
         }>April</option>
-        <option value="May" ${
-          ti.end_month === "May" ? "selected" : ""
+        <option value="May" ${ti.end_month === "May" ? "selected" : ""
         }>May</option>
-        <option value="Jun" ${
-          ti.end_month === "Jun" ? "selected" : ""
+        <option value="Jun" ${ti.end_month === "Jun" ? "selected" : ""
         }>June</option>
-        <option value="Jul" ${
-          ti.end_month === "Jul" ? "selected" : ""
+        <option value="Jul" ${ti.end_month === "Jul" ? "selected" : ""
         }>July</option>
-        <option value="Aug" ${
-          ti.end_month === "Aug" ? "selected" : ""
+        <option value="Aug" ${ti.end_month === "Aug" ? "selected" : ""
         }>August</option>
-        <option value="Sep" ${
-          ti.end_month === "Sep" ? "selected" : ""
+        <option value="Sep" ${ti.end_month === "Sep" ? "selected" : ""
         }>September</option>
-        <option value="Oct" ${
-          ti.end_month === "Oct" ? "selected" : ""
+        <option value="Oct" ${ti.end_month === "Oct" ? "selected" : ""
         }>October</option>
-        <option value="Nov" ${
-          ti.end_month === "Nov" ? "selected" : ""
+        <option value="Nov" ${ti.end_month === "Nov" ? "selected" : ""
         }>November</option>
-        <option value="Dec" ${
-          ti.end_month === "Dec" ? "selected" : ""
+        <option value="Dec" ${ti.end_month === "Dec" ? "selected" : ""
         }>December</option>
       </select>
     `,
@@ -489,7 +463,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.19.25:8080/dvp_app/sessions/${ti.session_code}/`,
+          url: `http://43.204.119.135/api/dvp_app/sessions/${ti.session_code}/`,
           data: formValues,
         };
 
@@ -516,15 +490,12 @@ const CourseSettings = () => {
     const { value: formValues } = await Swal.fire({
       title: "Edit Program Level",
       html: `
-      <input id="swal-input1" class="swal2-input" placeholder="Program Level Name" value="${
-        ti.prog_level_name
-      }">
+      <input id="swal-input1" class="swal2-input" placeholder="Program Level Name" value="${ti.prog_level_name
+        }">
       <select id="swal-input2" class="swal2-input">
-        <option value="active" ${
-          ti.prog_status === "active" ? "selected" : ""
+        <option value="active" ${ti.prog_status === "active" ? "selected" : ""
         }>Active</option>
-        <option value="inactive" ${
-          ti.prog_status === "inactive" ? "selected" : ""
+        <option value="inactive" ${ti.prog_status === "inactive" ? "selected" : ""
         }>Inactive</option>
       </select>
     `,
@@ -541,7 +512,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.19.25:8080/dvp_app/program_levels/${ti.prog_level_id}/`,
+          url: `http://43.204.119.135/api/dvp_app/program_levels/${ti.prog_level_id}/`,
           data: formValues,
         };
 
@@ -568,15 +539,12 @@ const CourseSettings = () => {
     const { value: formValues } = await Swal.fire({
       title: "Edit Semester",
       html: `
-      <input id="swal-input1" class="swal2-input" placeholder="Semester Name" value="${
-        ti.semester_name
-      }">
+      <input id="swal-input1" class="swal2-input" placeholder="Semester Name" value="${ti.semester_name
+        }">
       <select id="swal-input2" class="swal2-input">
-        <option value="1" ${
-          ti.prog_level_id === "UG" ? "selected" : ""
+        <option value="1" ${ti.prog_level_id === "UG" ? "selected" : ""
         }>UG</option>
-        <option value="2" ${
-          ti.prog_level_id === "PG" ? "selected" : ""
+        <option value="2" ${ti.prog_level_id === "PG" ? "selected" : ""
         }>PG</option>
       </select>
     `,
@@ -593,7 +561,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.19.25:8080/dvp_app/semesters/${ti.semester_id}/`,
+          url: `http://43.204.119.135/api/dvp_app/semesters/${ti.semester_id}/`,
           data: formValues,
         };
 
@@ -620,18 +588,14 @@ const CourseSettings = () => {
     const { value: formValues } = await Swal.fire({
       title: "Edit Program",
       html: `
-      <input id="swal-input1" class="swal2-input" placeholder="Program Name" value="${
-        ti.program_name
-      }">
-      <input id="swal-input2" class="swal2-input" placeholder="Program Code" value="${
-        ti.program_code
-      }">
+      <input id="swal-input1" class="swal2-input" placeholder="Program Name" value="${ti.program_name
+        }">
+      <input id="swal-input2" class="swal2-input" placeholder="Program Code" value="${ti.program_code
+        }">
        <select id="swal-input3" class="swal2-input">
-        <option value="1" ${
-          ti.program_level_name === "UG" ? "selected" : ""
+        <option value="1" ${ti.program_level_name === "UG" ? "selected" : ""
         }>UG</option>
-        <option value="2" ${
-          ti.program_level_name === "PG" ? "selected" : ""
+        <option value="2" ${ti.program_level_name === "PG" ? "selected" : ""
         }>PG</option>
       </select>
       
@@ -650,7 +614,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.19.25:8080/dvp_app/programs/${ti.program_id}/`,
+          url: `http://43.204.119.135/api/dvp_app/programs/${ti.program_id}/`,
           data: formValues,
         };
 
@@ -681,19 +645,19 @@ const CourseSettings = () => {
     try {
       // Fetch the program data from the API
       const programResponse = await axios.get(
-        "http://172.17.19.25:8080/dvp_app/programs/"
+        "http://43.204.119.135/api/dvp_app/programs/"
       );
       programs = programResponse.data;
 
       // Fetch the semester data from the API
       const semesterResponse = await axios.get(
-        "http://172.17.19.25:8080/dvp_app/semesters/"
+        "http://43.204.119.135/api/dvp_app/semesters/"
       );
       semesters = semesterResponse.data;
 
       // Fetch the prog_id data from the API
       const progIdResponse = await axios.get(
-        "http://172.17.19.25:8080/dvp_app/program_levels/"
+        "http://43.204.119.135/api/dvp_app/program_levels/"
       );
       progIds = progIdResponse.data;
     } catch (error) {
@@ -710,8 +674,7 @@ const CourseSettings = () => {
     const programOptions = programs
       .map(
         (program) =>
-          `<option value="${program.program_code}" ${
-            ti.program_name === program.program_name ? "selected" : ""
+          `<option value="${program.program_code}" ${ti.program_name === program.program_name ? "selected" : ""
           }>${program.program_name}</option>`
       )
       .join("");
@@ -720,8 +683,7 @@ const CourseSettings = () => {
     const semesterOptions = semesters
       .map(
         (semester) =>
-          `<option value="${semester.semester_id}" ${
-            ti.semester_id === semester.semester_id ? "selected" : ""
+          `<option value="${semester.semester_id}" ${ti.semester_id === semester.semester_id ? "selected" : ""
           }>${semester.semester_name}</option>`
       )
       .join("");
@@ -740,8 +702,7 @@ const CourseSettings = () => {
     const progIdOptions = progIds
       .map(
         (progId) =>
-          `<option value="${progId.prog_id}" ${
-            ti.prog_id === progId.prog_id ? "selected" : ""
+          `<option value="${progId.prog_id}" ${ti.prog_id === progId.prog_id ? "selected" : ""
           }>${progId.prog_name}</option>`
       )
       .join("");
@@ -749,19 +710,15 @@ const CourseSettings = () => {
     const { value: formValues } = await Swal.fire({
       title: "Edit Subject",
       html: `
-        <input id="swal-input1" class="swal2-input" placeholder="Course Code" value="${
-          ti.subject_code
+        <input id="swal-input1" class="swal2-input" placeholder="Course Code" value="${ti.subject_code
         }">
-        <input id="swal-input2" class="swal2-input" placeholder="Course Name" value="${
-          ti.subject_name
+        <input id="swal-input2" class="swal2-input" placeholder="Course Name" value="${ti.subject_name
         }">
         <select id="swal-input3" class="swal2-input">
-          <option value="UG" ${
-            ti.prog_level_name === "UG" ? "selected" : ""
-          }>UG</option>
-          <option value="PG" ${
-            ti.prog_level_name === "PG" ? "selected" : ""
-          }>PG</option>
+          <option value="UG" ${ti.prog_level_name === "UG" ? "selected" : ""
+        }>UG</option>
+          <option value="PG" ${ti.prog_level_name === "PG" ? "selected" : ""
+        }>PG</option>
         </select>
         <select id="swal-input4" class="swal2-input">
           ${programOptions}
@@ -790,7 +747,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "PUT",
-          url: `http://172.17.19.25:8080/dvp_app/subjects/${ti.subject_id}/`,
+          url: `http://43.204.119.135/api/dvp_app/subjects/${ti.subject_id}/`,
           data: formValues,
         };
 
@@ -827,7 +784,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.19.25:8080/dvp_app/sessions/${emp.session_code}`,
+          url: `http://43.204.119.135/api/dvp_app/sessions/${emp.session_code}`,
         };
 
         await axios(config);
@@ -863,7 +820,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.19.25:8080/dvp_app/program_levels/${emp.prog_level_id}`,
+          url: `http://43.204.119.135/api/dvp_app/program_levels/${emp.prog_level_id}`,
         };
 
         await axios(config);
@@ -899,7 +856,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.19.25:8080/dvp_app/semesters/${emp.semester_id}`,
+          url: `http://43.204.119.135/api/dvp_app/semesters/${emp.semester_id}`,
         };
 
         await axios(config);
@@ -935,7 +892,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `http://172.17.19.25:8080/dvp_app/programs/${emp.program_id}`,
+          url: `http://43.204.119.135/api/dvp_app/programs/${emp.program_id}`,
         };
 
         await axios(config);
@@ -971,7 +928,7 @@ const CourseSettings = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `/dvp_app/subjects/${emp.subject_id}`,
+          url: `http://43.204.119.135/api/dvp_app/subjects/${emp.subject_id}`,
         };
 
         await axios(config);
@@ -1002,7 +959,7 @@ const CourseSettings = () => {
     if (selectedSession) {
       try {
         const response = await axios.post(
-          "http://172.17.19.25:8080/dvp_app/current_session/",
+          "http://43.204.119.135/api/dvp_app/current_session/",
           {
             session_code: selectedSession.session_code,
           },
@@ -1172,13 +1129,13 @@ const CourseSettings = () => {
                                   <td>{item?.start_year}</td>
                                   <td>
                                     {item?.start_month}
-                                     
+
                                   </td>
                                   <td>{item?.end_year}</td>
                                   <td>
-                                    {item?.end_month }
+                                    {item?.end_month}
                                   </td>
-                                 
+
                                   <td>
                                     <Button
                                       onClick={() => handleEditSession(item)}

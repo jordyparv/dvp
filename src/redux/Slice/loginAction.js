@@ -9,7 +9,7 @@ export const loginUser = (email, password, navigate) => async (dispatch) => {
       password: password,
     };
     const config = {
-      url: `http://172.17.19.25:8080/dvp_app/login/`,
+      url: `http://43.204.119.135/api/dvp_app/login/`,
       // url: `http://172.17.19.40:8080/dvp_app/login/`,
 
       method: "POST",
@@ -31,7 +31,7 @@ export const loginUser = (email, password, navigate) => async (dispatch) => {
 
       const permissions = LoginRequest?.data?.permission_names || [];
       localStorage.setItem("permissions", JSON.stringify(permissions));
-      
+
       dispatch(loginSuccess(LoginRequest?.data));
       // if(permissions?.includes("Lesson Plan")) {
       //   navigate("/lesson-plan")
@@ -45,7 +45,7 @@ export const loginUser = (email, password, navigate) => async (dispatch) => {
       dispatch(loginFailed(LoginRequest?.data));
     }
   } catch (error) {
-    message.warning(error?.response?.data?.message ? error.response?.data?.message :error?.message)
+    message.warning(error?.response?.data?.message ? error.response?.data?.message : error?.message)
     console.log(error);
   }
 };

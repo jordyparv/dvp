@@ -33,7 +33,7 @@ const StudioSettings = () => {
   const fetchStudioData = async () => {
     try {
       const response = await axios.get(
-        "http://172.17.19.25:8080/dvp_app/studios/"
+        "http://43.204.119.135/api/dvp_app/studios/"
       );
       setStudioData(response.data);
       setStudioNameOption(response?.data);
@@ -45,7 +45,7 @@ const StudioSettings = () => {
   const fetchStudioSlots = async () => {
     try {
       const response = await axios.get(
-        "http://172.17.19.25:8080/dvp_app/studio_slots/"
+        "http://43.204.119.135/api/dvp_app/studio_slots/"
       );
       setSlotData(response?.data);
       console.log("slots", response?.data[0]?.studio?.studio_name);
@@ -78,7 +78,7 @@ const StudioSettings = () => {
         if (editStudio) {
           // Update existing studio
           const config = {
-            url: `http://172.17.19.25:8080/dvp_app/studios/${editStudio.studio_id}/`,
+            url: `http://43.204.119.135/api/dvp_app/studios/${editStudio.studio_id}/`,
             method: "PUT",
             data,
           };
@@ -92,7 +92,7 @@ const StudioSettings = () => {
         } else {
           // Create new studio
           const config = {
-            url: `http://172.17.19.25:8080/dvp_app/studios/`,
+            url: `http://43.204.119.135/api/dvp_app/studios/`,
             method: "POST",
             data,
           };
@@ -126,7 +126,7 @@ const StudioSettings = () => {
         if (editSlot) {
           // Update existing slot
           const config = {
-            url: `http://172.17.19.25:8080/dvp_app/studio_slots/${editSlot.slot_id}/`,
+            url: `http://43.204.119.135/api/dvp_app/studio_slots/${editSlot.slot_id}/`,
             method: "PUT",
             data,
           };
@@ -141,7 +141,7 @@ const StudioSettings = () => {
         } else {
           // Create new slot
           const config = {
-            url: `http://172.17.19.25:8080/dvp_app/studio_slots/`,
+            url: `http://43.204.119.135/api/dvp_app/studio_slots/`,
             method: "POST",
             data,
           };
@@ -200,7 +200,7 @@ const StudioSettings = () => {
   const handleDeleteStudio = async (studioId) => {
     try {
       const response = await axios.delete(
-        `http://172.17.19.25:8080/dvp_app/studios/${studioId}`
+        `http://43.204.119.135/api/dvp_app/studios/${studioId}`
       );
 
       message.success("Studio Deleted!");
@@ -213,7 +213,7 @@ const StudioSettings = () => {
   const handleDeleteSlot = async (slotId) => {
     try {
       const response = await axios.delete(
-        `http://172.17.19.25:8080/dvp_app/studio_slots/${slotId}`
+        `http://43.204.119.135/api/dvp_app/studio_slots/${slotId}`
       );
       if (response.status === 200) {
         message.success("Slot Deleted!");

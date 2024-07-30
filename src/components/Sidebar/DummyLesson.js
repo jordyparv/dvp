@@ -33,7 +33,7 @@ const ViewLessonPlan = () => {
   const getEmpId = async () => {
     try {
       const response = await axios(
-        `http://172.17.19.25:8080/dvp_app/select_subject/?user_id=${userId}`
+        `http://43.204.119.135/api/dvp_app/select_subject/?user_id=${userId}`
       );
       const employeeId = response?.data?.employee_id;
       setEmpIds(employeeId);
@@ -92,10 +92,10 @@ const ViewLessonPlan = () => {
                       item?.status === "approved"
                         ? "app-yes"
                         : item?.status === "rejected"
-                        ? "rej-no"
-                        : item?.status === "pending"
-                        ? "pen-doubt"
-                        : item?.status
+                          ? "rej-no"
+                          : item?.status === "pending"
+                            ? "pen-doubt"
+                            : item?.status
                     }
                   >
                     {item?.status === "approved" ? (
@@ -119,83 +119,83 @@ const ViewLessonPlan = () => {
             ))}
         </div>
         <div className="lesson-table-wrapper">
-         {/* make lesson plan table here  */}
-         {selectedLessonPlan && (
-          <div className="lesson-plan-table">
-            {selectedLessonPlan.map((module, moduleIndex) => (
-              <div style={{ padding: "20px", display: "block" }} key={moduleIndex} className="module-section">
-                <h5 style={{ color: "black", display: "flex" }}>
-                  Module {moduleIndex + 1}
-                  <div onClick={addModule} style={{ marginLeft: "30px" }}>
-                    <img className="iconsaction" style={{ width: "20px" }} src={add} />
-                  </div>
-                  <div onClick={() => removeModule(moduleIndex)} style={{ marginLeft: "10px" }}>
-                    <img className="iconsaction" style={{ width: "20px" }} src={minus} />
-                  </div>
-                </h5>
-                <Input
-                  name="module"
-                  placeholder="Module Name"
-                  value={module.module}
-                  onChange={(event) => handleInputChange(moduleIndex, null, null, event)}
-                />
-                <Input
-                  name="moduleLearningObjective"
-                  placeholder="Module Learning Objective"
-                  value={module.moduleLearningObjective}
-                  onChange={(event) => handleInputChange(moduleIndex, null, null, event)}
-                />
-                {module.topics.map((topic, topicIndex) => (
-                  <div key={topicIndex} className="topic-section">
-                    <h5 style={{ color: "black", display: "flex" }}>
-                      Topic {topicIndex + 1}
-                      <div onClick={() => addTopic(moduleIndex)} style={{ marginLeft: "30px" }}>
-                        <img className="iconsaction" style={{ width: "20px" }} src={add} />
-                      </div>
-                      <div onClick={() => removeTopic(moduleIndex, topicIndex)} style={{ marginLeft: "10px" }}>
-                        <img className="iconsaction" style={{ width: "20px" }} src={minus} />
-                      </div>
-                    </h5>
-                    <Input
-                      name="topic"
-                      placeholder="Topic Name"
-                      value={topic.topic}
-                      onChange={(event) => handleInputChange(moduleIndex, topicIndex, null, event)}
-                    />
-                    {topic.subtopics.map((subtopic, subtopicIndex) => (
-                      <div key={subtopicIndex} className="subtopic-section">
-                        <h5 style={{ color: "black", display: "flex" }}>
-                          Sub Topic {subtopicIndex + 1}
-                          <div onClick={() => addSubtopic(moduleIndex, topicIndex)} style={{ marginLeft: "30px" }}>
-                            <img className="iconsaction" style={{ width: "20px" }} src={add} />
-                          </div>
-                          <div onClick={() => removeSubtopic(moduleIndex, topicIndex, subtopicIndex)} style={{ marginLeft: "10px" }}>
-                            <img className="iconsaction" style={{ width: "20px" }} src={minus} />
-                          </div>
-                        </h5>
-                        <Input
-                          name="subtopic"
-                          placeholder="Subtopic Name"
-                          value={subtopic.subtopic}
-                          onChange={(event) => handleInputChange(moduleIndex, topicIndex, subtopicIndex, event)}
-                        />
-                        <Input
-                          name="subtopicLearningObjective"
-                          placeholder="Subtopic Learning Objective"
-                          value={subtopic.subtopicLearningObjective}
-                          onChange={(event) => handleInputChange(moduleIndex, topicIndex, subtopicIndex, event)}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            ))}
-            <Button type="primary" onClick={saveChanges}>
-              Save Changes
-            </Button>
-          </div>
-        )}
+          {/* make lesson plan table here  */}
+          {selectedLessonPlan && (
+            <div className="lesson-plan-table">
+              {selectedLessonPlan.map((module, moduleIndex) => (
+                <div style={{ padding: "20px", display: "block" }} key={moduleIndex} className="module-section">
+                  <h5 style={{ color: "black", display: "flex" }}>
+                    Module {moduleIndex + 1}
+                    <div onClick={addModule} style={{ marginLeft: "30px" }}>
+                      <img className="iconsaction" style={{ width: "20px" }} src={add} />
+                    </div>
+                    <div onClick={() => removeModule(moduleIndex)} style={{ marginLeft: "10px" }}>
+                      <img className="iconsaction" style={{ width: "20px" }} src={minus} />
+                    </div>
+                  </h5>
+                  <Input
+                    name="module"
+                    placeholder="Module Name"
+                    value={module.module}
+                    onChange={(event) => handleInputChange(moduleIndex, null, null, event)}
+                  />
+                  <Input
+                    name="moduleLearningObjective"
+                    placeholder="Module Learning Objective"
+                    value={module.moduleLearningObjective}
+                    onChange={(event) => handleInputChange(moduleIndex, null, null, event)}
+                  />
+                  {module.topics.map((topic, topicIndex) => (
+                    <div key={topicIndex} className="topic-section">
+                      <h5 style={{ color: "black", display: "flex" }}>
+                        Topic {topicIndex + 1}
+                        <div onClick={() => addTopic(moduleIndex)} style={{ marginLeft: "30px" }}>
+                          <img className="iconsaction" style={{ width: "20px" }} src={add} />
+                        </div>
+                        <div onClick={() => removeTopic(moduleIndex, topicIndex)} style={{ marginLeft: "10px" }}>
+                          <img className="iconsaction" style={{ width: "20px" }} src={minus} />
+                        </div>
+                      </h5>
+                      <Input
+                        name="topic"
+                        placeholder="Topic Name"
+                        value={topic.topic}
+                        onChange={(event) => handleInputChange(moduleIndex, topicIndex, null, event)}
+                      />
+                      {topic.subtopics.map((subtopic, subtopicIndex) => (
+                        <div key={subtopicIndex} className="subtopic-section">
+                          <h5 style={{ color: "black", display: "flex" }}>
+                            Sub Topic {subtopicIndex + 1}
+                            <div onClick={() => addSubtopic(moduleIndex, topicIndex)} style={{ marginLeft: "30px" }}>
+                              <img className="iconsaction" style={{ width: "20px" }} src={add} />
+                            </div>
+                            <div onClick={() => removeSubtopic(moduleIndex, topicIndex, subtopicIndex)} style={{ marginLeft: "10px" }}>
+                              <img className="iconsaction" style={{ width: "20px" }} src={minus} />
+                            </div>
+                          </h5>
+                          <Input
+                            name="subtopic"
+                            placeholder="Subtopic Name"
+                            value={subtopic.subtopic}
+                            onChange={(event) => handleInputChange(moduleIndex, topicIndex, subtopicIndex, event)}
+                          />
+                          <Input
+                            name="subtopicLearningObjective"
+                            placeholder="Subtopic Learning Objective"
+                            value={subtopic.subtopicLearningObjective}
+                            onChange={(event) => handleInputChange(moduleIndex, topicIndex, subtopicIndex, event)}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              ))}
+              <Button type="primary" onClick={saveChanges}>
+                Save Changes
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>

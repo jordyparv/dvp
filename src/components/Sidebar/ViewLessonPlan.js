@@ -57,7 +57,7 @@ const ViewLessonPlan = () => {
 
   const [showPptModal, setShowPptModal] = useState(false);
   const [pptFile, setPptFile] = useState(null);
-  const [ viewPpt, setViewPpt ] = useState("");
+  const [viewPpt, setViewPpt] = useState("");
   const getuserId = JSON.parse(localStorage.getItem("prod_cred"));
   const userId = getuserId?.user_id;
   const navigate = useNavigate();
@@ -65,7 +65,7 @@ const ViewLessonPlan = () => {
   const getEmpId = async () => {
     try {
       const response = await axios.get(
-        `http://172.17.19.25:8080/dvp_app/select_subject/?user_id=${userId}`
+        `http://43.204.119.135/api/dvp_app/select_subject/?user_id=${userId}`
       );
       const employeeId = response?.data?.employee_id;
       const lessonData = await getLesson(employeeId);
@@ -84,7 +84,7 @@ const ViewLessonPlan = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://172.17.19.25:8080/dvp_app/get_lesson_plans/${subjectId}/`
+        `http://43.204.119.135/api/dvp_app/get_lesson_plans/${subjectId}/`
       );
 
       // Log the entire response to see the structure
@@ -171,7 +171,7 @@ const ViewLessonPlan = () => {
     try {
       // Make the PUT request
       const response = await axios.put(
-        "http://172.17.19.25:8080/dvp_app/update_lesson_plans/",
+        "http://43.204.119.135/api/dvp_app/update_lesson_plans/",
         data
       );
       console.log("PUT response:", response.data);
@@ -281,7 +281,7 @@ const ViewLessonPlan = () => {
 
   const getSubtopic = async (subjectId) => {
     const response = await axios.get(
-      `http://172.17.19.25:8080/dvp_app/approved_subtopics/${subjectId}/`
+      `http://43.204.119.135/api/dvp_app/approved_subtopics/${subjectId}/`
     );
     console.log(response?.data, "GET IT");
     setShowLessonDrawer(response?.data);
@@ -328,7 +328,7 @@ const ViewLessonPlan = () => {
         console.log(data);
         setShowScript(data);
         const response = await axios.post(
-          "http://172.17.19.25:8080/dvp_app/subtopic_uploads/",
+          "http://43.204.119.135/api/dvp_app/subtopic_uploads/",
           data
         );
         Swal.fire({
@@ -372,7 +372,7 @@ const ViewLessonPlan = () => {
       setCurrentLessonPlanId(lessonPlanId);
       console.log(lessonPlanId, "VIEW ID");
       const response = await axios.get(
-        `http://172.17.19.25:8080/dvp_app/search_script/${lessonPlanId}/`
+        `http://43.204.119.135/api/dvp_app/search_script/${lessonPlanId}/`
       );
       setScriptData(response);
       setScriptDataStatus(response?.data);
@@ -436,7 +436,7 @@ const ViewLessonPlan = () => {
     const isPpt =
       file.type === "application/vnd.ms-powerpoint" ||
       file.type ===
-        "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation";
     if (!isPpt) {
       Modal.error({
         title: "Invalid File Type",
@@ -465,7 +465,7 @@ const ViewLessonPlan = () => {
 
     try {
       const response = await axios.post(
-        "http://172.17.19.25:8080/dvp_app/subtopic_uploads/",
+        "http://43.204.119.135/api/dvp_app/subtopic_uploads/",
         formData,
         {
           headers: {
@@ -482,13 +482,13 @@ const ViewLessonPlan = () => {
     }
   };
 
-  const showMyPPT = async(lessonPlanId) => {
-    const fetchPPt = await axios.get(`http://172.17.19.25:8080/dvp_app/lessonplan/${lessonPlanId}/ppt-url/`)
+  const showMyPPT = async (lessonPlanId) => {
+    const fetchPPt = await axios.get(`http://43.204.119.135/api/dvp_app/lessonplan/${lessonPlanId}/ppt-url/`)
     console.log(fetchPPt?.data?.ppt_file_url, "PPT")
     const pptUrl = fetchPPt?.data?.ppt_file_url;
     setViewPpt(pptUrl);
     downloadPPT(pptUrl);
-    
+
   };
 
 
@@ -500,9 +500,9 @@ const ViewLessonPlan = () => {
     link.click();
     document.body.removeChild(link);
   };
-  
- 
-  
+
+
+
 
   return (
     <div style={{ display: "flex" }} className="production">
@@ -544,11 +544,10 @@ const ViewLessonPlan = () => {
               >
                 <div
                   key={item.subject_id}
-                  className={`notification ${
-                    showSelectedSubjectId === item?.subject_id
-                      ? "selectedClass"
-                      : null
-                  }`}
+                  className={`notification ${showSelectedSubjectId === item?.subject_id
+                    ? "selectedClass"
+                    : null
+                    }`}
                 >
                   <div> {item?.subject_name}</div>
                   <div style={{ display: "flex" }}>
@@ -564,10 +563,10 @@ const ViewLessonPlan = () => {
                         item?.status === "approved"
                           ? "app-yes"
                           : item?.status === "rejected"
-                          ? "rej-no"
-                          : item?.status === "pending"
-                          ? "pen-doubt"
-                          : item?.status
+                            ? "rej-no"
+                            : item?.status === "pending"
+                              ? "pen-doubt"
+                              : item?.status
                       }
                     >
                       {item?.status === "approved" ? (
@@ -696,8 +695,8 @@ const ViewLessonPlan = () => {
                                 src={ppt}
                               />
                             </Popover>
-                            
-                           <img  style={{ width: "25px", cursor: "pointer" }} onClick={() => showMyPPT(item?.lesson_plan_id)} src={download} alt="down" />
+
+                            <img style={{ width: "25px", cursor: "pointer" }} onClick={() => showMyPPT(item?.lesson_plan_id)} src={download} alt="down" />
                           </>
                         ) : (
                           <>
@@ -722,7 +721,7 @@ const ViewLessonPlan = () => {
                               }}
                             /> */}
                             <Popover title={`Download PPT for ${item?.subtopic}`}>
-                            <img  style={{ width: "25px", cursor: "pointer", marginLeft:"10px" }} onClick={() => showMyPPT(item?.lesson_plan_id)} src={download} alt="down" />
+                              <img style={{ width: "25px", cursor: "pointer", marginLeft: "10px" }} onClick={() => showMyPPT(item?.lesson_plan_id)} src={download} alt="down" />
 
                             </Popover>
                           </>
@@ -760,7 +759,7 @@ const ViewLessonPlan = () => {
           open={showModal}
           onOk={handleOk}
           onCancel={handleCancel}
-          footer={(_, {}) => (
+          footer={(_, { }) => (
             <>
               <Button onClick={handleCancel}>Cancel</Button>
               <Button onClick={handleOk}>Send</Button>
@@ -874,20 +873,20 @@ const ViewLessonPlan = () => {
                               moduleIndex,
                               topicIndex
                             ) && (
-                              <div
-                                onClick={() =>
-                                  removeTopic(moduleIndex, topicIndex)
-                                }
-                                style={{ marginLeft: "10px" }}
-                              >
-                                <img
-                                  className="iconsaction"
-                                  style={{ width: "20px" }}
-                                  src={minus}
-                                  alt="Remove Topic"
-                                />
-                              </div>
-                            )}
+                                <div
+                                  onClick={() =>
+                                    removeTopic(moduleIndex, topicIndex)
+                                  }
+                                  style={{ marginLeft: "10px" }}
+                                >
+                                  <img
+                                    className="iconsaction"
+                                    style={{ width: "20px" }}
+                                    src={minus}
+                                    alt="Remove Topic"
+                                  />
+                                </div>
+                              )}
                           </h5>
                           <div className="topic-content">
                             <Input
@@ -1015,7 +1014,7 @@ const ViewLessonPlan = () => {
         open={showPptModal}
         onOk={handleOk}
         onCancel={handleCancel}
-        footer={(_, {}) => (
+        footer={(_, { }) => (
           <>
             <Button onClick={handleCancel}>Cancel</Button>
             <Button

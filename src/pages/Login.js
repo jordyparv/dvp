@@ -18,7 +18,7 @@ const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [showForgetPass, setShowForgetPass] = useState(false);
   const [showLogin, setShowLogin] = useState(true);
-  const [ emailReset, setEmailReset ] = useState("")
+  const [emailReset, setEmailReset] = useState("")
 
   const [videoUrl, setVideoUrl] = useState("");
 
@@ -84,7 +84,7 @@ const Login = () => {
     setLoading(true);
     try {
       const response = await axios.put(
-        `http://172.17.19.25:8080/dvp_app/password_reset/<${emailReset}>/`
+        `http://43.204.119.135/api/dvp_app/password_reset/<${emailReset}>/`
       );
       message.success("Your new password has been sent to your email.");
       setLoading(false);

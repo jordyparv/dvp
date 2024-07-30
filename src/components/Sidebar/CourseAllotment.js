@@ -94,7 +94,7 @@ const CourseAllotment = () => {
 
   const getAllotedData = async () => {
     try {
-      const response = await axios.get("/dvp_app/course_allotment/");
+      const response = await axios.get("http://43.204.119.135/api/dvp_app/course_allotment/");
       console.log(response, "_____ewe9w");
 
       setSubjectData(response?.data);
@@ -108,7 +108,7 @@ const CourseAllotment = () => {
 
   const getCurrentSession = async () => {
     const response = await axios.get(
-      `http://172.17.19.25:8080/dvp_app/current_session/`
+      `http://43.204.119.135/api/dvp_app/current_session/`
     );
     setCurrentSession(response?.data?.session_code);
     console.log(
@@ -125,7 +125,7 @@ const CourseAllotment = () => {
   const getFacultyRequest = async (currentSession) => {
     try {
       const response = await axios.get(
-        `http://172.17.19.25:8080/dvp_app/select_faculty/?session_code=${currentSession}`
+        `http://43.204.119.135/api/dvp_app/select_faculty/?session_code=${currentSession}`
       );
 
       console.log(response, "%%%%%%%%%%%%%%%%%");
@@ -149,7 +149,7 @@ const CourseAllotment = () => {
   const getSessionCodeRequest = async () => {
     try {
       const response = await axios.get(
-        "http://172.17.19.25:8080/dvp_app/sessions/"
+        "http://43.204.119.135/api/dvp_app/sessions/"
       );
       console.log("Fetched sessions:", response.data);
 
@@ -169,7 +169,7 @@ const CourseAllotment = () => {
 
   const getPLRequest = async () => {
     const response = await axios.get(
-      "http://172.17.19.25:8080/dvp_app/program_levels/"
+      "http://43.204.119.135/api/dvp_app/program_levels/"
     );
 
     setPLIdsOption(response?.data);
@@ -182,7 +182,7 @@ const CourseAllotment = () => {
   const getProgramRequest = async (prog_level_ids) => {
     try {
       let config = {
-        url: `/dvp_app/programs/search?prog_level_ids=${prog_level_ids}`,
+        url: `http://43.204.119.135/api/dvp_app/programs/search/?prog_level_ids=${prog_level_ids}`,
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -211,7 +211,7 @@ const CourseAllotment = () => {
   ) => {
     try {
       const response = await axios.get(
-        `/dvp_app/subjects/search?program_id=${program_id}&semester_id=${semester_id}`
+        `http://43.204.119.135/api/dvp_app/subjects/search/?program_id=${program_id}&semester_id=${semester_id}`
       );
       setSubjects((prev) => {
         let _sub = `pi=${program_id}::si=${semester_id}`;
@@ -233,7 +233,7 @@ const CourseAllotment = () => {
   const getSemestersRequest = async (prog_level_ids) => {
     try {
       const response = await axios.get(
-        `/dvp_app/semester/search?prog_level_ids=${prog_level_ids}`
+        `http://43.204.119.135/api/dvp_app/semester/search/?prog_level_ids=${prog_level_ids}`
       );
 
       const semestersByProgram = response?.data.reduce((acc, semester) => {
@@ -284,7 +284,7 @@ const CourseAllotment = () => {
       };
 
       const config = {
-        url: "/dvp_app/course_allotment/",
+        url: "http://43.204.119.135/api/dvp_app/course_allotment/",
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -359,7 +359,7 @@ const CourseAllotment = () => {
   const fetchData = async (course_allotment_ids) => {
     try {
       const response = await axios.get(
-        `http://172.17.19.25:8080/dvp_app/course-reasigned/${course_allotment_ids}/`
+        `http://43.204.119.135/api/dvp_app/course-reasigned/${course_allotment_ids}/`
       );
       console.log(courseAllotment, response, "GGGGGGGG");
       const data = response.data;
@@ -417,7 +417,7 @@ const CourseAllotment = () => {
 
       console.log("Updated record:", updatedRecord);
       const response = await axios.patch(
-        `/dvp_app/course-allotment-update/${courseAllotmentId}/`,
+        `http://43.204.119.135/api/dvp_app/course-allotment-update/${courseAllotmentId}/`,
         updatedRecord
       );
 
@@ -437,7 +437,7 @@ const CourseAllotment = () => {
   const handleDelete = async (id) => {
     // try {
     //   await axios.delete(
-    //     `http://172.17.19.25:8080/dvp_app/program_coordinators/${id}/`
+    //     `http://43.204.119.135/api/dvp_app/program_coordinators/${id}/`
     //   );
     //   message.success("Entry deleted successfully");
     //   getAllotedData(); // Refresh the data
@@ -495,7 +495,7 @@ const CourseAllotment = () => {
                         <span>Current Session</span>
                       </p>
 
-                      <Input style={{width:"340px"}}
+                      <Input style={{ width: "340px" }}
                         value={currentSession}
                         placeholder="Current Session"
                         disabled
@@ -531,7 +531,7 @@ const CourseAllotment = () => {
                     </label>
                   </div>
                   <div className="form-row">
-                    <label style={{display:"none"}}>
+                    <label style={{ display: "none" }}>
                       <p>
                         <span>Session Code </span>
                         <span style={{ color: "red" }}>*</span>
@@ -645,26 +645,26 @@ const CourseAllotment = () => {
                               required
                             >
                               {Array.isArray(formDetails?.semesters) &&
-                              formDetails?.semesters?.length
+                                formDetails?.semesters?.length
                                 ? formDetails.semesters
-                                    .filter(
-                                      (item) =>
-                                        userSelectedData.prog_level.includes(
-                                          item.prog_level_id
-                                        ) &&
-                                        formDetails.programs.find(
-                                          (prog) =>
-                                            prog.program_id === program_id
-                                        )?.prog_level === item.prog_level_id
-                                    )
-                                    .map((semester) => (
-                                      <Option
-                                        value={semester.semester_id}
-                                        key={semester.semester_id}
-                                      >
-                                        {semester.semester_name}
-                                      </Option>
-                                    ))
+                                  .filter(
+                                    (item) =>
+                                      userSelectedData.prog_level.includes(
+                                        item.prog_level_id
+                                      ) &&
+                                      formDetails.programs.find(
+                                        (prog) =>
+                                          prog.program_id === program_id
+                                      )?.prog_level === item.prog_level_id
+                                  )
+                                  .map((semester) => (
+                                    <Option
+                                      value={semester.semester_id}
+                                      key={semester.semester_id}
+                                    >
+                                      {semester.semester_name}
+                                    </Option>
+                                  ))
                                 : null}
                             </Select>
                           </label>

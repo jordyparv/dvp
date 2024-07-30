@@ -26,7 +26,7 @@ const ScriptStatus = () => {
   const [scriptRes, setScriptRes] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false); // State to control modal visibility
   const [modalScript, setModalScript] = useState(""); // State to hold the script content for the modal
-  const [ viewPpt, setViewPpt ] = useState("");
+  const [viewPpt, setViewPpt] = useState("");
   const getuserId = JSON.parse(localStorage.getItem("prod_cred"));
   const userId = getuserId?.user_id;
 
@@ -35,13 +35,13 @@ const ScriptStatus = () => {
   const getEmpId = async () => {
     try {
       const response = await axios(
-        `http://172.17.19.25:8080/dvp_app/select_subject/?user_id=${userId}`
+        `http://43.204.119.135/api/dvp_app/select_subject/?user_id=${userId}`
       );
       const employeeId = response?.data?.employee_id;
       setEmpIds(employeeId);
 
       const lessonData = await axios.get(
-        `http://172.17.19.25:8080/dvp_app/search-lesson-plan-approval/?employee_id=${employeeId}`
+        `http://43.204.119.135/api/dvp_app/search/-lesson-plan-approval/?employee_id=${employeeId}`
       );
       const lessonPlans = lessonData?.data;
       const scriptData = await getScriptStatus(employeeId);
@@ -113,14 +113,14 @@ const ScriptStatus = () => {
     const approval = {
       approved:
         approvalStatus[lessonPlanId] === "approve" ? "approved" : "rejected",
-        remarks: remarks[lessonPlanId] || "",
+      remarks: remarks[lessonPlanId] || "",
     };
 
     console.log(approval); // Log approval for debugging
 
     try {
       const response = await axios.patch(
-        `http://172.17.19.25:8080/dvp_app/update-subtopic-upload-status/${lessonPlanId}/`,
+        `http://43.204.119.135/api/dvp_app/update-subtopic-upload-status/${lessonPlanId}/`,
         approval
       );
       Swal.fire("Success", "Approved", "success");
@@ -158,11 +158,10 @@ const ScriptStatus = () => {
             scriptRes.map((item) => (
               <div
                 key={item.subject_id}
-                className={`notification ${
-                  showSelectedSubjectId === item?.subject_id
-                    ? "selectedClass"
-                    : null
-                }`}
+                className={`notification ${showSelectedSubjectId === item?.subject_id
+                  ? "selectedClass"
+                  : null
+                  }`}
               >
                 <div>{item?.subject_name}</div>
                 <div>
@@ -177,12 +176,12 @@ const ScriptStatus = () => {
             ))}
         </div>
         <div className="lesson-table-wrapper">
-        <div
-          style={{ cursor: "pointer", fontWeight: "bold", marginBottom:"20px" }}
-          onClick={handleBackPage}
-        >
-          Back
-        </div>
+          <div
+            style={{ cursor: "pointer", fontWeight: "bold", marginBottom: "20px" }}
+            onClick={handleBackPage}
+          >
+            Back
+          </div>
           <h4>Pending Document Approval Request</h4>
           {selectedScript.length > 0 && (
             <div className="lesson-table-container">
@@ -214,7 +213,7 @@ const ScriptStatus = () => {
                           <EyeOutlined style={{ cursor: "pointer" }} />
                         </a>
                       </td>
-                      <td  className={script?.ppt_file_url === null ? "noPpt" : "yesPpt"}>{console.log(script?.ppt_file_url, "PPPPPTTTTT")} <img onClick={() => downloadPPT(script?.ppt_file_url)} src={download} alt="down" /></td>
+                      <td className={script?.ppt_file_url === null ? "noPpt" : "yesPpt"}>{console.log(script?.ppt_file_url, "PPPPPTTTTT")} <img onClick={() => downloadPPT(script?.ppt_file_url)} src={download} alt="down" /></td>
                       <td>
                         <input
                           type="radio"

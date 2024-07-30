@@ -98,7 +98,7 @@ const Profile = () => {
   const getLesson = async (employeeId) => {
     try {
       const response = await axios(
-        `http://172.17.19.25:8080/dvp_app/lesson-plans/search/?employee_id=${employeeId}`
+        `http://43.204.119.135/api/dvp_app/lesson-plans/search/?employee_id=${employeeId}`
       );
       console.log(response?.data, "Lesson");
       return response?.data;
@@ -110,7 +110,7 @@ const Profile = () => {
   const getEmpId = async () => {
     try {
       const response = await axios(
-        `http://172.17.19.25:8080/dvp_app/select_subject/?user_id=${userId}`
+        `http://43.204.119.135/api/dvp_app/select_subject/?user_id=${userId}`
       );
       const employeeId = response?.data?.employee_id;
       const employeeIds = response?.data?.employee_id;
@@ -142,7 +142,7 @@ const Profile = () => {
   const getSession = async () => {
     try {
       const response = await axios(
-        `http://172.17.19.25:8080/dvp_app/current_session/`
+        `http://43.204.119.135/api/dvp_app/current_session/`
       );
       console.log(response?.data, "Session");
       setCurrentSession(response?.data);
@@ -316,8 +316,8 @@ const Profile = () => {
                             item?.status === "pending"
                               ? "pending"
                               : item?.status === "approved"
-                              ? "approved"
-                              : "reject"
+                                ? "approved"
+                                : "reject"
                           }
                         >
                           Status :{" "}

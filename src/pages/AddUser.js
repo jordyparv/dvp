@@ -52,7 +52,7 @@ const AddUser = () => {
   const departmentRequest = async () => {
     try {
       const getDepartment = await axios(
-        "http://172.17.19.25:8080/dvp_app/departments/"
+        "http://43.204.119.135/api/dvp_app/departments/"
       );
 
       //   setUserDepartment(getDepartment);
@@ -68,7 +68,7 @@ const AddUser = () => {
   const userRoleRequest = async () => {
     try {
       const getUserRole = await axios(
-        "http://172.17.19.25:8080/dvp_app/roles/"
+        "http://43.204.119.135/api/dvp_app/roles/"
       );
 
       setUserRoleOption(getUserRole);
@@ -83,7 +83,7 @@ const AddUser = () => {
   const userGenderReq = async () => {
     try {
       const getUserGender = await axios(
-        "http://172.17.19.25:8080/dvp_app/genders/"
+        "http://43.204.119.135/api/dvp_app/genders/"
       );
 
       setUserGenderOption(getUserGender);
@@ -97,7 +97,7 @@ const AddUser = () => {
   const userTable = async () => {
     try {
       const getUserData = await axios(
-        "http://172.17.19.25:8080/dvp_app/user_create/"
+        "http://43.204.119.135/api/dvp_app/user_create/"
       );
 
       setUserData(getUserData);
@@ -143,7 +143,7 @@ const AddUser = () => {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault()
-    
+
     if (!validateEmail(userEmail)) {
       message.warning(
         "Please enter a valid email address from allowed domains."
@@ -165,7 +165,7 @@ const AddUser = () => {
 
     try {
       await axios.put(
-        `http://172.17.19.25:8080/dvp_app/user_table/${currentUser.id}/`,
+        `http://43.204.119.135/api/dvp_app/user_table/${currentUser.id}/`,
         formData
       );
       message.success("User updated successfully!");
@@ -295,7 +295,7 @@ const AddUser = () => {
       try {
         const config = {
           method: "DELETE",
-          url: `/dvp_app/user_table/${user.id}`,
+          url: `http://43.204.119.135/api/dvp_app/user_table/${user.id}`,
         };
 
         await axios(config);
@@ -577,15 +577,15 @@ const AddUser = () => {
                   onCancel={() => setIsEditModalOpen(false)}
                   onOk={handleEditSubmit}
                 >
-                  <form className="form-edit" style={{padding:"10px"}}>
-                  <label>Enter Unique Name</label>
+                  <form className="form-edit" style={{ padding: "10px" }}>
+                    <label>Enter Unique Name</label>
                     <Input
                       value={uniqueName}
                       onChange={(e) => setUniqueName(e.target.value)}
                       placeholder="User Name"
                       disabled
                     />
-                 
+
                     <label>Enter User Name</label>
                     <Input
                       value={userName}
@@ -647,16 +647,16 @@ const AddUser = () => {
                       onChange={(e) => setUserMob(e.target.value)}
                       placeholder="User Mobile"
                     />
-                 
+
                     <label>Select Status</label>
                     <Select
                       value={userStatus}
                       onChange={handleStatus}
                       placeholder="Select Status"
                     >
-                     <Option>Select Status</Option>
-                     <Option value="active">Active </Option>
-                     <Option value="inactive">Inactive</Option>
+                      <Option>Select Status</Option>
+                      <Option value="active">Active </Option>
+                      <Option value="inactive">Inactive</Option>
                     </Select>
                   </form>
                 </Modal>

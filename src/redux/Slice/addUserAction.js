@@ -5,7 +5,7 @@ import { message } from "antd";
 export const addUserAction = (userData) => async (dispatch) => {
   try {
     let config = {
-      url: `http://172.17.19.25:8080/dvp_app/user_create/`,
+      url: `http://43.204.119.135/api/dvp_app/user_create/`,
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -21,6 +21,6 @@ export const addUserAction = (userData) => async (dispatch) => {
   } catch (error) {
     dispatch(addUserError(error));
     console.log(error, "ADD USER FAILED");
-    message.warning(error?.response?.data?.message[0]  )
+    message.warning(error?.response?.data?.message[0])
   }
 };

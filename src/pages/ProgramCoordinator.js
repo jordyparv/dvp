@@ -77,7 +77,7 @@ const ProgramCoordinator = () => {
 
   const getCurrentSession = async () => {
     const response = await axios.get(
-      `http://172.17.19.25:8080/dvp_app/current_session/`
+      `http://43.204.119.135/api/dvp_app/current_session/`
     );
     setCurrentSession(response?.data?.session_code);
     console.log(
@@ -94,7 +94,7 @@ const ProgramCoordinator = () => {
   const getFacultyRequest = async (currentSession) => {
     try {
       const response = await axios.get(
-        `http://172.17.19.25:8080/dvp_app/select_pc/?session_code=${currentSession}`
+        `http://43.204.119.135/api/dvp_app/select_pc/?session_code=${currentSession}`
       );
       console.log(response, "((((((((((((((((((((((((");
       setFacultyOption(response?.data);
@@ -117,7 +117,7 @@ const ProgramCoordinator = () => {
   const getSessionCodeRequest = async () => {
     try {
       const response = await axios.get(
-        "http://172.17.19.25:8080/dvp_app/sessions/"
+        "http://43.204.119.135/api/dvp_app/sessions/"
       );
       console.log("Fetched sessions:", response.data); // Debugging log
 
@@ -138,7 +138,7 @@ const ProgramCoordinator = () => {
 
   const getPLRequest = async () => {
     const response = await axios.get(
-      "http://172.17.19.25:8080/dvp_app/program_levels/"
+      "http://43.204.119.135/api/dvp_app/program_levels/"
     );
 
     setPLIdsOption(response?.data);
@@ -151,7 +151,7 @@ const ProgramCoordinator = () => {
   const getProgramRequest = async (prog_level_ids) => {
     try {
       let config = {
-        url: `/dvp_app/programs/search?prog_level_ids=${prog_level_ids}`,
+        url: `http://43.204.119.135/api/dvp_app/programs/search/?prog_level_ids=${prog_level_ids}`,
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -180,7 +180,7 @@ const ProgramCoordinator = () => {
   ) => {
     try {
       const response = await axios.get(
-        `/dvp_app/subjects/search?program_id=${program_id}&semester_id=${semester_id}`
+        `http://43.204.119.135/api/dvp_app/subjects/search/?program_id=${program_id}&semester_id=${semester_id}`
       );
       setSubjects((prev) => {
         let _sub = `pi=${program_id}::si=${semester_id}`;
@@ -202,7 +202,7 @@ const ProgramCoordinator = () => {
   const getSemestersRequest = async (prog_level_ids) => {
     try {
       const response = await axios.get(
-        `/dvp_app/semester/search?prog_level_ids=${prog_level_ids}`
+        `http://43.204.119.135/api/dvp_app/semester/search/?prog_level_ids=${prog_level_ids}`
       );
 
       const semestersByProgram = response?.data.reduce((acc, semester) => {
@@ -253,7 +253,7 @@ const ProgramCoordinator = () => {
       };
 
       const config = {
-        url: "/dvp_app/program_coordinators/",
+        url: "http://43.204.119.135/api/dvp_app/program_coordinators/",
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -347,7 +347,7 @@ const ProgramCoordinator = () => {
   const getAllotedData = async () => {
     try {
       const response = await axios.get(
-        "http://172.17.19.25:8080/dvp_app/program_coordinators/"
+        "http://43.204.119.135/api/dvp_app/program_coordinators/"
       );
       console.log(response?.data?.length, "Fetched Data");
       setSubjectData(response?.data);
@@ -361,7 +361,7 @@ const ProgramCoordinator = () => {
   const handleDelete = async (id) => {
     try {
       await axios.delete(
-        `http://172.17.19.25:8080/dvp_app/program_coordinators/${id}/`
+        `http://43.204.119.135/api/dvp_app/program_coordinators/${id}/`
       );
       message.success("Entry deleted successfully");
       getAllotedData(); // Refresh the data
@@ -393,7 +393,7 @@ const ProgramCoordinator = () => {
   //     };
   //     delete payload.program_id; // Remove program_id from payload
   //     await axios.put(
-  //       `http://172.17.19.25:8080/dvp_app/program_coordinators/${editingRecord.pc_id}/`,
+  //       `http://43.204.119.135/api/dvp_app/program_coordinators/${editingRecord.pc_id}/`,
   //       payload
   //     );
   //     message.success("Entry updated successfully");
@@ -414,7 +414,7 @@ const ProgramCoordinator = () => {
   const fetchData = async (pc_id) => {
     try {
       const response = await axios.get(
-        `http://172.17.19.25:8080/dvp_app/course-reasigned-pc/${pc_id}/`
+        `http://43.204.119.135/api/dvp_app/course-reasigned-pc/${pc_id}/`
       );
 
       const data = response.data;
@@ -508,7 +508,7 @@ const ProgramCoordinator = () => {
 
       console.log("Updated record:", updatedRecord);
       const response = await axios.patch(
-        `/dvp_app/pc-course-allotment-update/${courseAllotmentId}/`,
+        `http://43.204.119.135/api/dvp_app/pc-course-allotment-update/${courseAllotmentId}/`,
         updatedRecord
       );
 
@@ -710,26 +710,26 @@ const ProgramCoordinator = () => {
                               required
                             >
                               {Array.isArray(formDetails?.semesters) &&
-                              formDetails?.semesters?.length
+                                formDetails?.semesters?.length
                                 ? formDetails.semesters
-                                    .filter(
-                                      (item) =>
-                                        userSelectedData.prog_level.includes(
-                                          item.prog_level_id
-                                        ) &&
-                                        formDetails.programs.find(
-                                          (prog) =>
-                                            prog.program_id === program_id
-                                        )?.prog_level === item.prog_level_id
-                                    )
-                                    .map((semester) => (
-                                      <Option
-                                        value={semester.semester_id}
-                                        key={semester.semester_id}
-                                      >
-                                        {semester.semester_name}
-                                      </Option>
-                                    ))
+                                  .filter(
+                                    (item) =>
+                                      userSelectedData.prog_level.includes(
+                                        item.prog_level_id
+                                      ) &&
+                                      formDetails.programs.find(
+                                        (prog) =>
+                                          prog.program_id === program_id
+                                      )?.prog_level === item.prog_level_id
+                                  )
+                                  .map((semester) => (
+                                    <Option
+                                      value={semester.semester_id}
+                                      key={semester.semester_id}
+                                    >
+                                      {semester.semester_name}
+                                    </Option>
+                                  ))
                                 : null}
                             </Select>
                           </label>
@@ -781,13 +781,13 @@ const ProgramCoordinator = () => {
                       </div>
                     ))}
                   </div>
-                  <div style={{width:"200px", justifyContent:"center", display:"flex"}}>
-                  <button onClick={handleCourseAllotment} type="submit">
-                    submit
-                  </button>
+                  <div style={{ width: "200px", justifyContent: "center", display: "flex" }}>
+                    <button onClick={handleCourseAllotment} type="submit">
+                      submit
+                    </button>
                   </div>
 
-                 
+
                 </form>
               )}
             </div>
@@ -841,7 +841,7 @@ const ProgramCoordinator = () => {
                     ))}
                   </div>
                 </fieldset>
-               
+
               </form>
             </Modal>
           </div>
